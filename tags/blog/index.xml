@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Blog on #3</title>
+    <link>https://zephyr369.online/tags/blog/</link>
+    <description>Recent content in Blog on #3</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 11 Jun 2024 12:00:00 +0000</lastBuildDate>
+    <atom:link href="https://zephyr369.online/tags/blog/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>hugoblog搭建记录</title>
+      <link>https://zephyr369.online/hugoblogs/</link>
+      <pubDate>Tue, 11 Jun 2024 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/hugoblogs/</guid>
+      <description>需求分析 感慨到自从修读计算机专业以来，在感受ChatGpt应付水课的完美能力之余，笔者深感长篇幅语言表达能力渐渐退化，于是便萌生放一个博客的</description>
+    </item>
+  </channel>
+</rss>

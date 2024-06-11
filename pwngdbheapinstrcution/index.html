@@ -10,14 +10,14 @@
     <meta property="og:type" content="article">
 
     
-    <meta property="og:image" content="https://zephyr369.online//img/cover.jpg">
-    <meta property="twitter:image" content="https://zephyr369.online//img/cover.jpg" />
+    <meta property="og:image" content="img/cover.jpg">
+    <meta property="twitter:image" content="img/cover.jpg" />
     
 
     
-    <meta name="title" content="" />
-    <meta property="og:title" content="" />
-    <meta property="twitter:title" content="" />
+    <meta name="title" content="Pwngdb·堆指令笔记" />
+    <meta property="og:title" content="Pwngdb·堆指令笔记" />
+    <meta property="twitter:title" content="Pwngdb·堆指令笔记" />
     
 
     
@@ -34,9 +34,9 @@
     <meta name="keyword"  content="Zephyr, Zephyr, Zephyr, , Zephyr的网络日志, Zephyr的博客, Zephyr Blog, 博客, 个人网站, 互联网, Web, CTF,">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
+    <title>Pwngdb·堆指令笔记 | Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
 
-    <link rel="canonical" href="/search/placeholder/">
+    <link rel="canonical" href="/pwngdbheapinstrcution/">
 
     
     
@@ -70,7 +70,38 @@
     
     
  
- 
+ <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+        displayMath: [
+          ["$$", "$$"],
+          ["\\[", "\\]"],
+        ],
+        processEscapes: true,
+        processEnvironments: true,
+      },
+      options: {
+        skipHtmlTags: ["script", "noscript", "style", "textarea", "pre"],
+      },
+    };
+  
+    window.addEventListener("load", (event) => {
+      document.querySelectorAll("mjx-container").forEach(function (x) {
+        x.parentElement.classList += "has-jax";
+      });
+    });
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    type="text/javascript"
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
 </head>
 <style>
     code.has-jax {
@@ -176,17 +207,25 @@
                 <div class="post-heading">
                     <div class="tags">
                         
+                        <a class="tag" href="/tags/pwn" title="Pwn">
+                            Pwn
+                        </a>
+                        
+                        <a class="tag" href="/tags/notebook" title="notebook">
+                            notebook
+                        </a>
+                        
                     </div>
-                    <h1></h1>
+                    <h1>Pwngdb·堆指令笔记</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         
                             Posted by 
                             
-                                    #3
+                                Zephyr
                              
                             on 
-                            Monday, January 1, 0001
+                            Monday, May 20, 2024
                             
                             
                             
@@ -212,10 +251,144 @@
                 post-container">
 
                 
-                
+                <h1 id="arena">arena</h1>
+<p><strong>用法:</strong> <code>arena [-h] [addr]</code></p>
+<p>打印main arena或特定地址的arena。</p>
+<h1 id="arenas">arenas</h1>
+<p><strong>用法:</strong> <code>arenas [-h]</code></p>
+<p>打印所有的arena。</p>
+<h1 id="bins">bins</h1>
+<p><strong>用法:</strong> <code>bins [-h] [addr] [tcache_addr]</code></p>
+<p>打印所有main_arena或者指定地址中的bins信息，包括tcachebins、fastbins、unsortedbin、smallbins和largebins。</p>
+<h1 id="heap">heap</h1>
+<p><strong>用法:</strong> <code>heap [-h] [addr]</code></p>
+<p>打印从指定地址（addr）开始块的信息。</p>
+<h1 id="fastbins">fastbins</h1>
+<p><strong>用法:</strong> <code>fastbins [-h] [addr] [verbose]</code></p>
+<p>打印main arena或者指定地址的fastbins。</p>
+<h1 id="find_fake_fast">find_fake_fast</h1>
+<p><strong>用法:</strong> <code>find_fake_fast [-h] addr size</code></p>
+<p>查找与指定地址重叠的候选fake fast块。用于fastbin dups和house of spirit。</p>
+<h1 id="largebins">largebins</h1>
+<p><strong>用法:</strong> <code>largebins [-h] [addr] [verbose]</code></p>
+<p>打印main arena或指定地址的largebins信息。</p>
+<h1 id="malloc_chunk">malloc_chunk</h1>
+<p><strong>用法:</strong> <code>malloc_chunk [-h] [addr] [fake]</code></p>
+<p>打印指定地址的malloc_chunk。如果这个chunk是一个fake chunk，则使用<code>fake</code>选项（默认: False）。</p>
+<h1 id="mp">mp</h1>
+<p><strong>用法:</strong> <code>mp [-h]</code></p>
+<p>打印glibc中的mp_结构。</p>
+<h1 id="smallbins">smallbins</h1>
+<p><strong>用法:</strong> <code>smallbins [-h] [addr] [verbose]</code></p>
+<p>打印main arena或指定地址的smallbins信息。</p>
+<h1 id="tcache">tcache</h1>
+<p><strong>用法:</strong> <code>tcache [-h] [addr]</code></p>
+<p>打印malloc线程缓存信息。</p>
+<h1 id="tcachebins">tcachebins</h1>
+<p><strong>用法:</strong> <code>tcachebins [-h] [addr] [verbose]</code></p>
+<p>打印当前线程tcache或指定地址tcache中的bins信息。<code>verbose</code>选项用于是否显示更多细节（默认: False）。</p>
+<h1 id="top_chunk">top_chunk</h1>
+<p><strong>用法:</strong> <code>top_chunk [-h] [addr]</code></p>
+<p>打印main arena或指定地址的top chunk地址。</p>
+<h1 id="unsortedbin">unsortedbin</h1>
+<p><strong>用法:</strong> <code>unsortedbin [-h] [addr] [verbose]</code></p>
+<p>打印main arena或指定地址的unsorted bin内容。<code>verbose</code>选项用于是否显示更多细节（默认: True）。</p>
+<h1 id="vis_heap_chunks">vis_heap_chunks</h1>
+<p><strong>用法:</strong> <code>vis_heap_chunks [-h] [--naive] [count] [address]</code></p>
+<p>可视化指定地址的heap块。</p>
+<ul>
+<li><code>count</code>: 要可视化的块数（默认: 10）</li>
+<li><code>address</code>: 起始地址</li>
+</ul>
+<h2 id="觉得有用的几个命令">觉得有用的几个命令</h2>
+<h1 id="dads">da/ds</h1>
+<p><strong>用法:</strong> <code>da [-h] address [max]</code></p>
+<p>打印指定地址的字符串。<code>max</code>是最大字符串长度（默认: 256）。</p>
+<h1 id="dds">dds</h1>
+<p><strong>用法:</strong> <code>dds [-h] addr</code></p>
+<p>打印指定地址的指针和符号。</p>
+<h1 id="bl">bl</h1>
+<p><strong>用法:</strong> <code>bl</code></p>
+<p>列出断点。</p>
+<h1 id="u">u</h1>
+<p><strong>用法:</strong> <code>u [-h] [where] [n]</code></p>
+<p>从指定地址（where）开始反汇编N条指令。</p>
+<h1 id="k">k</h1>
+<p><strong>用法:</strong> <code>k [-h]</code></p>
+<p>打印回溯（别名 &lsquo;bt&rsquo;）。</p>
+<h1 id="ln">ln</h1>
+<p><strong>用法:</strong> <code>ln [-h] [address]</code></p>
+<p>列出最接近提供地址的符号。</p>
+<h1 id="nextjump">nextjump</h1>
+<p><strong>用法:</strong> <code>nextjmp [-h]</code></p>
+<p>在下一个跳转指令处设置断点。类似的命令还有nextcall、nextret、nextsyscall、nextproginstr。</p>
+<h1 id="entry">entry</h1>
+<p><strong>用法:</strong> <code>entry [-h] [args [args ...]]</code></p>
+<p>在目标二进制文件的第一个执行指令处设置断点。<code>args</code>是要运行的程序名。</p>
+<h1 id="j">j</h1>
+<p><strong>用法:</strong> <code>j [-h]</code></p>
+<p>将IDA的光标与GDB同步。</p>
+<h1 id="main">main</h1>
+<p><strong>用法:</strong> <code>main [-h]</code></p>
+<p>先<code>start</code>再<code>main</code>到main函数。</p>
+<h1 id="sstart">sstart</h1>
+<p>从<code>__libc_start_main</code>开始。</p>
+<h1 id="libs">libs</h1>
+<p>显示各种模块映射和地址，相当于<code>cat /proc/pid_of_program/maps</code>。</p>
+<h1 id="elfheader">elfheader</h1>
+<p>打印elf文件的段映射。</p>
+<h1 id="got命令">got命令</h1>
+<p><strong>用法:</strong> <code>got [-h] [name_filter]</code></p>
+<p>不加参数则打印所有函数的got信息，否则打印指定函数的got信息。</p>
+<h1 id="plt">plt</h1>
+<p>打印plt信息。</p>
+<h1 id="gotplt">gotplt</h1>
+<p>打印<code>.got.plt</code>中的信息。</p>
+<h1 id="auxv">auxv</h1>
+<p>打印辅助ELF向量的信息。</p>
+<h1 id="xinfo">xinfo</h1>
+<p><strong>用法:</strong> <code>xinfo [-h] [address]</code></p>
+<p>显示指定地址到其他有用位置的偏移。</p>
+<h1 id="xuntil">xuntil</h1>
+<p><strong>用法:</strong> <code>xuntil [-h] target</code></p>
+<p>继续执行程序，直到在目标函数或地址处暂停。</p>
+<h1 id="regs">regs</h1>
+<p><strong>用法:</strong> <code>regs [-h] [regs [regs ...]]</code></p>
+<p>打印所有寄存器并增强信息。</p>
+<h1 id="search">search</h1>
+<p><strong>用法:</strong> <code>search [-h] [-t {byte,short,word,dword,qword,pointer,string,bytes}] [-1] [-2] [-4] [-8] [-p] [-x] [-s] [-e] [-w] [--save] [--no-save] [-n] value [mapping_name]</code></p>
+<p>在内存中搜索字节序列、字符串、指针和整数值。</p>
+<h1 id="hexdump">hexdump</h1>
+<p><strong>用法:</strong> <code>hexdump [-h] [address] [count]</code></p>
+<p>以16进制形式展示指定地址处的内容。</p>
+<h1 id="piebase">piebase</h1>
+<p>展示PIE地址。</p>
+<h1 id="dumpargs">dumpargs</h1>
+<p><strong>用法:</strong> <code>dumpargs [-h] [-f]</code></p>
+<p>展示函数调用参数。</p>
+<h1 id="distance">distance</h1>
+<p><strong>用法:</strong> <code>distance [-h] a b</code></p>
+<p>打印两个参数之间的距离。</p>
+
 
                 
 
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/HITcryptomath/" data-toggle="tooltip" data-placement="top" title="密码学中数论知识的总结">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/blindfmt/" data-toggle="tooltip" data-placement="top" title="pwn·blindfmt学习记录">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
                 
 
                 

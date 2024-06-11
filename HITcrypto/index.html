@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="#3">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="img/hitmainbuild.png">
+    <meta property="twitter:image" content="img/hitmainbuild.png" />
+    
+
+    
+    <meta name="title" content="密码学课程实验记录" />
+    <meta property="og:title" content="密码学课程实验记录" />
+    <meta property="twitter:title" content="密码学课程实验记录" />
+    
+
+    
+    <meta name="description" content="Zephyr&#39;s blog">
+    <meta property="og:description" content="Zephyr&#39;s blog" />
+    <meta property="twitter:description" content="Zephyr&#39;s blog" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="Zephyr, Zephyr, Zephyr, , Zephyr的网络日志, Zephyr的博客, Zephyr Blog, 博客, 个人网站, 互联网, Web, CTF,">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>密码学课程实验记录 | Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
+
+    <link rel="canonical" href="/HITcrypto/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+ 
+ <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+        displayMath: [
+          ["$$", "$$"],
+          ["\\[", "\\]"],
+        ],
+        processEscapes: true,
+        processEnvironments: true,
+      },
+      options: {
+        skipHtmlTags: ["script", "noscript", "style", "textarea", "pre"],
+      },
+    };
+  
+    window.addEventListener("load", (event) => {
+      document.querySelectorAll("mjx-container").forEach(function (x) {
+        x.parentElement.classList += "has-jax";
+      });
+    });
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    type="text/javascript"
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+</head>
+<style>
+    code.has-jax {
+      -webkit-font-smoothing: antialiased;
+      background: inherit !important;
+      border: none !important;
+      font-size: 100%;
+    }
+    </style>
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">#3</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+                        <li><a href="/course//">HISTORY</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/hitmainbuild.png')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/course" title="Course">
+                            Course
+                        </a>
+                        
+                        <a class="tag" href="/tags/crypto" title="Crypto">
+                            Crypto
+                        </a>
+                        
+                    </div>
+                    <h1>密码学课程实验记录</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Zephyr
+                             
+                            on 
+                            Friday, May 10, 2024
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <p>根据2022培养方案，笔者在秋季学期学习了密码学课程，其中新增的实验颇有意思，记录其中的思考。您可以<a href="https://github.com/ZephyrVictor/cryptoLab">查看我的代码</a></p>
+<h1 id="密码学实验">密码学实验</h1>
+<h2 id="lab1">LAB1</h2>
+<p>如果使用ascii编码 一个字母和空格异或会改变大小写</p>
+<p>在ASCII编码中，字母和空格字符进行异或操作会改变字母的大小写，这是因为ASCII值之间的特定数学关系。</p>
+<p>ASCII码表中，大写字母A到Z的值从65到90，而小写字母a到z的值从97到122。你会注意到，任何一个大写字母与任何一个小写字母之间的差异恰好是32。空格字符的ASCII值是32，二进制表示为00100000。</p>
+<p>当你对一个字母字符进行异或操作，实际上是在对该字符的二进制表示进行操作。异或操作的规则是：如果两个比较的位不同，则结果为1；如果相同，则结果为0。所以，当你把一个字母与32进行异或操作时，只有第六位（从右往左数）会发生改变（0变1或1变0），因为32的二进制表示中只有第六位是1，其他都是0。这个改变恰好足以将大写字母转换为小写字母，或者将小写字母转换为大写字母。</p>
+<p>举个例子，字母**<code>A</code><strong>的ASCII值是65，二进制表示为</strong><code>01000001</code><strong>。字母</strong><code>a</code><strong>的ASCII值是97，二进制表示为</strong><code>01100001</code><strong>。你可以看到，它们只在第六位有差异。如果你对</strong><code>A</code><strong>（</strong><code>01000001</code><strong>）和空格（</strong><code>00100000</code><strong>）进行异或操作，结果是</strong><code>01100001</code><strong>，这恰好是</strong><code>a</code>**的ASCII编码。</p>
+<p>因此，一个字母和空格字符进行异或操作的结果是改变该字母的大小写，这一特性被广泛应用于密码学中，特别是在分析使用相同密钥加密多个明文的加密策略时。</p>
+<h2 id="一个many-time-pad-attack的思路">一个Many Time Pad Attack的思路</h2>
+<p><a href="https://crypto.stackexchange.com/questions/6020/how-to-attack-a-many-time-pad-based-on-what-happens-when-an-ascii-space-is-xor">stream cipher - How to attack a &ldquo;many-time pad&rdquo; based on what happens when an ASCII space is XORed with a letter? - Cryptography Stack Exchange</a></p>
+<h2 id="lab2">LAB2</h2>
+<h2 id="必要假设"><strong>必要假设</strong></h2>
+<p>整个实验，假设通信的双方已经同步了初始向量和所有秘钥。在实验过程中简化为将iv,key,以及mac等秘钥保存在key目录下，以模拟双方都同步了秘钥。</p>
+<p>本次实验主要是针对图片内容加密，因此不能对图片文件格式造成破坏以至于无法打开，同时针对密文的攻击也以对内容部分的攻击为主.</p>
+<p>假设敌手知道加密方案。（其实不知道也行，因为翻转密文的特定位也能被解密，也能看关系）</p>
+<h2 id="cpa加密"><strong>CPA加密</strong></h2>
+<p>采用OFB加密块加密方案。利用AES做为PRP，生成伪随机数，由于敌手无法预测初始向量的规律，因此随机数与真随机数的差异可忽略。</p>
+<p><strong>为了实验的封装性，将CPA和第三问的CCA封装成class，这样也便于写解密预言机</strong></p>
+<h3 id="实验思路"><strong>实验思路</strong></h3>
+<ol>
+<li>图片的选择</li>
+</ol>
+<p>我们都知道，所谓图片其实就是bytes矩阵，由于本次实验选择的图片带有颜色，因此选用颜色空间为RGB的png图片作为实验加解密主要对象。<code>python</code>中提供了相当多的图片处理库，常见的有<code>pillow</code>和<code>PIL</code>,本实验选择PIL</p>
+<pre tabindex="0"><code>from PIL import Image
+</code></pre><p>然后使用上下文来读取rgb三色空间</p>
+<pre tabindex="0"><code>with Image.open(input_path) as img:
+            r, g, b = img.split()
+</code></pre><p>这样，在整个上下文空间中，我们就有了<code>img</code>对象</p>
+<p>然后，利用<code>image</code>（因为这个便于后续做异或，以及slice，而且其实是作者用的比较熟悉（））</p>
+<pre tabindex="0"><code> r_processed = self._encrypt_schema(np.array(r, dtype=np.uint8).tobytes())
+ g_processed = self._encrypt_schema(np.array(g, dtype=np.uint8).tobytes())
+ b_processed = self._encrypt_schema(np.array(b, dtype=np.uint8).tobytes())
+</code></pre><p>这个解密 首先要在初始过程中设置好加解密器，</p>
+<pre tabindex="0"><code>def __init__(self, key_path=r&#34;lab2\key\key.bin&#34;, iv_path=r&#34;lab2\key\iv.bin&#34;):
+        # 生成或读取密钥和IV
+        if not os.path.exists(key_path) or not os.path.exists(iv_path):
+            self.key = os.urandom(32)  # AES-256要求的密钥长度
+            self.iv = os.urandom(16)   # OFB模式的IV大小
+            with open(key_path, &#34;wb&#34;) as key_file:
+                key_file.write(self.key)
+            with open(iv_path, &#34;wb&#34;) as iv_file:
+                iv_file.write(self.iv)
+            self.cipher = Cipher(algorithms.AES(self.key), modes.OFB(self.iv), backend=default_backend())
+        else:
+            with open(key_path, &#34;rb&#34;) as key_file:
+                self.key = key_file.read()
+            with open(iv_path, &#34;rb&#34;) as iv_file:
+                self.iv = iv_file.read()
+            self.cipher = Cipher(algorithms.AES(self.key), modes.OFB(self.iv), backend=default_backend())
+</code></pre><p>如图，利用<code>Cipher(algorithms.AES(self.key), modes.OFB(self.iv), backend=default_backend())</code>来创建一个对象，通过调用对象中的<code>encryptor = self.cipher.encryptor()</code>来创建加密器，<code>decryptor = self.cipher.decryptor()</code>来创建解密器，</p>
+<pre tabindex="0"><code>decryptor.update(image) + decryptor.finalize()
+</code></pre><p>在密码学中，特别是在使用对称加密算法如AES进行加密和解密时，<code>finalize</code>方法的作用是完成加解密过程的最后一步。这个方法通常在处理完所有的数据块后被调用，以确保所有的加密或解密操作都已经完成，包括处理任何剩余的数据（例如，在加密模式需要填充的情况下）以及执行必要的清理和状态重置。</p>
+<p>具体到<code>decryptor.update(image) + decryptor.finalize()</code>这个表达式，这是在使用一个加密库（如Python中的cryptography库）时，进行解密操作的典型步骤。这里，<code>decryptor</code>是一个解密器对象，它负责对密文进行解密操作。这个过程通常分为两步：</p>
+<ol>
+<li><strong>更新（update）</strong>: <code>decryptor.update(image)</code>这部分负责处理大部分的密文数据。<code>update</code>方法可以被多次调用，用于逐步处理密文。在流式加密或者需要分块处理大量数据的场景中，这允许数据被逐块处理，而不是一次性加载到内存中。</li>
+<li><strong>完成（finalize）</strong>: <code>decryptor.finalize()</code>这部分则标志着解密操作的结束。调用<code>finalize</code>方法以完成解密过程，处理可能的最后一个数据块，并且在某些情况下（如需要去除填充）进行必要的后处理。一旦调用了<code>finalize</code>方法，解密器对象通常就不能再被用于解密其他数据块。</li>
+</ol>
+<p>组合使用<code>update</code>和<code>finalize</code>方法提供了一种灵活处理加解密操作的方式，特别是在处理大量数据或者需要根据数据流动态加解密时。这种模式不仅适用于解密，同样适用于加密过程。</p>
+<p>这样，加密之后没有破坏png的原始结构，但是将png的内容进行隐藏。</p>
+<h2 id="对cpa加密利用cca攻击"><strong>对CPA加密，利用CCA攻击</strong></h2>
+<p>CPA类提供接口</p>
+<pre tabindex="0"><code>def _decrypt_schema(self, image):
+        decryptor = self.cipher.decryptor()
+        return decryptor.update(image) + decryptor.finalize()
+</code></pre><p>调用时仅需</p>
+<pre tabindex="0"><code>cca.encrypt_image(r&#39;lab2\img\微信图片_20240328235356.jpg&#39;, r&#39;lab2\img\avatarencCCA.png&#39;)
+</code></pre><p>可见，函数的参数仅仅就是图片的路径而已，因此IV和Key是被隐藏的。</p>
+<p>这也是将加密方案封装起来的原因，（因为在CCA攻击的代码下放着IV 和key总觉得不是很优雅），这样实现的Oracle为</p>
+<pre tabindex="0"><code>def decrypt_oracle(input_file, output_file):
+    cpa = CPA()
+    return cpa.decrypt_image(input_file, output_file)
+</code></pre><p>这就很优雅</p>
+<p>我们知道，在CCA敌手下，挑战过程中，敌手可以问oracle所有除了已知密文的所有密文，从而获得对应的明文， 由于上面的方案是CPA安全而不是CCA安全（密文没有不可锻造性），所以敌手可以通过篡改密文中的比特来让oracle给他解密，由于这是个图片，跟以前的实验仅仅是字符串不一样，单独解密一两个bit很难看出有什么端倪，因此反正敌手都这么强了，不如干票大的：</p>
+<p>将图片上半部分比特取反，然后解密，输出，再将下半部分比特取反，解密，然后将这两个图片下部分和上部分拼接，就得到了最终的明文。</p>
+<p>根据OFB的方案，我们将IV丢到F中，会得到一堆生成好的F的输出，然后和明文$m_x$异或。</p>
+<p>如果解密，采用同一个IV，那么F输出的那一堆向量不变，将篡改后的密文$c^&rsquo;_i$和结果异或，可以发现其实颜色被取反了（因为异或的输入有一个取反有一个不变，结果也相当于取反）。也能获得一些信息。但是其余没有篡改的部分会被正常解密，那那些部分就可以被利用起来。</p>
+<p>所以我们将这些部分拼凑起来就可以得到最终的明文。</p>
+<p>如果是CBC</p>
+<p>就可以</p>
+<ol>
+<li><strong>选择目标块</strong>：决定你想要修改的密文块。如果你修改第N个块的密文，那么这个修改会直接影响第N+1个块的明文（由于CBC的XOR特性）。</li>
+<li><strong>执行修改</strong>：执行实际的修改，比如可以通过XOR操作对选定的密文块中的一些位进行反转。</li>
+<li><strong>观察结果</strong>：解密修改后的密文，并观察如何影响明文。特别是观察被直接修改的块和其后一个块的变化。</li>
+</ol>
+<h2 id="cca加密方案"><strong>CCA加密方案</strong></h2>
+<p>CCA之所以能对CPA安全的加密方案进行攻击的主要原因是因为，加密方案在解密过程中无法得知，输入的密文是否已经被篡改。因此我们可以给方案加上一个验证，当发现密文被篡改了的时候，就抛出异常，由此我们想到最近学的MAC和CRHF。</p>
+<h3 id="png文件结构"><strong>PNG文件结构</strong></h3>
+<p><a href="https://blog.csdn.net/szzheng/article/details/105177740">https://blog.csdn.net/szzheng/article/details/105177740</a></p>
+<p>我们在对图片加密的时候，先利用PIL加载图片，在RGB三个通道下对内容进行加密，然后在对图片的内容做一个MAC，生成一个标签，然后将标签放在pnginfo上和生成的加密png一起保存。</p>
+<p>在解密的时候，我们首先对png的内容生成一个mac，然后提取出png文件特定位置的mac，对这两个mac做校验，如果mac不一致，那么就说明图片的内容被敌手篡改，否则验证通过，开始解密。</p>
+<pre tabindex="0"><code>def _add_mac_chunk(self, image, mac):
+        metadata = PngImagePlugin.PngInfo()
+        metadata.add_text(&#34;MAC&#34;, mac.hex())
+        image.save(&#34;temp.png&#34;, pnginfo=metadata)
+        return Image.open(&#34;temp.png&#34;)
+
+def _get_mac_from_chunk(self, image):
+    metadata = image.info
+    return bytes.fromhex(metadata.get(&#34;MAC&#34;, &#34;&#34;))
+
+def _generate_image_mac(self, image_data):
+        # 生成图像内容的 MAC
+        h = hmac.new(self.mac_key, msg=image_data, digestmod=hashlib.sha256)
+        return h.digest()
+</code></pre><h2 id="lab3">Lab3</h2>
+<h2 id="针对rsa的一些攻击的文章链接">针对RSA的一些攻击的文章链接</h2>
+<p><a href="https://www.packetmania.net/2020/12/01/RSA-attack-defense/">RSA的攻与防（一） | 网络热度 (packetmania.net)</a></p>
+<p><a href="https://paper.seebug.org/727/">二十年以来对 RSA 密码系统攻击综述 (seebug.org)</a></p>
+<h2 id="lab4">Lab4</h2>
+<p>TLS1.3协议</p>
+<p><a href="https://www.cnblogs.com/informatics/p/17545403.html">https://www.cnblogs.com/informatics/p/17545403.html</a></p>
+<p>WireShark</p>
+<p><a href="https://blog.csdn.net/zzwwhhpp/article/details/113077747?spm=1001.2014.3001.5506">https://blog.csdn.net/zzwwhhpp/article/details/113077747?spm=1001.2014.3001.5506</a></p>
+<h1 id="hit2024-密码学期末考试掠影">HIT·2024 密码学期末考试掠影</h1>
+<p>期末考试中，原题数量依然不少,但是对于每个实验都进行了考察，因此复习时应当注意。
+笔者印象深刻的是：</p>
+<ol>
+<li>X509证书中，_______字段代表自己的域名</li>
+<li>在实验三中，你如何确定<code>p</code>和<code>q</code>因子。</li>
+<li>在实验二中，你是用的________方案实现的CCA安全。
+此外，最后一道大题是简述TLS协议及配置证书的整个过程。</li>
+</ol>
+
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/shellcode/" data-toggle="tooltip" data-placement="top" title="pwn.college shellcode篇writeup">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/HITcryptomath/" data-toggle="tooltip" data-placement="top" title="密码学中数论知识的总结">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+
+                
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/course" title="course">
+                            course
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/crypto" title="crypto">
+                            crypto
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ctf" title="ctf">
+                            ctf
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/notebook" title="notebook">
+                            notebook
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/pwn" title="pwn">
+                            pwn
+                        </a>
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:empire258700@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/ZephyrVictor">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="#3" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; #3 2024
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>

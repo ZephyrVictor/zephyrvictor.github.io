@@ -34,9 +34,9 @@
     <meta name="keyword"  content="Zephyr, Zephyr, Zephyr, , Zephyr的网络日志, Zephyr的博客, Zephyr Blog, 博客, 个人网站, 互联网, Web, CTF,">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>Searches | Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
+    <title>Crypto | Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
 
-    <link rel="canonical" href="/search/">
+    <link rel="canonical" href="/tags/crypto/">
 
     
     
@@ -177,7 +177,8 @@
 
 
 
-<div class="container">
+  
+<div data-pagefind-ignore="all" class="container">
     <div class="row">
         
         
@@ -188,117 +189,61 @@
             col-xs-12
             post-container
         ">
-        
             
-<script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.6.0/dist/instantsearch.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.6.0/dist/instantsearch.min.css">
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.6.0/dist/instantsearch-theme-algolia.min.css">
+<div data-pagefind-ignore="all">
 
-<div id="search-searchbar"></div>
- <div class="post-list" id="search-hits">
- </div>
-
-<script>
-const search = instantsearch({
-  appId: '',
-  indexName: '',
-  apiKey: ''
-});
-
-const hitTemplate = function(hit) {
-
-
-  let date = '';
-  if (hit.date) {
-    date = moment.unix(hit.date).format('MMM D, YYYY');
-  }
-  let url = `${hit.url}#${hit.anchor}`;
-  const title = hit._highlightResult.title.value;
-
-  let breadcrumbs = '';
-  if (hit._highlightResult.headings) {
-    breadcrumbs = hit._highlightResult.headings.map(match => {
-      return `<span class="post-breadcrumb">${match.value}</span>`
-    }).join(' > ')
-  }
-
-  let content = "" ; 
-  if (hit._highlightResult.content){
-      content = hit._highlightResult.content.value;
-  }
-  else{
-      content = hit.summary;
-  }
-
-
-  return `
-    <div class="post-item">
-      <span class="post-meta">${date}</span>
-      <h2><a class="post-link" href="${url}">${title}</a></h2>
-      <a href="${url}" class="post-breadcrumbs">${breadcrumbs}</a>
-      <div class="post-snippet">${content}</div>
-    </div>
-  `;
-}
-
-
-search.addWidget(
-  instantsearch.widgets.searchBox({
-    container: '#search-searchbar',
-    placeholder: 'Search into posts...',
-    poweredBy: true 
-  })
-);
-
-search.addWidget(
-  instantsearch.widgets.hits({
-    container: '#search-hits',
-    templates: {
-      item: hitTemplate
-    }
-  })
-);
-
-search.start();
-</script>
-
-<style>
-.ais-search-box {
-  max-width: 100%;
-  margin-bottom: 15px;
-}
-.post-item {
-  margin-bottom: 30px;
-}
-.post-link .ais-Highlight {
-  color: #111;
-  font-style: normal;
-  text-decoration: underline;
-}
-.post-breadcrumbs {
-  color: #424242;
-  display: block;
-}
-.post-breadcrumb {
-  font-size: 18px;
-  color: #424242;
-}
-.post-breadcrumb .ais-Highlight {
-  font-weight: bold;
-  font-style: normal;
-}
-.post-snippet .ais-Highlight {
-  color: #2a7ae2;
-  font-style: normal;
-  font-weight: bold;
-}
-.post-snippet img {
-  display: none;
-}
-</style>
-
+<div class="post-preview">
+    <a href="https://zephyr369.online/HITcryptomath/">
+        <h2 class="post-title">
+            密码学中数论知识的总结
+        </h2>
+	
+        <div class="post-content-preview">
+	
+            数论部分 质数与模算术 整数集合 $\mathbb{Z}$, $a,b,c \in \mathbb{Z}$。 $a$ 整除 $b$: $a \mid b$ 如果 $\exists c, ac=b$ (否则 $a \nmid b$). $b$ 是 $a$ 的倍数。如果 $a \notin {1,b}$，那么 $a$ 是 $b$
+       
+        </div>
+    </a>
+    <p class="post-meta">
+    
+        Posted by Zephyr on Monday, May 20, 2024
         
+        
+    
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="https://zephyr369.online/HITcrypto/">
+        <h2 class="post-title">
+            密码学课程实验记录
+        </h2>
+	
+        <div class="post-content-preview">
+	
+            根据2022培养方案，笔者在秋季学期学习了密码学课程，其中新增的实验颇有意思，记录其中的思考。您可以查看我的代码 密码学实验 LAB1 如果使用asci
+       
+        </div>
+    </a>
+    <p class="post-meta">
+    
+        Posted by Zephyr on Friday, May 10, 2024
+        
+        
+    
+    </p>
+
+</div>
+<hr>
+
+</div>
+
+            
+
+
+
        	</div>
         
 
@@ -426,6 +371,8 @@ search.start();
 
 
 
+
+
 <footer>
     <div class="container">
         <div class="row">
@@ -472,7 +419,7 @@ search.start();
             
            
                    <li>
-                       <a href='/search/index.xml' rel="alternate" type="application/rss+xml" title="#3" >
+                       <a href='/tags/crypto/index.xml' rel="alternate" type="application/rss+xml" title="#3" >
                            <span class="fa-stack fa-lg">
                                <i class="fas fa-circle fa-stack-2x"></i>
                                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>

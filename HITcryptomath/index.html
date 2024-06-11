@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="#3">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="img/hitmainbuild.png">
+    <meta property="twitter:image" content="img/hitmainbuild.png" />
+    
+
+    
+    <meta name="title" content="密码学中数论知识的总结" />
+    <meta property="og:title" content="密码学中数论知识的总结" />
+    <meta property="twitter:title" content="密码学中数论知识的总结" />
+    
+
+    
+    <meta name="description" content="Zephyr&#39;s blog">
+    <meta property="og:description" content="Zephyr&#39;s blog" />
+    <meta property="twitter:description" content="Zephyr&#39;s blog" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="Zephyr, Zephyr, Zephyr, , Zephyr的网络日志, Zephyr的博客, Zephyr Blog, 博客, 个人网站, 互联网, Web, CTF,">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>密码学中数论知识的总结 | Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
+
+    <link rel="canonical" href="/HITcryptomath/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+ 
+ <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+        displayMath: [
+          ["$$", "$$"],
+          ["\\[", "\\]"],
+        ],
+        processEscapes: true,
+        processEnvironments: true,
+      },
+      options: {
+        skipHtmlTags: ["script", "noscript", "style", "textarea", "pre"],
+      },
+    };
+  
+    window.addEventListener("load", (event) => {
+      document.querySelectorAll("mjx-container").forEach(function (x) {
+        x.parentElement.classList += "has-jax";
+      });
+    });
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    type="text/javascript"
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+</head>
+<style>
+    code.has-jax {
+      -webkit-font-smoothing: antialiased;
+      background: inherit !important;
+      border: none !important;
+      font-size: 100%;
+    }
+    </style>
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">#3</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+                        <li><a href="/course//">HISTORY</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/hitmainbuild.png')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/course" title="Course">
+                            Course
+                        </a>
+                        
+                        <a class="tag" href="/tags/crypto" title="Crypto">
+                            Crypto
+                        </a>
+                        
+                    </div>
+                    <h1>密码学中数论知识的总结</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Zephyr
+                             
+                            on 
+                            Monday, May 20, 2024
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h1 id="数论部分">数论部分</h1>
+<h2 id="质数与模算术">质数与模算术</h2>
+<ul>
+<li>
+<p>整数集合 $\mathbb{Z}$, $a,b,c \in \mathbb{Z}$。</p>
+</li>
+<li>
+<p>$a$ 整除 $b$: $a \mid b$ 如果 $\exists c, ac=b$ (否则 $a \nmid b$). $b$ 是 $a$ 的倍数。如果 $a \notin {1,b}$，那么 $a$ 是 $b$ 的因子。</p>
+</li>
+<li>
+<p>$p &gt; 1$ 是质数（素数），如果其没有因子；否则，是合数。</p>
+</li>
+<li>
+<p>$\forall a,b$, $\exists$ 商 $q$, 余数 $r$: $a=qb+r$, 且 $0\le r &lt; b$。</p>
+</li>
+<li>
+<p>最大公因子 $\gcd(a,b)$ 是最大的整数 $c$ 使得 $c\mid a$ 且 $c\mid b$。 $\gcd(0,b)=b$, $\gcd(0,0)$未定义。</p>
+</li>
+<li>
+<p>$a$ 和 $b$ 是互质，如果 $\gcd(a,b)=1$。</p>
+</li>
+<li>
+<p>余数 $r= [a\bmod N] = a - b\lfloor a/b\rfloor $ 并且 $r&lt;N$. $N$ 称为模。</p>
+</li>
+<li>
+<p>$\mathbb{Z}_N = {0,1,\dots,N-1} = {a \bmod N | a \in \mathbb{Z}}$.</p>
+</li>
+<li>
+<p>$a$ 是模 $N$ 下可逆的$\iff \gcd(a,N) = 1$。如果 $ab \equiv 1 \pmod N$，那么 $b=a^{-1}$是模 $N$ 下 $a$ 的乘法逆。</p>
+</li>
+<li>
+<p>欧几里德算法（辗转相除法）： $\gcd(a,b) = \gcd(b, [a \bmod b]).$</p>
+<ul>
+<li>
+<p>$\gcd(12, 27)$</p>
+</li>
+<li>
+<p>扩展欧几里德算法：给定 $a,N$，寻找 $X,Y$ 使得 $Xa+YN = \gcd(a,N)$ （贝祖定理）</p>
+<ul>
+<li>
+<p>例子，求11 (mod 17)下的逆元，$a = 11$，$N = 17$，$Xa + YN = r$</p>
+<pre tabindex="0"><code>               r     X    Y  m
+               17    0    1
+               11    1    0  1
+                6   -1    1  1
+                5    2   -1  1
+                1   -3    2   
+</code></pre></li>
+</ul>
+</li>
+<li>
+<p>求余然后相加/乘</p>
+<ul>
+<li>计算 $193028 \cdot 190301 \bmod 100$</li>
+</ul>
+</li>
+<li>
+<p>消去律：如果 $\gcd(a,N)=1$ 且 $ab \equiv ac \pmod N$，那么 $b \equiv c \pmod N$.</p>
+<ul>
+<li>$a=3, c=10, b=2, N=24$</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="欧拉函数phi">欧拉函数$\phi$</h2>
+<ul>
+<li>欧拉phi函数：$\phi(N) \overset{\text{def}}{=} |\mathbb{Z}_N^*|$. <em>注：整数乘法群的阶</em>
+<ul>
+<li>算法基本定理：$N = \prod_ip_i^{e_i}$ , ${p_i}$ 是不同的质数， $\phi(N) = \prod_ip_i^{e_i-1}(p_i-1)$。</li>
+<li>例题：$N=pq$ 其中 $p,q$ 是不同质数。$\phi(N)=?$ $\phi(12)=?$ $\phi(30)=?$</li>
+<li>欧拉定理与费马小定理：$a \in \mathbb{Z}_N^*$. $a^{\phi (N)} \equiv 1 \pmod N$. <em>注：前面证明过</em></li>
+<li>如果 $p$ 是质数并且 $a \in {1,\dotsc,p-1}$，那么 $a^{p-1} \equiv 1 \pmod p$. <em>注：因为质数$p$乘法群的阶为$p-1$</em></li>
+<li>例题：$3^{43} \bmod 49 = ?$</li>
+</ul>
+</li>
+</ul>
+<h2 id="整数分解是一个难问题">整数分解是一个难问题</h2>
+<ul>
+<li>分解 $N=pq$. $p,q$ 长度相同为 $n$.
+<ul>
+<li>尝试分解: $\mathcal{O}(\sqrt{N}\cdot \mathsf{polylog}(N))$.</li>
+<li>Pollard&rsquo;s $p-1$ 方法: 当 $p-1$ 具有小质数因子时有效。</li>
+<li>Pollard&rsquo;s rho 方法: $\mathcal{O}(N^{1/4}\cdot \mathsf{polylog}(N))$.</li>
+<li>二次筛法 [Carl Pomerance]: 亚指数时间 $\mathcal{O}(\exp(\sqrt{n\cdot \log n}))$.</li>
+<li>已知最优算法为通用数域筛法 [Pollard]：$\mathcal{O}(\exp(n^{1/3}\cdot(\log n)^{2/3}))$.</li>
+</ul>
+</li>
+</ul>
+<h2 id="rsa问题是一个难问题">RSA问题是一个难问题</h2>
+<ul>
+<li>
+<p>思路：分解难 $\implies$ 对于 $N=pq$, 找到 $p,q$ 难 $\implies$ 计算 $\phi(N)=(p-1)(q-1)$ 难</p>
+<pre><code>$\implies$ 无法模 $\phi(N)$ 计算
+
+$\implies$ 计算 $e^{-1} \bmod \phi(N)$ 难
+
+**这里存在一段空白**
+
+$\implies$ RSA 问题难：给定 $y \in \mathbb{Z}^*_N$, 计算 $y^{-e}$ modulo $N$.
+</code></pre>
+</li>
+</ul>
+<h2 id="rsa共模攻击">RSA共模攻击</h2>
+<ul>
+<li>共模攻击使用相同的模数 $N$.
+<ul>
+<li>情况1：多个用户带有自己的密钥。每个用户可以以自己的 $e,d$ 计算 $\phi(N)$ ，然后找到其他人的  $d$.</li>
+<li>情况2：用两个公钥为同一个消息加密。
+<ul>
+<li>假设 $\gcd(e_1,e_2)=1$, $c_1 \equiv m^{e_1}$ and $c_2 \equiv m^{e_2} \pmod N$. $\exists X,Y$ 使得 $Xe_1 + Ye_2 = 1$ （贝祖定理）.</li>
+<li>$ c_1^X\cdot c_2^Y \equiv m^{Xe_1}m^{Ye_2} \equiv m^1 \pmod N. $</li>
+<li>$N = 15, e_{1} = 3, e_{2} = 5, c_{1} = 8, c_{2} = 2, m = ?$</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="群论">群论</h1>
+<h2 id="mathbbz_n-群">$\mathbb{Z}_N^*$ 群</h2>
+<ul>
+<li>$ \mathbb{Z}_N^* \overset{\text{def}}{=} {a \in {1,\dotsc,N-1 } | \gcd(a,N) = 1} $
+<ul>
+<li>群是一个集合 $\mathbb{G}$ 带有一个二元操作 $\circ$:
+<ul>
+<li>闭包： $\forall g,h \in \mathbb{G}$, $g \circ h \in \mathbb{G}$.</li>
+<li>单位元： $\exists$ 单位元 $e\in \mathbb{G}$ 使得 $\forall g\in \mathbb{G}, e \circ g = g = g \circ e$.</li>
+<li>逆元： $\forall g \in G$, $\exists; h \in \mathbb{G}$ 使得 $g \circ h =e = h \circ g$. $h$ 是 $g$ 的逆元.</li>
+<li>结合律：$\forall g_1,g_2,g_3 \in \mathbb{G}$, $(g_1\circ g_2)\circ g_3 = g_1 \circ (g_2 \circ g_3)$.</li>
+</ul>
+</li>
+<li>$\mathbb{G}$ with $\circ$ 是阿贝尔群，如果有交换律：$\forall g,h \in \mathbb{G}, g\circ h = h\circ g$.</li>
+<li>逆元的存在意味着消去律</li>
+<li>当 $\mathbb{G}$ 是有限群，$| \mathbb{G}|$ 是群的阶。</li>
+<li>问题： $\mathbb{Z}<em>N^<em>$ 是乘法下的群吗？ $\mathbb{Z}<em>N$ 在乘法下呢？ $\mathbb{Z}</em>{15}^</em> = ?$   $\mathbb{Z}</em>{13}^* = ?$</li>
+</ul>
+</li>
+</ul>
+<h2 id="群指数群的阶数">群指数（群的阶数）</h2>
+<ul>
+<li>$ g^m \overset{\text{def}}{=} \underbrace{g\circ g\circ \cdots \circ g}_{m; \text{times}}. $
+<ul>
+<li>欧拉定理：$\mathbb{G}$ 是有限群。那么， $\forall g \in \mathbb{G}, g^{|\mathbb{G}|}=1$.</li>
+<li>注：课上证明，将群中每个元素与 $g$ 相乘后连乘等于群中元素连乘。</li>
+<li>例子：计算 $3 \in \mathbb{Z}_{7}^*$ 的所有幂。</li>
+<li>费马小定理：$\forall g \in \mathbb{G}$ and $i$, $g^i \equiv g^{[i \bmod {|\mathbb{G}|}]}$.</li>
+<li>注：这是欧拉定理的推论。</li>
+<li>例子：计算 $3^{78} \in \mathbb{Z}_{7}^*$</li>
+</ul>
+</li>
+</ul>
+<h2 id="基于群指数的排列">基于群指数的排列</h2>
+<ul>
+<li>指数函数 $f_e;:$ $\mathbb{Z}^<em>_N \to \mathbb{Z}^</em>_N$ by $f_e(x) =[x^e \bmod N]$.
+<ul>
+<li>对指数函数求逆：$y$ 的 $e$ 次方根: $x^e \equiv y$, $x \equiv y^{1/e}$.</li>
+<li>推论：如果 $\gcd(e,\phi(N))=1$，那么 $f_e$ 是排列。</li>
+<li>证明：令 $d = [e^{-1} \bmod \phi(N)]$，那么 $f_d$ 是 $f_e$ 的逆函数。$y \equiv x^{e};\quad f_{d}(y) \equiv y^d \equiv x^{ed} \equiv x$.</li>
+<li>例题：在 $\mathbb{Z}^*<em>{10}$ 中, $e = 3,\ d = ?,\ f</em>{e}(3) = ?,\ f_{d}(f_{e}(3)) = ?,\ 9^{\frac{1}{3}} = ?$</li>
+<li>问题：如果对于某些特别的$N$无法计算 $\phi(N)$ ，那么会如何？如果不能分解 $N$ 呢?</li>
+</ul>
+</li>
+</ul>
+<h2 id="循环群与生成元">循环群与生成元</h2>
+<ul>
+<li>$\mathbb{G}$ 是一个群并且一个元素 $g \in \mathbb{G}$通过运算生成一个子群 $ \langle g \rangle \overset{\text{def}}{=} { g^0,g^1,\dotsc,} = { g^0,g^1,\dotsc, g^{i-1}}$。
+<ul>
+<li>$g$ 的阶是最小的正整数 $i$ 令 $g^i=1$。</li>
+<li>$\mathbb{G}$ 是一个循环群（cyclic group）如果 $\exists;g$ 有阶 $m = |\mathbb{G}|$. $\langle g \rangle = \mathbb{G}$, $g$ 是 $\mathbb{G}$ 的生成元。注：循环群中存在一个元素通过指数运算可生成整个群中每个元素。</li>
+<li>例题： 乘法下的$\mathbb{Z}_6^<em>$, $\mathbb{Z}_7^</em>$,或 $\mathbb{Z}_8^*$ 是循环群吗? 找到生成元。</li>
+</ul>
+</li>
+</ul>
+<h2 id="离散对数难题">离散对数难题</h2>
+<ul>
+<li>如果 $\mathbb{G}$ 是阶为 $q$ 的循环群，那么 $\exists$ 生成元 $g \in \mathbb{G}$ 使得 ${ g^0,g^1,\dotsc,g^{q-1}} = \mathbb{G}$。
+<ul>
+<li>$\forall h \in \mathbb{G}$, $\exists$ 唯一的 $x \in \mathbb{Z}_q$ 使得 $g^x = h$。</li>
+<li>$x= \log_gh$ 是以$g$为底$h$的离散对数（discrete logarithm）。</li>
+<li>如果 $g^{x&rsquo;}=h$, 那么 $\log_gh = [x&rsquo; \bmod q]$。</li>
+<li>$\log_g1=0$ 并且 $\log_g(h_1\cdot h_2) = [(\log_gh_1+\log_gh_2) \bmod q]$。</li>
+</ul>
+</li>
+</ul>
+<h2 id="离散对数算法">离散对数算法</h2>
+<ul>
+<li>给定一个生成元 $g \in \mathbb{G}$ 并且 $y \in \langle g \rangle$，求 $x$ 使得 $g^x=y$.
+<ul>
+<li>蛮力： $\mathcal{O}(q)$, $q = \mathsf{ord}(g)$ 是 $\langle g\rangle$ 的阶。</li>
+<li>Baby-step/giant-step [Shanks]: $\mathcal{O}(\sqrt{q}\cdot \mathsf{polylog}(q))$.</li>
+<li>Pohlig-Hellman算法：当 $q$ 有较小因子。</li>
+<li>Index calculus 法: $\mathcal{O}(\exp{(\sqrt{n\cdot \log n})})$.</li>
+<li>已知最好的算法是通用数域筛法：$\mathcal{O}(\exp(n^{1/3}\cdot(\log n)^{2/3}))$.</li>
+<li>椭圆曲线群 vs. $\mathbb{Z}_p^<em>$: 在保证安全性相同的同时，更高效。(1024-bit $\mathbb{Z}_p^</em>$ 和 132-bit 椭圆曲线都需要 $2^{66}$ 步来破解。)</li>
+</ul>
+</li>
+</ul>
+<h2 id="质数阶群">质数阶群</h2>
+<ul>
+<li>定理：如果 $\mathbb{G}$ 是质数阶，那么 $\mathbb{G}$ 是循环群。除单位元外，所有 $g \in \mathbb{G}$  是生成元。
+<ul>
+<li>根据拉格朗日定理，任意元素的阶都等于群的阶。</li>
+<li><strong>拉格朗日定理</strong>：子群阶可以整除群阶。$\langle g \rangle$ 是 $\mathbb{G}$ 子群，并且 $|\langle g \rangle| \mid |\mathbb{G}|$。
+<ul>
+<li>思路：由一个子群可以派生覆盖了整个群的若干子集，这些子集的阶与子群相同，并且这些子集彼此不相交。</li>
+<li>设群$\mathbb{G}$的子群$H$，陪集（coset）$gH$（$g$和$H$中每个元素$h$运算构成的集合）和子群$H$的阶相同。</li>
+<li>子群的任意两个陪集$g_1H$和$g_2H$。
+<ul>
+<li>或者相同，如果$g_1^{-1}g_2 \in H$。$g_1(g_1^{-1}g_2 )h \in g_1H$，$g_2h \in g_1H$。</li>
+<li>或者没有交集，如果$g_1^{-1}g_2 \notin H$。采用反证法，如果有交集，则$g_1h_1 = g_2h_2$，$g_1^{-1}g_2 = h_1h_2^{-1} \in H$，矛盾。</li>
+</ul>
+</li>
+<li>因此，群可以划分为任意子群的若干不相交陪集，每个陪集阶相同，群的阶就是子群的整数倍。</li>
+<li>推荐参考：https://brilliant.org/wiki/lagranges-theorem/</li>
+</ul>
+</li>
+<li>离散对数问题在质数阶群上是最难的。</li>
+<li>在质数阶群上找一个生成元很简单。</li>
+<li>任何非零指数在以质数阶为模下都可逆。</li>
+<li>DDH问题是难题的必要条件是 $\mathsf{DH}_g(h_1,h_2)$ 与群中随机元素之间是不可区分的。在质数阶群上这基本成立。</li>
+</ul>
+</li>
+</ul>
+<h2 id="dh秘钥交换protocol">DH秘钥交换protocol</h2>
+<ul>
+<li>$\widehat{\mathsf{KE}}^{\mathsf{eav}}_{\mathcal{A},\Pi}$ 表示一个实验，其中如果 $b=0$ ，敌手被给予 $\hat{k} \gets \mathbb{G}$。
+<ul>
+<li>定理：如果DDH问题与$\mathcal{G}$相关是难的，那么DH 密钥交换协议 $\Pi$ 在出现窃听者时是安全的 (对应改动的实验 $\widehat{\mathsf{KE}}^{\mathsf{eav}}_{\mathcal{A},\Pi}$)。</li>
+<li>不安全性：在主动的敌手，中间人，攻击下是不安全的 (Man-In-The-Middle)。敌手在中间与双方分别通信，通信双方无法发现在与敌手通信，敌手可以与双方分别协商出密钥。</li>
+</ul>
+</li>
+</ul>
+<p>证明如下：</p>
+<ul>
+<li>$\Pr \left[ \widehat{\mathsf{KE}}^{\mathsf{eav}}<em>{\mathcal{A},\Pi} =1\right] $ $= \frac{1}{2}\cdot \Pr\left[ \widehat{\mathsf{KE}}^{\mathsf{eav}}</em>{\mathcal{A},\Pi} =1 | b=1\right] + \frac{1}{2}\cdot \Pr\left[ \widehat{\mathsf{KE}}^{\mathsf{eav}}_{\mathcal{A},\Pi} =1 | b=0\right] $
+<ul>
+<li>如果 $b=1$, 那么给真密钥；否则给随机的  $g^z$.</li>
+<li>$= \frac{1}{2}\cdot \Pr\left[ \mathcal{A}(g^x,g^y,g^{xy})=1 \right] + \frac{1}{2}\cdot \Pr\left[ \mathcal{A}(g^x,g^y,g^z)=0 \right] $</li>
+<li>$= \frac{1}{2}\cdot \Pr\left[ \mathcal{A}(g^x,g^y,g^{xy})=1 \right] + \frac{1}{2}\cdot (1-\Pr\left[ \mathcal{A}(g^x,g^y,g^z)=1 \right]) $</li>
+<li>$= \frac{1}{2} + \frac{1}{2}\cdot \left( \Pr\left[ \mathcal{A}(g^x,g^y,g^{xy})=1 \right] - \Pr\left[ \mathcal{A}(g^x,g^y,g^z)=1 \right] \right) $</li>
+<li>$ \le \frac{1}{2} + \frac{1}{2}\cdot \mathsf{negl}(n) %\left| \Pr\left[ \mathcal{A}(g^x,g^y,g^{xy})=1 \right] - \Pr\left[ \mathcal{A}(g^x,g^y,g^z)=1 \right] \right| $</li>
+</ul>
+</li>
+</ul>
+
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/HITcrypto/" data-toggle="tooltip" data-placement="top" title="密码学课程实验记录">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/pwngdbheapinstrcution/" data-toggle="tooltip" data-placement="top" title="Pwngdb·堆指令笔记">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+
+                
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/course" title="course">
+                            course
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/crypto" title="crypto">
+                            crypto
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ctf" title="ctf">
+                            ctf
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/notebook" title="notebook">
+                            notebook
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/pwn" title="pwn">
+                            pwn
+                        </a>
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:empire258700@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/ZephyrVictor">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="#3" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; #3 2024
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>

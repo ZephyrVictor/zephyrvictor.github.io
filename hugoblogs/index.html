@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="#3">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="img/cover.jpg">
+    <meta property="twitter:image" content="img/cover.jpg" />
+    
+
+    
+    <meta name="title" content="hugoblog搭建记录" />
+    <meta property="og:title" content="hugoblog搭建记录" />
+    <meta property="twitter:title" content="hugoblog搭建记录" />
+    
+
+    
+    <meta name="description" content="关于从0选择静态博客框架，从Ghost&#43;Buster到Ghost&#43;Gatsby再到hugoblog，设置主题，二次优化，问题排查过程的个人笔记">
+    <meta property="og:description" content="关于从0选择静态博客框架，从Ghost&#43;Buster到Ghost&#43;Gatsby再到hugoblog，设置主题，二次优化，问题排查过程的个人笔记" />
+    <meta property="twitter:description" content="关于从0选择静态博客框架，从Ghost&#43;Buster到Ghost&#43;Gatsby再到hugoblog，设置主题，二次优化，问题排查过程的个人笔记" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="Zephyr, Zephyr, Zephyr, , Zephyr的网络日志, Zephyr的博客, Zephyr Blog, 博客, 个人网站, 互联网, Web, CTF,">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>hugoblog搭建记录 | Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
+
+    <link rel="canonical" href="/hugoblogs/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+ 
+ <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+        displayMath: [
+          ["$$", "$$"],
+          ["\\[", "\\]"],
+        ],
+        processEscapes: true,
+        processEnvironments: true,
+      },
+      options: {
+        skipHtmlTags: ["script", "noscript", "style", "textarea", "pre"],
+      },
+    };
+  
+    window.addEventListener("load", (event) => {
+      document.querySelectorAll("mjx-container").forEach(function (x) {
+        x.parentElement.classList += "has-jax";
+      });
+    });
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    type="text/javascript"
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+</head>
+<style>
+    code.has-jax {
+      -webkit-font-smoothing: antialiased;
+      background: inherit !important;
+      border: none !important;
+      font-size: 100%;
+    }
+    </style>
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">#3</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+                        <li><a href="/course//">HISTORY</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/cover.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/notebook" title="notebook">
+                            notebook
+                        </a>
+                        
+                        <a class="tag" href="/tags/blog" title="blog">
+                            blog
+                        </a>
+                        
+                    </div>
+                    <h1>hugoblog搭建记录</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Zephyr
+                             
+                            on 
+                            Tuesday, June 11, 2024
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h1 id="需求分析">需求分析</h1>
+<p>感慨到自从修读计算机专业以来，在感受ChatGpt应付水课的完美能力之余，笔者深感长篇幅语言表达能力渐渐退化，于是便萌生放一个博客的想法来充当自己的笔记仓库。</p>
+<p>本学期开始，课程实验需要，笔者购买了3个月腾讯云ECS，并根据要求注册了域名，配置了证书。在当时利用业余时间，笔者从WordPress折腾到Ghost，再到后来自己尝试开发一些必要的组件以更好地支持latex公式展示和编辑，让被学校占满的课余时间多了些真正有用的事情。后来由于朋友请求，笔者服务器主要用来挂载创新项目的展示网站以及部署Minecraft服务器（千万不要用境外的节点服务器来搭建游戏服务器！）</p>
+<p>随着服务器到期，笔者重新审视了自己的需求，长时间供养一个哪怕月均10元的阿里云服务器对于一个吝啬的我来说都是不必要的，因此将博客移植到githubpage上，笔者重新进行了简单的需求分析：</p>
+<ol>
+<li>系统仅为一个静态界面，展示静态内容。</li>
+<li>系统能够支持markdown编辑，支持全部Latex公式的渲染。</li>
+<li>文章更新应当尽可能方便甚至无感。</li>
+<li>应当能够支持bilibili,youtube，本地视频的嵌入。</li>
+</ol>
+<hr>
+<h1 id="githubpage申请">GithubPage申请</h1>
+<p>笔者最初使用的是Ghost+Buster的方式，在本地起一个ghost服务，利用buster将界面保存为静态，然后上传到Github来部署。
+创建一个public仓库，命名为 <a href="https://github.com/ZephyrVictor/zephyr.github.io?ref=localhost"><code>zephyr.github.io</code></a>然后记录下仓库远程url。创建page的仓库名必须为用户名.github.io。</p>
+<p>GithubPage提供了许多方便的模板，您可以根据需要部署自己的page，但我们的目的是利用github托管基于Ghost搭建的博客，故先不进行page的设置。</p>
+<h2 id="ghostbuster阶段">Ghost+Buster阶段</h2>
+<p>由于buster不支持python3，因此首先需要<code>sudo apt install pip2</code>，然后安装ghost，配置ghost，反反复复若干次，仍然无法解决解决图片的导入问题</p>
+<blockquote>
+</blockquote>
+<p>笔者发现在githubpage的仓库中，一个后缀为.jpg的文件会被正确保存，但是真正浏览界面的时候，会发现浏览器请求的会是&lt;文件名.jpgjpg&gt;。</p>
+<blockquote>
+</blockquote>
+<p>反复修改<code>deploy.sh</code>的脚本后无果，遂放弃。</p>
+<h2 id="ghostgatsby阶段">Ghost+Gatsby阶段</h2>
+<p>Ghost+Gatsby阶段来源于<a href="https://github.com/tryghost/gatsby-starter-ghost">这个项目</a>,其思路可以简单认为是一个前后端分离的项目，我们将前端项目保存下来，然后push到github的仓库中进行部署。笔者在尝试后依然没有解决前面的问题，遂放弃。</p>
+<blockquote>
+</blockquote>
+<p>期间在运行<code>gatsby develop</code>过程中，文件过多，超过了linux的文件描述符限制，解决办法是增加<code>inotify</code>文件监视器的限制,编辑<code>/etc/sysctl.conf</code>文件，修改<code>fs.inotify.max_user_watches=524288</code>，再次运行<code>gatsby develop</code>，正常运行。</p>
+<blockquote>
+</blockquote>
+<h2 id="hugogithubpage阶段">Hugo+GithubPage阶段</h2>
+<p>首先前往<a href="https://github.com/gohugoio/hugo/releases">hugo仓库</a>下载最新的windows extend版本
+
+  <img src="image.png" alt="下载hugo_extended_0.127.0_windows-amd64.zip">
+
+
+然后在windows的环境变量中添加hugo.exe的路径。新建一个用于存放自己博客的文件夹
+然后运行<code>hugo new site &lt;yoursitename&gt;</code>初始化一个site，然后根据提示，可以自己安装主题或者自己写主题。
+再一切都准备好后，我们可以使用<code>hugo new &lt;yourfilefolder&gt;/文章标题.md</code>来创建一个新的文章，其中在<code>archetypes</code>定义了自己主题应该有的模板文件<code>default.md</code>,以我的主题为例</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-markdown" data-lang="markdown"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>layout:     post 
+</span></span><span style="display:flex;"><span>title:      &#34;hugoblog搭建记录&#34;
+</span></span><span style="display:flex;"><span>subtitle:   &#34;&#34;
+</span></span><span style="display:flex;"><span>description: &#34;关于从0选择静态博客框架，从Ghost+Buster到Ghost+Gatsby再到hugoblog，设置主题，二次优化，问题排查过程的个人笔记&#34;
+</span></span><span style="display:flex;"><span>date:       2024-06-11 12:00:00
+</span></span><span style="display:flex;"><span>author:     &#34;Zephyr&#34;
+</span></span><span style="display:flex;"><span>image: &#34;img/cover.jpg&#34;
+</span></span><span style="display:flex;"><span>published: true
+</span></span><span style="display:flex;"><span>tags:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">-</span> notebook
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">-</span> blog
+</span></span><span style="display:flex;"><span>URL: &#34;/hugoblogs/&#34;
+</span></span><span style="display:flex;"><span>categories: [ Tech ]
+</span></span><span style="display:flex;"><span>mathjax: true
+</span></span><span style="display:flex;"><span>---
+</span></span></code></pre></div><p>其中这些选项一眼便知道其含义，注意其中的<code>published</code>选项需要被设置为<code>true</code>才会被真正推送，否则会被放到<code>draft</code>类中作为草稿。</p>
+<h3 id="配置configtoml">配置config.toml</h3>
+<p>配置config.toml可以免去在使用hugo时多次添加过多参数
+例如<code>theme</code>选项可以选择你的主题，主题中的多种参数都会存放在<code>[params]</code>项中。</p>
+<blockquote>
+</blockquote>
+<p>此外，我们安装主题后，会在<code>/themes</code>目录下面，其中的<code>exampleSite</code>提供了一个示例</p>
+<blockquote>
+</blockquote>
+<h3 id="支持latex">支持latex</h3>
+<p>我选择的主题本身不支持latex功能，latex对于我来说是刚需，因此在现有的Hugo主题框架上进行拓展，使用<code>MathJax</code>来使Hugo-page支持latex公式。</p>
+<p>在<code>themes/hugo-theme-cleanwhite/layouts/partials</code>创建<code>mathjax_support.html</code>，添加如下代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">script</span>&gt;
+</span></span><span style="display:flex;"><span>  MathJax <span style="color:#ff79c6">=</span> {
+</span></span><span style="display:flex;"><span>    tex<span style="color:#ff79c6">:</span> {
+</span></span><span style="display:flex;"><span>      inlineMath<span style="color:#ff79c6">:</span> [
+</span></span><span style="display:flex;"><span>        [<span style="color:#f1fa8c">&#34;$&#34;</span>, <span style="color:#f1fa8c">&#34;$&#34;</span>],
+</span></span><span style="display:flex;"><span>        [<span style="color:#f1fa8c">&#34;\\(&#34;</span>, <span style="color:#f1fa8c">&#34;\\)&#34;</span>],
+</span></span><span style="display:flex;"><span>      ],
+</span></span><span style="display:flex;"><span>      displayMath<span style="color:#ff79c6">:</span> [
+</span></span><span style="display:flex;"><span>        [<span style="color:#f1fa8c">&#34;$$&#34;</span>, <span style="color:#f1fa8c">&#34;$$&#34;</span>],
+</span></span><span style="display:flex;"><span>        [<span style="color:#f1fa8c">&#34;\\[&#34;</span>, <span style="color:#f1fa8c">&#34;\\]&#34;</span>],
+</span></span><span style="display:flex;"><span>      ],
+</span></span><span style="display:flex;"><span>      processEscapes<span style="color:#ff79c6">:</span> <span style="color:#ff79c6">true</span>,
+</span></span><span style="display:flex;"><span>      processEnvironments<span style="color:#ff79c6">:</span> <span style="color:#ff79c6">true</span>,
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    options<span style="color:#ff79c6">:</span> {
+</span></span><span style="display:flex;"><span>      skipHtmlTags<span style="color:#ff79c6">:</span> [<span style="color:#f1fa8c">&#34;script&#34;</span>, <span style="color:#f1fa8c">&#34;noscript&#34;</span>, <span style="color:#f1fa8c">&#34;style&#34;</span>, <span style="color:#f1fa8c">&#34;textarea&#34;</span>, <span style="color:#f1fa8c">&#34;pre&#34;</span>],
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>  };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">window</span>.addEventListener(<span style="color:#f1fa8c">&#34;load&#34;</span>, (event) =&gt; {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">document</span>.querySelectorAll(<span style="color:#f1fa8c">&#34;mjx-container&#34;</span>).forEach(<span style="color:#8be9fd;font-style:italic">function</span> (x) {
+</span></span><span style="display:flex;"><span>      x.parentElement.classList <span style="color:#ff79c6">+=</span> <span style="color:#f1fa8c">&#34;has-jax&#34;</span>;
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>  });
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#ff79c6">script</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">script</span> <span style="color:#50fa7b">src</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;https://polyfill.io/v3/polyfill.min.js?features=es6&#34;</span>&gt;&lt;/<span style="color:#ff79c6">script</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">script</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#50fa7b">type</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;text/javascript&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#50fa7b">id</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;MathJax-script&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#50fa7b">async</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#50fa7b">src</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js&#34;</span>
+</span></span><span style="display:flex;"><span>&gt;&lt;/<span style="color:#ff79c6">script</span>&gt;
+</span></span></code></pre></div><p>然后添加Hugo渲染，在<code>themes/hugo-theme-cleanwhite/layouts/partials/head.html</code>中添加解析语法，注意解析语法要放在 head 标签之内。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">head</span>&gt;
+</span></span><span style="display:flex;"><span>  ...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">&lt;!-- LaTeX  MathJax 3 --&gt;</span>
+</span></span><span style="display:flex;"><span>  {{ if .Params.mathjax }}{{ partial &#34;mathjax_support.html&#34; . }}{{ end }}
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#ff79c6">head</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">style</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">code</span>.<span style="color:#50fa7b">has-jax</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">-webkit-</span>font-smoothing: antialiased;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">background</span>: <span style="color:#ff79c6">inherit</span> <span style="color:#ff79c6">!important</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">border</span>: <span style="color:#ff79c6">none</span> <span style="color:#ff79c6">!important</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">font-size</span>: <span style="color:#bd93f9">100</span><span style="color:#8be9fd">%</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#ff79c6">style</span>&gt;
+</span></span></code></pre></div><p>在需要用到<code>latex</code>公式的page下添加</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-markdown" data-lang="markdown"><span style="display:flex;"><span>mathjax: true
+</span></span></code></pre></div><p>然后就可以像平时书写markdown一样正常书写公式</p>
+<h3 id="在page中嵌入图片">在page中嵌入图片</h3>
+<p>静态页面嵌入图片属实是一个头疼的事情，笔者在前面<code>Ghost+buster</code>与<code>Ghost+Gatsby</code>过程中均在这一步挫败，因此心有余悸。在hugo中我们需要解决的重点是如何在本地书写完markdown后push到github上，保证界面仍然能够正确引用图片，笔者尝试了诸多方法，最终选择的方案是:</p>
+<ol>
+<li>假设我们的博客文件都存在post目录下，每当我们想要新建一个博客的时候，我们创建一个文件夹，例如<code>2024-06-11-helloworld</code></li>
+<li>然后，将markdown文件命名为<code>index.md</code>，正常书写。</li>
+<li>将图片直接放在与<code>index.md</code>文件同一级目录下即可。</li>
+</ol>
+<h3 id="在page中嵌入视频">在page中嵌入视频</h3>
+<blockquote>
+</blockquote>
+<p>Use the below hugo shortcodes to embed videos into your posts.</p>
+<p>Bilibili (B站)</p>
+<pre tabindex="0"><code>
+
+
+<style>
+    #biliplayer {
+      width: 100%;
+      height: 600px;
+    }
+    @media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
+      #biliplayer {
+        width: 100%;
+        height: 250px;
+      }
+    }
+</style>
+
+
+    <div>
+        <iframe id="biliplayer" src="//player.bilibili.com/player.html?bvid=BV1kZ4y137gv&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy" ></iframe>
+    </div>
+
+
+</code></pre><p>Youtube</p>
+<pre tabindex="0"><code>
+
+    
+    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+      <iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" loading="eager" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/cllc1ZGlhsQ?autoplay=0&controls=1&end=0&loop=0&mute=0&start=0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" title="YouTube video"
+      ></iframe>
+    </div>
+
+</code></pre><p>Vimeo</p>
+<pre tabindex="0"><code>
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="https://player.vimeo.com/video/146022717" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" title="vimeo video" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+</div>
+
+</code></pre><blockquote>
+</blockquote>
+<p><strong>注：根据自己的主题情形而定</strong>
+嵌入视频的方法是在<code>themes\&lt;yourtheme&gt;\layouts\shortcodes</code>中添加对应的htmlcode
+例如<code>bilibili</code>的嵌入</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>{{ $videoID := index .Params 0 }}
+</span></span><span style="display:flex;"><span>{{ $pageNum := index .Params 1 | default 1}}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">style</span>&gt;
+</span></span><span style="display:flex;"><span>    #biliplayer {
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">width</span>: <span style="color:#bd93f9">100</span><span style="color:#8be9fd">%</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">height</span>: <span style="color:#bd93f9">600</span><span style="color:#8be9fd">px</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    @<span style="color:#ff79c6">media</span> <span style="color:#ff79c6">only</span> <span style="color:#ff79c6">screen</span> <span style="color:#ff79c6">and</span> <span style="color:#ff79c6">(</span><span style="color:#ff79c6">min-device-width</span><span style="color:#ff79c6">:</span> <span style="color:#ff79c6">320px</span><span style="color:#ff79c6">)</span> <span style="color:#ff79c6">and</span> <span style="color:#ff79c6">(</span><span style="color:#ff79c6">max-device-width</span><span style="color:#ff79c6">:</span> <span style="color:#ff79c6">480px</span><span style="color:#ff79c6">)</span> {
+</span></span><span style="display:flex;"><span>      #biliplayer {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">width</span>: <span style="color:#bd93f9">100</span><span style="color:#8be9fd">%</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">height</span>: <span style="color:#bd93f9">250</span><span style="color:#8be9fd">px</span>;
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#ff79c6">style</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>{{ if (findRE &#34;^[bB][vV][0-9a-zA-Z]+$&#34; $videoID) }}
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#ff79c6">div</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#ff79c6">iframe</span> <span style="color:#50fa7b">id</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;biliplayer&#34;</span> <span style="color:#50fa7b">src</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;//player.bilibili.com/player.html?bvid={{ $videoID }}&amp;page={{ $pageNum }}&#34;</span> <span style="color:#50fa7b">scrolling</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;no&#34;</span> <span style="color:#50fa7b">border</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;0&#34;</span> <span style="color:#50fa7b">frameborder</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;no&#34;</span> <span style="color:#50fa7b">framespacing</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;0&#34;</span> <span style="color:#50fa7b">allowfullscreen</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;true&#34;</span> <span style="color:#50fa7b">loading</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;lazy&#34;</span> &gt;&lt;/<span style="color:#ff79c6">iframe</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#ff79c6">div</span>&gt;
+</span></span><span style="display:flex;"><span>{{ else }}
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#ff79c6">div</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#ff79c6">iframe</span> <span style="color:#50fa7b">id</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;biliplayer&#34;</span> <span style="color:#50fa7b">src</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;//player.bilibili.com/player.html?aid={{ $videoID }}&amp;page={{ $pageNum }}&#34;</span> <span style="color:#50fa7b">scrolling</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;no&#34;</span> <span style="color:#50fa7b">border</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;0&#34;</span> <span style="color:#50fa7b">frameborder</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;no&#34;</span> <span style="color:#50fa7b">framespacing</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;0&#34;</span> <span style="color:#50fa7b">allowfullscreen</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;true&#34;</span> <span style="color:#50fa7b">loading</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;lazy&#34;</span> &gt;&lt;/<span style="color:#ff79c6">iframe</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#ff79c6">div</span>&gt;
+</span></span><span style="display:flex;"><span>{{ end }}
+</span></span></code></pre></div><p>笔者添加了本地的视频嵌入方式,建立了<code>vedio.html</code>文件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>{{- $src := .Get &#34;src&#34; | default &#34;&#34; -}}
+</span></span><span style="display:flex;"><span>{{- $poster := .Get &#34;poster&#34; | default &#34;&#34; -}}
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">style</span>&gt;
+</span></span><span style="display:flex;"><span>    .<span style="color:#50fa7b">video-wrapper</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">width</span>: <span style="color:#bd93f9">100</span><span style="color:#8be9fd">%</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">height</span>: <span style="color:#bd93f9">600</span><span style="color:#8be9fd">px</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    @<span style="color:#ff79c6">media</span> <span style="color:#ff79c6">only</span> <span style="color:#ff79c6">screen</span> <span style="color:#ff79c6">and</span> <span style="color:#ff79c6">(</span><span style="color:#ff79c6">min-device-width</span><span style="color:#ff79c6">:</span> <span style="color:#ff79c6">320px</span><span style="color:#ff79c6">)</span> <span style="color:#ff79c6">and</span> <span style="color:#ff79c6">(</span><span style="color:#ff79c6">max-device-width</span><span style="color:#ff79c6">:</span> <span style="color:#ff79c6">480px</span><span style="color:#ff79c6">)</span> {
+</span></span><span style="display:flex;"><span>        .<span style="color:#50fa7b">video-wrapper</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">width</span>: <span style="color:#bd93f9">100</span><span style="color:#8be9fd">%</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">height</span>: <span style="color:#bd93f9">250</span><span style="color:#8be9fd">px</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#ff79c6">style</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">div</span> <span style="color:#50fa7b">class</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;video-wrapper&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#ff79c6">video</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#50fa7b">id</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;myVideo&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#50fa7b">controls</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#50fa7b">src</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;{{ $src }}&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#50fa7b">style</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;width: 100%; height: 100%;&#34;</span>
+</span></span><span style="display:flex;"><span>        {{ <span style="color:#50fa7b">if</span> $<span style="color:#50fa7b">poster</span> }}<span style="color:#50fa7b">poster</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;{{ $poster }}&#34;</span>{{ <span style="color:#50fa7b">end</span> }}
+</span></span><span style="display:flex;"><span>    &gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#ff79c6">p</span>&gt;
+</span></span><span style="display:flex;"><span>            Your browser doesn&#39;t support HTML5 video. Here is a
+</span></span><span style="display:flex;"><span>            &lt;<span style="color:#ff79c6">a</span> <span style="color:#50fa7b">href</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;{{ $src }}&#34;</span>&gt;link to the video&lt;/<span style="color:#ff79c6">a</span>&gt; instead.
+</span></span><span style="display:flex;"><span>        &lt;/<span style="color:#ff79c6">p</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#ff79c6">video</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#ff79c6">div</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">script</span>&gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">var</span> video <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">document</span>.getElementById(<span style="color:#f1fa8c">&#39;myVideo&#39;</span>);
+</span></span><span style="display:flex;"><span>    video.addEventListener(<span style="color:#f1fa8c">&#39;click&#39;</span>, <span style="color:#8be9fd;font-style:italic">function</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> (video.paused) {
+</span></span><span style="display:flex;"><span>            video.play();
+</span></span><span style="display:flex;"><span>        } <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>            video.pause();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#ff79c6">script</span>&gt;
+</span></span></code></pre></div><p>将自己的需要的视频放在与<code>index.md</code>同级目录下
+最终通过</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-markdown" data-lang="markdown"><span style="display:flex;"><span><style>
+    .video-wrapper {
+        width: 100%;
+        height: 600px;
+    }
+    @media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
+        .video-wrapper {
+            width: 100%;
+            height: 250px;
+        }
+    }
+</style>
+
+<div class="video-wrapper">
+    <video
+        id="myVideo"
+        controls
+        src="%3cyourvedioname%3e"
+        style="width: 100%; height: 100%;"
+        
+    >
+        <p>
+            Your browser doesn't support HTML5 video. Here is a
+            <a href="%3cyourvedioname%3e">link to the video</a> instead.
+        </p>
+    </video>
+</div>
+
+<script>
+    var video = document.getElementById('myVideo');
+    video.addEventListener('click', function() {
+        if (video.paused) {
+            video.play();
+        } else {
+            video.pause();
+        }
+    });
+</script>
+
+</span></span></code></pre></div><p>来引用视频。</p>
+<h2 id="将博客推送到github上">将博客推送到github上</h2>
+<p>首先<code>hugo</code>来构建你的博客，然后<code>cd public</code>，在第一次推送时，需要<code>git init</code>初始化你的仓库，然后<code>git add .</code>,<code>git commit -m &lt;yourmessage&gt;</code>,<code>git push origin main</code>,最后等待githubpage部署完毕即可。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">echo</span> -e <span style="color:#f1fa8c">&#34;\033[0;32mDeploying updates to GitHub...\033[0m&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Build the project.</span>
+</span></span><span style="display:flex;"><span>hugo -t hugo-theme-cleanwhite <span style="color:#6272a4"># if using a theme, replace with `hugo -t &lt;YOURTHEME&gt;`</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Go To Public folder</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">cd</span> public
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Add changes to git.</span>
+</span></span><span style="display:flex;"><span>git add .
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Commit changes.</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">msg</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;rebuilding site </span><span style="color:#ff79c6">$(</span>date<span style="color:#ff79c6">)</span><span style="color:#f1fa8c">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span> <span style="color:#ff79c6">[</span> <span style="color:#8be9fd;font-style:italic">$#</span> -eq <span style="color:#bd93f9">1</span> <span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">then</span> <span style="color:#8be9fd;font-style:italic">msg</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;</span><span style="color:#8be9fd;font-style:italic">$1</span><span style="color:#f1fa8c">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">fi</span>
+</span></span><span style="display:flex;"><span>git commit -m <span style="color:#f1fa8c">&#34;</span><span style="color:#8be9fd;font-style:italic">$msg</span><span style="color:#f1fa8c">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Push source and build repos.</span>
+</span></span><span style="display:flex;"><span>git push origin main
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Come Back up to the Project Root</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">cd</span> ..
+</span></span></code></pre></div>
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2024/06/10/test/" data-toggle="tooltip" data-placement="top" title="hello world">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+                
+
+                
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/course" title="course">
+                            course
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/crypto" title="crypto">
+                            crypto
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ctf" title="ctf">
+                            ctf
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/notebook" title="notebook">
+                            notebook
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/pwn" title="pwn">
+                            pwn
+                        </a>
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:empire258700@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/ZephyrVictor">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="#3" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; #3 2024
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>
