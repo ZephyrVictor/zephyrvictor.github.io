@@ -6,8 +6,15 @@
     <description>Recent content in Course on #3</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 20 May 2024 12:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 11 Jun 2024 12:00:00 +0000</lastBuildDate>
     <atom:link href="https://zephyr369.online/tags/course/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>matplotlib常用图笔记</title>
+      <link>https://zephyr369.online/matplotlibgraph/</link>
+      <pubDate>Tue, 11 Jun 2024 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/matplotlibgraph/</guid>
+      <description>matplotlib是python中最常用的数据可视化工具，只要涉及到数据处理，都免不了或多或少和Numpy以及Matplotlib打交道，</description>
+    </item>
     <item>
       <title>密码学中数论知识的总结</title>
       <link>https://zephyr369.online/HITcryptomath/</link>

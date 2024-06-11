@@ -16,6 +16,13 @@
       <description>需求分析 感慨到自从修读计算机专业以来，在感受ChatGpt应付水课的完美能力之余，笔者深感长篇幅语言表达能力渐渐退化，于是便萌生放一个博客的</description>
     </item>
     <item>
+      <title>matplotlib常用图笔记</title>
+      <link>https://zephyr369.online/matplotlibgraph/</link>
+      <pubDate>Tue, 11 Jun 2024 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/matplotlibgraph/</guid>
+      <description>matplotlib是python中最常用的数据可视化工具，只要涉及到数据处理，都免不了或多或少和Numpy以及Matplotlib打交道，</description>
+    </item>
+    <item>
       <title>hello world</title>
       <link>https://zephyr369.online/2024/06/10/test/</link>
       <pubDate>Mon, 10 Jun 2024 12:00:00 +0000</pubDate>

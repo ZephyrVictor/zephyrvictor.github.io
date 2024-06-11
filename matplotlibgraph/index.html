@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="#3">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="img/cover.jpg">
+    <meta property="twitter:image" content="img/cover.jpg" />
+    
+
+    
+    <meta name="title" content="matplotlib常用图笔记" />
+    <meta property="og:title" content="matplotlib常用图笔记" />
+    <meta property="twitter:title" content="matplotlib常用图笔记" />
+    
+
+    
+    <meta name="description" content="matplotlib数据可视化快速查询手册">
+    <meta property="og:description" content="matplotlib数据可视化快速查询手册" />
+    <meta property="twitter:description" content="matplotlib数据可视化快速查询手册" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="Zephyr, Zephyr, Zephyr, , Zephyr的网络日志, Zephyr的博客, Zephyr Blog, 博客, 个人网站, 互联网, Web, CTF,">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>matplotlib常用图笔记 | Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
+
+    <link rel="canonical" href="/matplotlibgraph/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+ 
+ <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+        displayMath: [
+          ["$$", "$$"],
+          ["\\[", "\\]"],
+        ],
+        processEscapes: true,
+        processEnvironments: true,
+      },
+      options: {
+        skipHtmlTags: ["script", "noscript", "style", "textarea", "pre"],
+      },
+    };
+  
+    window.addEventListener("load", (event) => {
+      document.querySelectorAll("mjx-container").forEach(function (x) {
+        x.parentElement.classList += "has-jax";
+      });
+    });
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    type="text/javascript"
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+</head>
+<style>
+    code.has-jax {
+      -webkit-font-smoothing: antialiased;
+      background: inherit !important;
+      border: none !important;
+      font-size: 100%;
+    }
+    </style>
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">#3</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+                        <li><a href="/course//">HISTORY</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/cover.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/course" title="course">
+                            course
+                        </a>
+                        
+                        <a class="tag" href="/tags/notebook" title="notebook">
+                            notebook
+                        </a>
+                        
+                    </div>
+                    <h1>matplotlib常用图笔记</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Zephyr
+                             
+                            on 
+                            Tuesday, June 11, 2024
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <p><code>matplotlib</code>是python中最常用的数据可视化工具，只要涉及到数据处理，都免不了或多或少和<code>Numpy</code>以及<code>Matplotlib</code>打交道，而且这两个工具笔者常常使用chatgpt大法来写，但是为了提高效率，常用图片还是最好记忆下来以便快速使用。</p>
+<h2 id="数据直方图">数据直方图</h2>
+<blockquote>
+<p>数据直方图(Histogram)通过将数据划分为区间或分段，并表示每个分段内的数据点数量，让我们可以检查数据的频率和分布情况。x 轴代表数值范围，y 轴代表频率或计数。</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> matplotlib.pyplot <span style="color:#ff79c6">as</span> plt
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> numpy <span style="color:#ff79c6">as</span> np
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Generating random data</span>
+</span></span><span style="display:flex;"><span>data <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>random<span style="color:#ff79c6">.</span>normal(loc<span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>, scale<span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>, size<span style="color:#ff79c6">=</span><span style="color:#bd93f9">1000</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Creating a histogram</span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#ff79c6">.</span>hist(data, bins<span style="color:#ff79c6">=</span><span style="color:#bd93f9">30</span>, alpha<span style="color:#ff79c6">=</span><span style="color:#bd93f9">0.7</span>, color<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;blue&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#ff79c6">.</span>title(<span style="color:#f1fa8c">&#39;Histogram of Normally Distributed Data&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#ff79c6">.</span>xlabel(<span style="color:#f1fa8c">&#39;Value&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#ff79c6">.</span>ylabel(<span style="color:#f1fa8c">&#39;Frequency&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#ff79c6">.</span>grid(<span style="color:#ff79c6">True</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#ff79c6">.</span>show()
+</span></span></code></pre></div><p>
+  <img src="726a87f000c4f7296e45ab11335e8dda.png" alt="效果展示">
+
+</p>
+<h2 id="箱型图">箱型图</h2>
+<blockquote>
+<p>箱形图（Box Plots）提供了数据集分布的简明摘要。它们分别显示最小值、第一四分位数 ($Q_1$)、中位数 ($Q_2$)、第三四分位数 ($Q_3$) 和最大值。方框表示四分位数间距 (IQR)，即第一$Q_1$和第三$Q_3$四分位数之间的范围。方框的高度表示中间50%数据的范围。</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> matplotlib.pyplot <span style="color:#ff79c6">as</span> plt
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> seaborn <span style="color:#ff79c6">as</span> sns
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> numpy <span style="color:#ff79c6">as</span> np
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Generating random data</span>
+</span></span><span style="display:flex;"><span>data <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>random<span style="color:#ff79c6">.</span>normal(loc<span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>, scale<span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>, size<span style="color:#ff79c6">=</span>(<span style="color:#bd93f9">100</span>, <span style="color:#bd93f9">3</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Creating a box plot</span>
+</span></span><span style="display:flex;"><span>sns<span style="color:#ff79c6">.</span>boxplot(data<span style="color:#ff79c6">=</span>data, orient<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;h&#39;</span>, palette<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;Set2&#34;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#ff79c6">.</span>title(<span style="color:#f1fa8c">&#39;Box Plot of Randomly Generated Data&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#ff79c6">.</span>show()
+</span></span></code></pre></div><p>
+  <img src="c9c11bc09a43e6eb4718d28056fe0e8f.png" alt="效果展示">
+
+</p>
+<h2 id="核密度估计图">核密度估计图</h2>
+<blockquote>
+<p>核密度估计 (KDE) 是一种非参数技术，用于估计数据集的概率密度函数。通过提供近似分布的平滑曲线，KDE 有助于发现潜在的模式。KDE 图可与直方图结合使用，以更清晰地直观显示分布情况。</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> matplotlib.pyplot <span style="color:#ff79c6">as</span> plt
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> seaborn <span style="color:#ff79c6">as</span> sns
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> numpy <span style="color:#ff79c6">as</span> np
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Generating random data</span>
+</span></span><span style="display:flex;"><span>data <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>random<span style="color:#ff79c6">.</span>normal(loc<span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>, scale<span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>, size<span style="color:#ff79c6">=</span><span style="color:#bd93f9">1000</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Creating a KDE plot</span>
+</span></span><span style="display:flex;"><span>sns<span style="color:#ff79c6">.</span>kdeplot(data, shade<span style="color:#ff79c6">=</span><span style="color:#ff79c6">True</span>, color<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;green&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#ff79c6">.</span>title(<span style="color:#f1fa8c">&#39;Kernel Density Estimation of Data&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#ff79c6">.</span>xlabel(<span style="color:#f1fa8c">&#39;Value&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#ff79c6">.</span>ylabel(<span style="color:#f1fa8c">&#39;Density&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#ff79c6">.</span>show()
+</span></span></code></pre></div><p>
+  <img src="36ce73b337ca7dded39f9c14f98ee0f9.png" alt="效果展示">
+
+</p>
+<p>在本例中，我们使用 kdeplot 创建了一个核密度函数图。通过该图，有助于了解数据点的概率密度，直观的显示数据的分布。</p>
+<h2 id="小提琴图">小提琴图</h2>
+<blockquote>
+<p>小提琴图结合了箱形图和核密度函数估计图的优点。它们通过在箱形图中央的两侧显示镜像密度图来紧凑地表示分布。小提琴图可以简明地显示分布的形状、数据集中程度和任何潜在的异常值。</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> matplotlib.pyplot <span style="color:#ff79c6">as</span> plt
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> seaborn <span style="color:#ff79c6">as</span> sns
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> numpy <span style="color:#ff79c6">as</span> np
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Generating random data</span>
+</span></span><span style="display:flex;"><span>data <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>random<span style="color:#ff79c6">.</span>normal(loc<span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>, scale<span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>, size<span style="color:#ff79c6">=</span>(<span style="color:#bd93f9">100</span>, <span style="color:#bd93f9">2</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Creating a violin plot</span>
+</span></span><span style="display:flex;"><span>sns<span style="color:#ff79c6">.</span>violinplot(data<span style="color:#ff79c6">=</span>data, inner<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;quartile&#34;</span>, palette<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;Set3&#34;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#ff79c6">.</span>title(<span style="color:#f1fa8c">&#39;Violin Plot of Randomly Generated Data&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#ff79c6">.</span>show()
+</span></span></code></pre></div><p>
+  <img src="202a2cb4e97eaa00bbadfcc10c5e6b9e.png" alt="效果展示">
+
+</p>
+<h2 id="蜂群图">蜂群图</h2>
+<blockquote>
+<p>蜂群图可以有效直观地显示分类数据和单个数据点的分布情况。它水平显示每个数据点，并在数据点重叠时进行抖动，从而更容易查看每个类别内的分布情况。当类别数量较少且每个类别内有大量数据点时，蜂群图尤其有用。</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> seaborn <span style="color:#ff79c6">as</span> sns
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> matplotlib.pyplot <span style="color:#ff79c6">as</span> plt
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Generating random categorical data</span>
+</span></span><span style="display:flex;"><span>categories <span style="color:#ff79c6">=</span> [<span style="color:#f1fa8c">&#39;A&#39;</span>, <span style="color:#f1fa8c">&#39;B&#39;</span>, <span style="color:#f1fa8c">&#39;C&#39;</span>]
+</span></span><span style="display:flex;"><span>data <span style="color:#ff79c6">=</span> sns<span style="color:#ff79c6">.</span>load_dataset(<span style="color:#f1fa8c">&#34;iris&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Creating a swarm plot</span>
+</span></span><span style="display:flex;"><span>sns<span style="color:#ff79c6">.</span>swarmplot(x<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;species&#39;</span>, y<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;petal_length&#39;</span>, data<span style="color:#ff79c6">=</span>data)
+</span></span><span style="display:flex;"><span>plt<span style="color:#ff79c6">.</span>title(<span style="color:#f1fa8c">&#39;Swarm Plot of Iris Petal Length&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#ff79c6">.</span>show()
+</span></span></code></pre></div><p>
+  <img src="98416d7912e220182b4116f97a71b614.png" alt="效果展示">
+
+</p>
+<h2 id="qq图">QQ图</h2>
+<blockquote>
+<p>Quantile-Quantile图又叫做QQ图，它主要用于评估分布与理论分布（如正态分布）的拟合程度。QQ 图将观测数据的量值与理论分布的预期量值进行比较。偏离直线表示偏离假定分布，有助于识别偏离正态分布或其他假定分布的情况。</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">import</span> numpy <span style="color:#ff79c6">as</span> np
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> scipy.stats <span style="color:#ff79c6">as</span> stats
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> matplotlib.pyplot <span style="color:#ff79c6">as</span> plt
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Generating random data</span>
+</span></span><span style="display:flex;"><span>data <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>random<span style="color:#ff79c6">.</span>normal(loc<span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>, scale<span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>, size<span style="color:#ff79c6">=</span><span style="color:#bd93f9">100</span>)
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Creating QQ plot</span>
+</span></span><span style="display:flex;"><span>stats<span style="color:#ff79c6">.</span>probplot(data, dist<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;norm&#34;</span>, plot<span style="color:#ff79c6">=</span>plt)
+</span></span><span style="display:flex;"><span>plt<span style="color:#ff79c6">.</span>title(<span style="color:#f1fa8c">&#39;QQ Plot&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#ff79c6">.</span>show()
+</span></span></code></pre></div><p>
+  <img src="c8cddf14284d92103ef63021e3380648.png" alt="效果展示">
+
+</p>
+<h2 id="heatmap">heatmap</h2>
+<blockquote>
+<p>热力图是可视化二维数据分布的有效方法。通过在网格上用颜色表示数据值，热力图有助于识别两个变量之间的聚类和相关性。在处理大型数据集或多维数据时，热图尤其有用。</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> seaborn <span style="color:#ff79c6">as</span> sns
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> matplotlib.pyplot <span style="color:#ff79c6">as</span> plt
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> numpy <span style="color:#ff79c6">as</span> np
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Generating a random dataset</span>
+</span></span><span style="display:flex;"><span>data <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>random<span style="color:#ff79c6">.</span>rand(<span style="color:#bd93f9">10</span>, <span style="color:#bd93f9">12</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Creating a heatmap</span>
+</span></span><span style="display:flex;"><span>sns<span style="color:#ff79c6">.</span>heatmap(data, annot<span style="color:#ff79c6">=</span><span style="color:#ff79c6">True</span>, cmap<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;coolwarm&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#ff79c6">.</span>title(<span style="color:#f1fa8c">&#39;Heatmap of Random Data&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#ff79c6">.</span>show()
+</span></span></code></pre></div><p>
+  <img src="4bd71a7557e03e18272f9a94aacac2c0.png" alt="效果展示">
+
+</p>
+<h2 id="一个个人向的配色">一个个人向的配色</h2>
+<p>
+  <img src="6a570614fb13aefaf5116ef36a11a59.jpg" alt="alt text">
+
+</p>
+<p>更多详见<a href="https://zhuanlan.zhihu.com/p/624123608?utm_psn=1783959338034958336">原文</a></p>
+
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2024/06/10/test/" data-toggle="tooltip" data-placement="top" title="hello world">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/hugoblogs/" data-toggle="tooltip" data-placement="top" title="hugoblog搭建记录">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+
+                
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/course" title="course">
+                            course
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/crypto" title="crypto">
+                            crypto
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ctf" title="ctf">
+                            ctf
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/notebook" title="notebook">
+                            notebook
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/pwn" title="pwn">
+                            pwn
+                        </a>
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:empire258700@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/ZephyrVictor">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="#3" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; #3 2024
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>
