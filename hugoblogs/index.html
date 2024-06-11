@@ -269,17 +269,13 @@
 <h2 id="ghostbuster阶段">Ghost+Buster阶段</h2>
 <p>由于buster不支持python3，因此首先需要<code>sudo apt install pip2</code>，然后安装ghost，配置ghost，反反复复若干次，仍然无法解决解决图片的导入问题</p>
 <blockquote>
-</blockquote>
 <p>笔者发现在githubpage的仓库中，一个后缀为.jpg的文件会被正确保存，但是真正浏览界面的时候，会发现浏览器请求的会是&lt;文件名.jpgjpg&gt;。</p>
-<blockquote>
 </blockquote>
 <p>反复修改<code>deploy.sh</code>的脚本后无果，遂放弃。</p>
 <h2 id="ghostgatsby阶段">Ghost+Gatsby阶段</h2>
 <p>Ghost+Gatsby阶段来源于<a href="https://github.com/tryghost/gatsby-starter-ghost">这个项目</a>,其思路可以简单认为是一个前后端分离的项目，我们将前端项目保存下来，然后push到github的仓库中进行部署。笔者在尝试后依然没有解决前面的问题，遂放弃。</p>
 <blockquote>
-</blockquote>
 <p>期间在运行<code>gatsby develop</code>过程中，文件过多，超过了linux的文件描述符限制，解决办法是增加<code>inotify</code>文件监视器的限制,编辑<code>/etc/sysctl.conf</code>文件，修改<code>fs.inotify.max_user_watches=524288</code>，再次运行<code>gatsby develop</code>，正常运行。</p>
-<blockquote>
 </blockquote>
 <h2 id="hugogithubpage阶段">Hugo+GithubPage阶段</h2>
 <p>首先前往<a href="https://github.com/gohugoio/hugo/releases">hugo仓库</a>下载最新的windows extend版本
@@ -311,9 +307,7 @@
 <p>配置config.toml可以免去在使用hugo时多次添加过多参数
 例如<code>theme</code>选项可以选择你的主题，主题中的多种参数都会存放在<code>[params]</code>项中。</p>
 <blockquote>
-</blockquote>
 <p>此外，我们安装主题后，会在<code>/themes</code>目录下面，其中的<code>exampleSite</code>提供了一个示例</p>
-<blockquote>
 </blockquote>
 <h3 id="支持latex">支持latex</h3>
 <p>我选择的主题本身不支持latex功能，latex对于我来说是刚需，因此在现有的Hugo主题框架上进行拓展，使用<code>MathJax</code>来使Hugo-page支持latex公式。</p>
