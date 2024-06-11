@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Notes on #3</title>
+    <link>https://zephyr369.online/notes/</link>
+    <description>Recent content in Notes on #3</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 10 Jun 2024 12:00:00 +0000</lastBuildDate>
+    <atom:link href="https://zephyr369.online/notes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>一个博客的测试</title>
+      <link>https://zephyr369.online/2024/06/10/test/</link>
+      <pubDate>Mon, 10 Jun 2024 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/2024/06/10/test/</guid>
+      <description>this is the test of the brand new blog 这是一个测试 ./run $e^{i\theta} = cos\theta + i sin\theta$</description>
+    </item>
+    <item>
+      <title>一个博客的测试</title>
+      <link>https://zephyr369.online/2024/06/10/test/</link>
+      <pubDate>Mon, 10 Jun 2024 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/2024/06/10/test/</guid>
+      <description>fmt NJCTF2017 pingme https://www.bookstack.cn/read/CTF-All-In-One/doc-6.1.2_pwn_njctf201</description>
+    </item>
+  </channel>
+</rss>

