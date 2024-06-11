@@ -6,42 +6,14 @@
     <description>Recent content in Istio on #3</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 10 Jun 2024 23:54:42 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 10 Jun 2024 12:00:00 +0000</lastBuildDate>
     <atom:link href="https://zephyr369.online/tags/istio/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>这是一个新的post</title>
-      <link>https://zephyr369.online/2024/06/10/my-new-post/</link>
-      <pubDate>Mon, 10 Jun 2024 23:54:42 +0000</pubDate>
-      <guid>https://zephyr369.online/2024/06/10/my-new-post/</guid>
-      <description>这是一个自己的博客</description>
-    </item>
-    <item>
-      <title>一个博客的测试</title>
+      <title>hello world</title>
       <link>https://zephyr369.online/2024/06/10/test/</link>
       <pubDate>Mon, 10 Jun 2024 12:00:00 +0000</pubDate>
       <guid>https://zephyr369.online/2024/06/10/test/</guid>
-      <description>this is the test of the brand new blog 这是一个测试 ./run $e^{i\theta} = cos\theta + i sin\theta$</description>
-    </item>
-    <item>
-      <title>一个博客的测试</title>
-      <link>https://zephyr369.online/2024/06/10/test/</link>
-      <pubDate>Mon, 10 Jun 2024 12:00:00 +0000</pubDate>
-      <guid>https://zephyr369.online/2024/06/10/test/</guid>
-      <description>fmt NJCTF2017 pingme https://www.bookstack.cn/read/CTF-All-In-One/doc-6.1.2_pwn_njctf201</description>
-    </item>
-    <item>
-      <title>一个博客的测试</title>
-      <link>https://zephyr369.online/2024/06/10/test/</link>
-      <pubDate>Mon, 10 Jun 2024 12:00:00 +0000</pubDate>
-      <guid>https://zephyr369.online/2024/06/10/test/</guid>
-      <description>this is the test of the brand new blog 这是一个测试 ./run 这是一个欧拉公式 $e^{i\theta} = cos\theta + i sin\theta$ ytb嵌入1 uml mindmap Root Level 1 Level 2 Level 2 Level 3 Level 3 Level 4 Level 5 Level 6 Level 1 Level 2 Level 2 Level 1 Level 2 Level 2 Level 1 Level</description>
-    </item>
-    <item>
-      <title>一个博客的测试</title>
-      <link>https://zephyr369.online/2024/06/10/test/</link>
-      <pubDate>Mon, 10 Jun 2024 12:00:00 +0000</pubDate>
-      <guid>https://zephyr369.online/2024/06/10/test/</guid>
-      <description>this is the test of the brand new blog 这是一个测试 ./run $e^{i\theta} = cos\theta + i sin\theta$ 放一个图片</description>
+      <description>this is the test of the brand new blog 这是一个测试 ./run $e^{i\theta} = cos\theta + i sin\theta$ 放一个图片 this is the test of the brand new blog 这是一个测试 ./run 这是一个欧拉公式 $e^{i\theta} = cos\theta + i sin\theta$ ytb嵌入 bilibili</description>
     </item>
   </channel>
 </rss>
