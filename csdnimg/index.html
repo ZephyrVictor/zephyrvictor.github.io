@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="#3">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="img/cover.jpg">
+    <meta property="twitter:image" content="img/cover.jpg" />
+    
+
+    
+    <meta name="title" content="CSDN复制markdown图片上传问题的解决方案" />
+    <meta property="og:title" content="CSDN复制markdown图片上传问题的解决方案" />
+    <meta property="twitter:title" content="CSDN复制markdown图片上传问题的解决方案" />
+    
+
+    
+    <meta name="description" content="直接将本地CSDN的文件复制上传会出现图片上传失败的问题，本文提供了一个相对便捷的方法">
+    <meta property="og:description" content="直接将本地CSDN的文件复制上传会出现图片上传失败的问题，本文提供了一个相对便捷的方法" />
+    <meta property="twitter:description" content="直接将本地CSDN的文件复制上传会出现图片上传失败的问题，本文提供了一个相对便捷的方法" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="Zephyr, Zephyr, Zephyr, , Zephyr的网络日志, Zephyr的博客, Zephyr Blog, 博客, 个人网站, 互联网, Web, CTF,">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>CSDN复制markdown图片上传问题的解决方案 | Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
+
+    <link rel="canonical" href="/csdnimg/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+ 
+ <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+        displayMath: [
+          ["$$", "$$"],
+          ["\\[", "\\]"],
+        ],
+        processEscapes: true,
+        processEnvironments: true,
+      },
+      options: {
+        skipHtmlTags: ["script", "noscript", "style", "textarea", "pre"],
+      },
+    };
+  
+    window.addEventListener("load", (event) => {
+      document.querySelectorAll("mjx-container").forEach(function (x) {
+        x.parentElement.classList += "has-jax";
+      });
+    });
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    type="text/javascript"
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+</head>
+<style>
+    code.has-jax {
+      -webkit-font-smoothing: antialiased;
+      background: inherit !important;
+      border: none !important;
+      font-size: 100%;
+    }
+    </style>
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">#3</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+                        <li><a href="/life//">LIFE</a></li>
+                    
+                        <li><a href="/course//">HISTORY</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/cover.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/solution" title="Solution">
+                            Solution
+                        </a>
+                        
+                        <a class="tag" href="/tags/notebook" title="notebook">
+                            notebook
+                        </a>
+                        
+                    </div>
+                    <h1>CSDN复制markdown图片上传问题的解决方案</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Zephyr
+                             
+                            on 
+                            Friday, May 24, 2024
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h1 id="前言">前言</h1>
+<p>事情的起因是学校要求将大作业的文档必须上传至csdn（自媒体）上。笔者曾经也为CSDN直接复制.docx或者markdown文件而无法上传图片只能一个一个复制的问题所困扰，不过经验分享乃为爱发电之事，动机不强，今面临结课要求不得不重新考虑此事。</p>
+<p>在笔者耗费近乎一个下午及一个晚上终于熬完自己的文档后，筋疲力尽，将word转换为markdown并保存后又见此光景：
+
+  <img src="https://img-blog.csdnimg.cn/direct/6762730d8e4d4c86a90f9c8cc07a2faa.png" alt="在这里插入图片描述">
+
+
+如此多的图片一个一个复制，笔者光想此事便顿感无力，甚至十分恼火，但抱怨是没有用的，总要解决。</p>
+<p>稍作调整后，开始着手研究上传图片的问题，笔者找到了几种可行的方案</p>
+<ul>
+<li>如果图片比较少，可以直接人工复制</li>
+<li>转换为markdown上传
+考虑到学校的其他同学乃至社会人士也有同样共性之问题，解决此问题即可有效提高生产力，故记录笔者解决问题之经验如下：</li>
+</ul>
+<h1 id="问题成因">问题成因</h1>
+<p>我们知道，markdown的图片是一个链接，类似这样
+
+  <img src="https://img-blog.csdnimg.cn/direct/41330aafc2104816a991916788e295f8.png" alt="在这里插入图片描述">
+
+
+直接复制不会被自动上传。于是考虑使用博客园进行上传，笔者知道博客园可以允许<code>MetaWeblog</code>从本地直接上传markdown文件，于是就可以借助博客园将图片链接挂载，然后在csdn处直接reference即可解引用。</p>
+<h1 id="解决过程">解决过程</h1>
+<p>笔者未曾拥有cnblogs账号，直接注册即可，不在赘述。</p>
+<h2 id="前期准备">前期准备</h2>
+<p>cnblogs需要手动申请开通博客，审核速度较快。
+申请后可以拿到自己的博客主页<code>https://www.cnblogs.com/zephyr369</code>
+然后在自己的博客设置中
+
+  <img src="https://img-blog.csdnimg.cn/direct/bcacaa183a064bf6a841a08dde40564e.png" alt="在这里插入图片描述">
+
+
+进入到博客设置，然后一直下拉到最下
+  <img src="https://img-blog.csdnimg.cn/direct/4de8a5740f3f4d3ba8770708b628ef16.png" alt="在这里插入图片描述">
+
+
+勾选选项，记录自己的用户名，然后获取一个token</p>
+<p>然后开始着手转换，我们可以使用pandoc来转换markdown文件
+<a href="https://pandoc.org/">pandoc官网</a>
+若您觉得繁琐，不妨直接打开一个md文件，笔者使用的是typora，然后直接将word的文件复制到markdown中即可。
+然后配置markdown的图片保存，以typora为例，进入到偏好设置中按照下图进行设置
+
+  <img src="https://img-blog.csdnimg.cn/direct/679db259b39647b987ca0f2ac9d3e2d2.png" alt="在这里插入图片描述">
+
+
+这样markdown中的图片就会保存在<code>assets</code>文件夹下。</p>
+<h2 id="将markdown文件上传">将markdown文件上传</h2>
+<p>笔者找到了两种方案</p>
+<ul>
+<li><a href="https://blog.csdn.net/shiki217_/article/details/135675132">https://blog.csdn.net/shiki217_/article/details/135675132</a></li>
+<li>利用dotnet<a href="https://www.cnblogs.com/youngwuu/p/18166475">https://www.cnblogs.com/youngwuu/p/18166475</a>
+第一种方式笔者由于奇怪的问题未能成功，遂转为第二种方式。
+首先进入<a href="https://dotnet.microsoft.com/zh-cn/download/dotnet/5.0">https://dotnet.microsoft.com/zh-cn/download/dotnet/5.0</a>下载dotnet，然后安装完毕，打开cmd
+输入</li>
+</ul>
+<pre tabindex="0"><code>dotnet --info
+</code></pre><p>验证安装成功
+随即</p>
+<pre tabindex="0"><code>dotnet tool install --global dotnet-cnblog
+</code></pre><p>安装dotnet-cnblog
+然后<code>dotnet-cnblog </code>配置个人账号信息
+
+  <img src="https://img-blog.csdnimg.cn/direct/847997a92cc24374b76309c18c9e498b.png" alt="在这里插入图片描述">
+
+
+这里需要注意的是</p>
+<ol>
+<li>博客id，在自己的博客url中找，笔者的是https://www.cnblogs.com/zephyr369
+故笔者的id是zephyr369</li>
+<li>用户名，是自己的登录用户名.</li>
+<li>密码，密码是自己刚才在博客设置中领到的token</li>
+</ol>
+<p>填写无误后方可上传markdown文件
+首先cd到自己的markdown目录下
+然后输入<code>dotnet-cnblog.exe proc -f &quot;.\您的文件.md&quot;</code>
+上传成功后会在同一目录下生成一个新的markdown文件<code>xx-cnblog.md</code>
+查看内容
+
+  <img src="https://img-blog.csdnimg.cn/direct/ce5a53f1fe5c4e39aa867412391b6991.png" alt="在这里插入图片描述">
+
+
+发现图片上传成功，于是可以将内容直接复制到csdn中，正常展示发布即可。</p>
+<h1 id="后记">后记</h1>
+<p><code>pycnblog</code>中的yaml配置中的密码，也许应该也是token，笔者未经验证，只想抓紧完成任务而休息，若您成功用<code>pycnblog</code>解决，那真是极好
+笔者曾经在最初尝试过更换dns，改校园网为个人热点，均无改善，同校同学可避免尝试此方法。
+注：使用付费的图床也可以，但是及其不推荐使用免费图床，稳定性与安全性都不能得到保障，而且CSDN会封号。</p>
+
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/blindfmt/" data-toggle="tooltip" data-placement="top" title="pwn·blindfmt学习记录">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/fastbinattack/" data-toggle="tooltip" data-placement="top" title="Pwn·Heap·Fastbinattack">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+
+                
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/course" title="course">
+                            course
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/crypto" title="crypto">
+                            crypto
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ctf" title="ctf">
+                            ctf
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/notebook" title="notebook">
+                            notebook
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/pwn" title="pwn">
+                            pwn
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:empire258700@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/ZephyrVictor">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="#3" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; #3 2024
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>

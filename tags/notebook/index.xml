@@ -30,6 +30,13 @@
       <description>FastbinDup 可以将目标地址设定为return address 或者Hook Function这类可以控制执行流程的地址。 注意fastbin fd是指向chunk heade</description>
     </item>
     <item>
+      <title>CSDN复制markdown图片上传问题的解决方案</title>
+      <link>https://zephyr369.online/csdnimg/</link>
+      <pubDate>Fri, 24 May 2024 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/csdnimg/</guid>
+      <description>前言 事情的起因是学校要求将大作业的文档必须上传至csdn（自媒体）上。笔者曾经也为CSDN直接复制.docx或者markdown文件而无法上</description>
+    </item>
+    <item>
       <title>Pwngdb·堆指令笔记</title>
       <link>https://zephyr369.online/pwngdbheapinstrcution/</link>
       <pubDate>Mon, 20 May 2024 12:00:00 +0000</pubDate>
