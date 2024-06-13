@@ -15,15 +15,15 @@
     
 
     
-    <meta name="title" content="docker镜像拉取失败的解决方案" />
-    <meta property="og:title" content="docker镜像拉取失败的解决方案" />
-    <meta property="twitter:title" content="docker镜像拉取失败的解决方案" />
+    <meta name="title" content="MIPS笔记" />
+    <meta property="og:title" content="MIPS笔记" />
+    <meta property="twitter:title" content="MIPS笔记" />
     
 
     
-    <meta name="description" content="笔者在构建DVWA靶场时，发现诸多镜像已不能用，本文提供了一种解决方案">
-    <meta property="og:description" content="笔者在构建DVWA靶场时，发现诸多镜像已不能用，本文提供了一种解决方案" />
-    <meta property="twitter:description" content="笔者在构建DVWA靶场时，发现诸多镜像已不能用，本文提供了一种解决方案" />
+    <meta name="description" content="MIPS指令集的核心特性就是&#39;简洁&#39;和&#39;规整&#39;">
+    <meta property="og:description" content="MIPS指令集的核心特性就是&#39;简洁&#39;和&#39;规整&#39;" />
+    <meta property="twitter:description" content="MIPS指令集的核心特性就是&#39;简洁&#39;和&#39;规整&#39;" />
     
 
     
@@ -34,9 +34,9 @@
     <meta name="keyword"  content="Zephyr, Zephyr, Zephyr, , Zephyr的网络日志, Zephyr的博客, Zephyr Blog, 博客, 个人网站, 互联网, Web, CTF,">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>docker镜像拉取失败的解决方案 | Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
+    <title>MIPS笔记 | Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
 
-    <link rel="canonical" href="/dockerpull/">
+    <link rel="canonical" href="/mips/">
 
     
     
@@ -218,7 +218,7 @@
                         </a>
                         
                     </div>
-                    <h1>docker镜像拉取失败的解决方案</h1>
+                    <h1>MIPS笔记</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         
@@ -227,7 +227,7 @@
                                 Zephyr
                              
                             on 
-                            Tuesday, June 11, 2024
+                            Wednesday, June 12, 2024
                             
                             
                             
@@ -253,66 +253,196 @@
                 post-container">
 
                 
-                <h1 id="0x1前言">0x1前言</h1>
-<p>笔者在完成课程作业时需要构建<a href="https://github.com/digininja/DVWA">DVWA靶场</a>，最方便的方式必然是起一个docker，好在官方也<a href="https://hub.docker.com/r/vulnerables/web-dvwa/">提供了这一途径</a>,但是笔者在<code>docker pull</code>时却频频报错，按照网上换源、重装等诸多办法都无济于事，于是有了下面的解决方案。</p>
-<h2 id="0x2问题解决过程">0x2问题解决过程</h2>
-<p>现在诸多主流镜像源都已经失效，根据<a href="https://www.aabcc.top/archives/m7NPfx1D">这篇文章</a>,笔者进行了探索。</p>
-<p>最轻便的方式当然是使用神奇的科学上网方式来进行解决，但是笔者过于懒惰，不愿意配置<code>clash</code>，因此用代理的方式来pull</p>
-<blockquote>
-<p>值得一提的是，<code>wget http://fishros.com/install -O fishros &amp;&amp; bash fishros</code>可以一键安装<code>鱼香ROS</code>的工具箱，这个本来是用来配置ROS的，但是有一键部署<code>clash</code>的方式，非常适合懒人体质。</p>
-</blockquote>
-<p>首先记录下原始pull命令</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker pull vulnerables/web-dvwa
-</span></span></code></pre></div><p>然后进入<a href="https://github.com/DaoCloud/public-image-mirror">仓库</a>,将命令换成</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker pull m.daocloud.io/docker.io/vulnerables/web-dvwa
-</span></span></code></pre></div><p>然后等待下载完毕
-
-  <img src="image.png" alt="docker pull过程">
-
-</p>
-<p>输入<code>docker image ls</code>查看镜像</p>
+                <h1 id="指令的格式">指令的格式</h1>
+<h2 id="mips的操作数">MIPS的操作数</h2>
+<ol>
+<li>32个寄存器
+在MIPS中，只能对存放在寄存器中的数据进行 <code>算术操作</code>,其中寄存器<code>$zero</code>的值恒为0，寄存器<code>$at</code>的值被汇编器保留，用于处理大的常数。</li>
+<li>$2^30$ 个存储器字
+存储器只能通过数据传输指令访问。MIPS使用<code>字节</code>编址，所以连续的字地址相差4,。存储器用于保存数据结构、数组和溢出的寄存器。
+常见的MIPS汇编语言</li>
+</ol>
 <p>
   <img src="image-1.png" alt="alt text">
 
+
+
+  <img src="image-2.png" alt="alt text">
+
 </p>
-<p>然后为了方便，将镜像重命名<code>docker tag &lt;yourimage&gt; &lt;renamedimage&gt;</code>，例如笔者使用了<code>docker tag m.daocloud.io/docker.io/vulnerables/web-dvwa s</code>将新的镜像重命名为<code>s</code>，然后将老的镜像移除<code>docker rmi m.daocloud.io/docker.io/vulnerables/web-dvwa</code>。</p>
-<p>然后运行DWVA</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker run --name dvwa -d -p 8888:80 -p 6666:3306 -e <span style="color:#8be9fd;font-style:italic">MYSQL_PASS</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;&lt;yourpassword&gt;&#34;</span> s
-</span></span></code></pre></div><p>查看<code>ifconfig</code>,ip是<code>192.168.153.133</code>,访问<code>http://192.168.153.133:8888/login.php</code>，账号是<code>admin</code>,密码是<code>password</code>,搞定</p>
-<h2 id="0x3-附录docker的常用命令">0x3 附录，docker的常用命令</h2>
-<h3 id="基本操作">基本操作</h3>
-<p>启动docker</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>systemctl start docker
-</span></span></code></pre></div><p>关闭docker</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>systemctl stop docker
-</span></span></code></pre></div><p>重启docker</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>systemctl restart docker
-</span></span></code></pre></div><p>docker设置随服务启动而自启动</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>systemctl <span style="color:#8be9fd;font-style:italic">enable</span> docker
-</span></span></code></pre></div><p>查看docker 运行状态</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>systemctl status docker
-</span></span></code></pre></div><h3 id="镜像操作">镜像操作</h3>
+<p>在MIPS语言中，寄存器<code>$0-$7</code>映射到寄存器<code>16-23</code>，同理，寄存器<code>$t0-$t7</code>映射到<code>8-15</code>，因此，<code>$s0</code>表示寄存器<code>16</code>，<code>$s1</code>表示寄存器<code>17</code>……其中0号寄存器叫<code>$zero</code>，他的值恒0</p>
+<h2 id="mips的指令种类">MIPS的指令种类</h2>
+<p>MIPS的指令是32位的，通过将这32位按照不同的格式进行划分，构成了不同的指令格式。</p>
 <ul>
-<li><code>docker ps</code>：列出运行中的容器</li>
-<li><code>docker ps -a</code>：查看所有容器，包括未运行</li>
-<li><code>docker stop 容器id或name</code>：停止容器</li>
-<li><code>docker kill 容器id</code>：强制停止容器</li>
-<li><code>docker start 容器id或name</code>：启动已停止的容器</li>
-<li><code>docker inspect 容器id</code>：查看容器的所有信息</li>
-<li><code>docker container logs 容器id</code>：查看容器日志</li>
-<li><code>docker top 容器id</code>：查看容器里的进程</li>
-<li><code>docker exec -it 容器id /bin/bash</code>：进入容器</li>
-<li><code>exit</code>：退出容器</li>
-<li><code>docker rm 容器id或name</code>：删除已停止的容器</li>
-<li><code>docker rm -f 容器id</code>：删除正在运行的容器</li>
-<li><code>docker exec -it 容器ID sh</code>：进入容器</li>
+<li>R类指令</li>
+<li>I类指令</li>
+<li>J类指令</li>
 </ul>
-<hr>
-<p>referrenceLink :</p>
+<p>多种指令使得硬件变得复杂，但是保持指令格式的类似性可以有效降低复杂度。例如R型和I型的前三个字段长度相等，并且名称也一样，同时I型格式的第四个字段和R型后三个字段长度之和相等。</p>
+<h3 id="r类指令">R类指令</h3>
+<p>
+  <img src="image.png" alt="alt text">
+
+</p>
 <ul>
-<li><a href="https://www.aabcc.top/archives/m7NPfx1D">解决Docker镜像无法拉取问题</a></li>
-<li><a href="https://github.com/DaoCloud/public-image-mirror">public-image-mirror</a></li>
+<li>
+<p><strong>Op</strong>: 指令操作码</p>
+</li>
+<li>
+<p><strong>Rs</strong>: 第一个源操作数寄存器号，参与运算使用</p>
+</li>
+<li>
+<p><strong>Rt</strong>: 第二个源操作数寄存器号，参与运算使用</p>
+</li>
+<li>
+<p><strong>Rd</strong>: 目的操作数寄存器号，保存结果使用</p>
+</li>
+<li>
+<p><strong>Shamt</strong>: 位偏移量，仅在位移指令使用，在此直接置0</p>
+</li>
+<li>
+<p><strong>Func</strong>: 指令函数码，用于选择Op操作中的具体函数</p>
+</li>
 </ul>
+<p>例如加法指令</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">$Rd</span><span style="color:#ff79c6">=</span><span style="color:#8be9fd;font-style:italic">$Rs</span>+<span style="color:#8be9fd;font-style:italic">$Rt</span>
+</span></span></code></pre></div><h3 id="i型指令">I型指令</h3>
+<p>
+  <img src="image-3.png" alt="alt text">
+
+</p>
+<ul>
+<li>
+<p><strong>Op</strong>: 指令操作码</p>
+</li>
+<li>
+<p><strong>Rs</strong>: 第一个源操作数寄存器号，参与运算使用</p>
+</li>
+<li>
+<p><strong>Rt</strong>: 第二个源操作数寄存器号，参与运算使用</p>
+</li>
+<li>
+<p><strong>16位立即数</strong>: 作为数据，参与运算使用
+立即数，顾名思义，就是可以立即使用的数，即在指令中就给了具体的数据，而不用先给出寄存器号到寄存器中去找。</p>
+</li>
+</ul>
+<h3 id="j型指令">J型指令</h3>
+<p>
+  <img src="image-4.png" alt="alt text">
+
+</p>
+<ul>
+<li><strong>Op</strong>：指令操作码</li>
+</ul>
+<p>26位地址数作为地址，参与寻址使用。
+由于在MIPS中J是跳转指令，因此J型指令通常用于指令的跳转使用，后面的数据用于提供跳转地址。</p>
+<h3 id="一个合理的mips架构的示例">一个合理的MIPS架构的示例</h3>
+<p>
+  <img src="image-5.png" alt="alt text">
+
+</p>
+<h2 id="数据类型与常量">数据类型与常量</h2>
+<h3 id="数据类型">数据类型</h3>
+<ol>
+<li>MIPS是定长指令系统，所有指令长度均为 32 bit 位。</li>
+<li>1 byte = 8 bits ; 1 halfword = 2 bytes ; 1 word = 4 bytes 。</li>
+<li>每个字符，用 1 byte 表示。</li>
+<li>一个整数，用 1 word（4 bytes）来表示。</li>
+<li>mipsel 和 mips 是完全相同的指令集，区别只在于指令字节序不同。mips指令从左到右解析，而mipsel指令从右到左解析。</li>
+</ol>
+<h3 id="常量">常量</h3>
+<ol>
+<li>数字常量 直接键入数字 ，e.g. 4</li>
+<li>字符常量 单引号括起 ，e.g.’b’</li>
+<li>字符串常量 双引号括起 ，e.g.”Hello World”</li>
+</ol>
+<h2 id="32个通用寄存器">32个通用寄存器</h2>
+<p>MIPS规定了32个通用寄存器，分别对应为编号0到编号31，每个寄存器还配有一个别名，俗称“助记符”。</p>
+<table>
+<thead>
+<tr>
+<th>寄存器号</th>
+<th>助记符</th>
+<th>描述原文</th>
+<th>译文</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>zero</td>
+<td>the value 0</td>
+<td>该寄存器的值永为0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>$at</td>
+<td>(assembler temporary) reserved by the assembler</td>
+<td>汇编器的保留变量</td>
+</tr>
+<tr>
+<td>2-3</td>
+<td>$v0, $v1</td>
+<td>(values) from expression evaluation and function results</td>
+<td>表达式求值结果，或函数调用的返回结果</td>
+</tr>
+<tr>
+<td>4-7</td>
+<td>$a0-$a3</td>
+<td>(arguments) First four parameters for subroutine. Not preserved across procedure calls</td>
+<td>子函数调用时的前4个参数</td>
+</tr>
+<tr>
+<td>8-15</td>
+<td>$t0-$t7</td>
+<td>(temporaries) Caller saved if needed. Subroutines can use w/out saving. Not preserved across procedure calls</td>
+<td>临时寄存器，供调用过程中使用</td>
+</tr>
+<tr>
+<td>16-23</td>
+<td>$s0-$s7</td>
+<td>(saved values) - Caller saved. A subroutine using one of these must save original and restore it before exiting. Preserved across procedure calls.</td>
+<td>函数调用时，调用方将当前寄存器状态依次保存起来，子函数退出时，依赖这些值进行寄存器还原</td>
+</tr>
+<tr>
+<td>24-25</td>
+<td>$t8-$t9</td>
+<td>(temporaries) Caller saved if needed. Subroutines can use w/out saving. These are in addition to $t0 - $t7 above. Not preserved across procedure calls.</td>
+<td>临时寄存器，对$t0-$t7寄存器的补充</td>
+</tr>
+<tr>
+<td>26-27</td>
+<td>$k0-$k1</td>
+<td>reserved for use by the interrupt/trap handler</td>
+<td>中断信号的保留寄存器</td>
+</tr>
+<tr>
+<td>28</td>
+<td>$gp</td>
+<td>global pointer. Points to the middle of the 64K block of memory in the static data segment.</td>
+<td>全局指针，指向静态数据区，方便全局变量的存取</td>
+</tr>
+<tr>
+<td>29</td>
+<td>$sp</td>
+<td>stack pointer. Points to last location on the stack.</td>
+<td>堆栈指针，指向当前的堆顶</td>
+</tr>
+<tr>
+<td>30</td>
+<td>$/s8/$fp</td>
+<td>saved value / frame pointer. Preserved across procedure calls</td>
+<td>第9个s寄存器，或帧指针</td>
+</tr>
+<tr>
+<td>31</td>
+<td>$ra</td>
+<td>return address</td>
+<td>子函数返回地址</td>
+</tr>
+</tbody>
+</table>
+<h2 id="mips的栈由高地址向低地址生长">MIPS的栈由高地址向低地址生长</h2>
 
 
                 
@@ -322,15 +452,10 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/hugoblogs/" data-toggle="tooltip" data-placement="top" title="hugoblog搭建记录">&larr;
+                        <a href="/dockerpull/" data-toggle="tooltip" data-placement="top" title="docker镜像拉取失败的解决方案">&larr;
                             Previous Post</a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/mips/" data-toggle="tooltip" data-placement="top" title="MIPS笔记">Next
-                            Post &rarr;</a>
-                    </li>
                     
                 </ul>
                 
