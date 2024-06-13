@@ -8,16 +8,16 @@
     <loc>https://zephyr369.online/categories/</loc>
     <lastmod>2024-06-12T12:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://zephyr369.online/tags/ctf/</loc>
+    <loc>https://zephyr369.online/tags/course/</loc>
+    <lastmod>2024-06-12T12:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://zephyr369.online/tags/mips/</loc>
     <lastmod>2024-06-12T12:00:00+00:00</lastmod>
   </url><url>
     <loc>https://zephyr369.online/mips/</loc>
     <lastmod>2024-06-12T12:00:00+00:00</lastmod>
   </url><url>
     <loc>https://zephyr369.online/post/</loc>
-    <lastmod>2024-06-12T12:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://zephyr369.online/tags/pwn/</loc>
     <lastmod>2024-06-12T12:00:00+00:00</lastmod>
   </url><url>
     <loc>https://zephyr369.online/tags/</loc>
@@ -29,7 +29,7 @@
     <loc>https://zephyr369.online/tags/blog/</loc>
     <lastmod>2024-06-11T12:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://zephyr369.online/tags/course/</loc>
+    <loc>https://zephyr369.online/tags/ctf/</loc>
     <lastmod>2024-06-11T12:00:00+00:00</lastmod>
   </url><url>
     <loc>https://zephyr369.online/dockerpull/</loc>
@@ -42,6 +42,9 @@
     <lastmod>2024-06-11T12:00:00+00:00</lastmod>
   </url><url>
     <loc>https://zephyr369.online/tags/notebook/</loc>
+    <lastmod>2024-06-11T12:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://zephyr369.online/tags/pwn/</loc>
     <lastmod>2024-06-11T12:00:00+00:00</lastmod>
   </url><url>
     <loc>https://zephyr369.online/2024/06/10/test/</loc>

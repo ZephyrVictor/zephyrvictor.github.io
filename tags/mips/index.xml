@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>MIPS on #3</title>
+    <link>https://zephyr369.online/tags/mips/</link>
+    <description>Recent content in MIPS on #3</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 12 Jun 2024 12:00:00 +0000</lastBuildDate>
+    <atom:link href="https://zephyr369.online/tags/mips/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>MIPS笔记</title>
+      <link>https://zephyr369.online/mips/</link>
+      <pubDate>Wed, 12 Jun 2024 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/mips/</guid>
+      <description>指令的格式 MIPS的操作数 32个寄存器 在MIPS中，只能对存放在寄存器中的数据进行 算术操作,其中寄存器$zero的值恒为0，寄存器$at的值</description>
+    </item>
+  </channel>
+</rss>
