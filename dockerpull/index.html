@@ -313,6 +313,40 @@
 <li><a href="https://www.aabcc.top/archives/m7NPfx1D">解决Docker镜像无法拉取问题</a></li>
 <li><a href="https://github.com/DaoCloud/public-image-mirror">public-image-mirror</a></li>
 </ul>
+<h2 id="0x4-科学代理">0x4 科学代理</h2>
+<p>参考<a href="https://zhuanlan.zhihu.com/p/703032938">知乎文章</a>
+首先查看自己的代理的<code>port</code>，然后</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sudo vim /etc/docker/daemon.json
+</span></span></code></pre></div><p>在<code>daemon.json</code>中配置</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;proxies&#34;</span>: {        
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&#34;http-proxy&#34;</span>: <span style="color:#f1fa8c">&#34;http://127.0.0.1:7897&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&#34;https-proxy&#34;</span>: <span style="color:#f1fa8c">&#34;http://127.0.0.1:7897&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&#34;no-proxy&#34;</span>: <span style="color:#f1fa8c">&#34;localhost,127.0.0.0/8&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>:wq保存并退出</p>
+<p>然后</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sudo vim ~/.docker/config.json
+</span></span></code></pre></div><p>如果没有这个文件就创建一个</p>
+<p>然后填入</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;auths&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&#34;registry.cn-hongkong.aliyuncs.com&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;auth&#34;</span>: <span style="color:#f1fa8c">&#34;xxxxxx=&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;proxies&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&#34;default&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;httpProxy&#34;</span>: <span style="color:#f1fa8c">&#34;http://127.0.0.1:7897&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;httpsProxy&#34;</span>: <span style="color:#f1fa8c">&#34;http://127.0.0.1:7897&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;noProxy&#34;</span>: <span style="color:#f1fa8c">&#34;127.0.0.0/8&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>笔者是在本地运行的，因此删去<code>auths</code>字段。</p>
+<p>最后<code>sudo systemctl restart docker</code>重启服务</p>
+<p><strong>注：您需要根据自己的代理端口来修改</strong></p>
 
 
                 
