@@ -16,6 +16,13 @@
       <description>指令的格式 MIPS的操作数 32个寄存器 在MIPS中，只能对存放在寄存器中的数据进行 算术操作,其中寄存器$zero的值恒为0，寄存器$at的值</description>
     </item>
     <item>
+      <title>docker笔记</title>
+      <link>https://zephyr369.online/dockernotebook/</link>
+      <pubDate>Tue, 11 Jun 2024 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/dockernotebook/</guid>
+      <description>$e_{ix} = cosx+isinx$</description>
+    </item>
+    <item>
       <title>docker镜像拉取失败的解决方案</title>
       <link>https://zephyr369.online/dockerpull/</link>
       <pubDate>Tue, 11 Jun 2024 12:00:00 +0000</pubDate>

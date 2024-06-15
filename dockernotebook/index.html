@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
-	<meta name="generator" content="Hugo 0.127.0">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,20 +10,20 @@
     <meta property="og:type" content="article">
 
     
-    <meta property="og:image" content="https://zephyr369.online//img/cover.jpg">
-    <meta property="twitter:image" content="https://zephyr369.online//img/cover.jpg" />
+    <meta property="og:image" content="img/cover.jpg">
+    <meta property="twitter:image" content="img/cover.jpg" />
     
 
     
-    <meta name="title" content="" />
-    <meta property="og:title" content="" />
-    <meta property="twitter:title" content="" />
+    <meta name="title" content="docker笔记" />
+    <meta property="og:title" content="docker笔记" />
+    <meta property="twitter:title" content="docker笔记" />
     
 
     
-    <meta name="description" content="Zephyr&#39;s blog">
-    <meta property="og:description" content="Zephyr&#39;s blog" />
-    <meta property="twitter:description" content="Zephyr&#39;s blog" />
+    <meta name="description" content="这是一个docker的笔记">
+    <meta property="og:description" content="这是一个docker的笔记" />
+    <meta property="twitter:description" content="这是一个docker的笔记" />
     
 
     
@@ -35,9 +34,9 @@
     <meta name="keyword"  content="Zephyr, Zephyr, Zephyr, , Zephyr的网络日志, Zephyr的博客, Zephyr Blog, 博客, 个人网站, 互联网, Web, CTF,">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>#3 | Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
+    <title>docker笔记 | Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
 
-    <link rel="canonical" href="/">
+    <link rel="canonical" href="/dockernotebook/">
 
     
     
@@ -71,7 +70,38 @@
     
     
  
- 
+ <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+        displayMath: [
+          ["$$", "$$"],
+          ["\\[", "\\]"],
+        ],
+        processEscapes: true,
+        processEnvironments: true,
+      },
+      options: {
+        skipHtmlTags: ["script", "noscript", "style", "textarea", "pre"],
+      },
+    };
+  
+    window.addEventListener("load", (event) => {
+      document.querySelectorAll("mjx-container").forEach(function (x) {
+        x.parentElement.classList += "has-jax";
+      });
+    });
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    type="text/javascript"
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
 </head>
 <style>
     code.has-jax {
@@ -164,14 +194,45 @@
 
 
 
-<header class="intro-header" style="background-image: url('/img/cover.jpg')">
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/cover.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
-                <div class="site-heading">
-                    <h1>#3 </h1>
-                    
-		    <span class="subheading">---Pow~~Pow~~~---:-)</span>
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/notebook" title="notebook">
+                            notebook
+                        </a>
+                        
+                        <a class="tag" href="/tags/docker" title="docker">
+                            docker
+                        </a>
+                        
+                    </div>
+                    <h1>docker笔记</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Zephyr
+                             
+                            on 
+                            Tuesday, June 11, 2024
+                            
+                            
+                            
+                            
+                    </span>
                 </div>
             </div>
         </div>
@@ -180,236 +241,131 @@
 
 
 
-  
-<div data-pagefind-ignore="all" class="container">
-    <div class="row">
-        
-        
-   	    <div class="
-            col-lg-8 col-lg-offset-1
-            col-md-8 col-md-offset-1
-            col-sm-12
-            col-xs-12
-            post-container
-        ">
-            
-<div data-pagefind-ignore="all">
 
-<div class="post-preview">
-    <a href="https://zephyr369.online/HITcryptomath/">
-        <h2 class="post-title">
-            密码学中数论知识的总结
-        </h2>
-	
-        <div class="post-content-preview">
-	
-            数论部分 质数与模算术 整数集合 $\mathbb{Z}$, $a,b,c \in \mathbb{Z}$。 $a$ 整除 $b$: $a \mid b$ 如果 $\exists c, ac=b$ (否则 $a \nmid b$). $b$ 是 $a$ 的倍数。如果 $a \notin {1,b}$，那么 $a$ 是 $b$
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    
-        Posted by Zephyr on Monday, May 20, 2024
-        
-        
-    
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="https://zephyr369.online/HITcrypto/">
-        <h2 class="post-title">
-            密码学课程实验记录
-        </h2>
-	
-        <div class="post-content-preview">
-	
-            根据2022培养方案，笔者在秋季学期学习了密码学课程，其中新增的实验颇有意思，记录其中的思考。您可以查看我的代码 密码学实验 LAB1 如果使用asci
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    
-        Posted by Zephyr on Friday, May 10, 2024
-        
-        
-    
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="https://zephyr369.online/shellcode/">
-        <h2 class="post-title">
-            pwn.college shellcode篇writeup
-        </h2>
-	
-        <div class="post-content-preview">
-	
-            前言 我通过拼搏百天，我在pwn.college拿到了蓝带——黑客、开源和CS教育的革新一文中了解到pwn.college， 经过简单的学习发现
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    
-        Posted by Zephyr on Thursday, April 11, 2024
-        
-        
-    
-    </p>
-
-</div>
-<hr>
-
-</div>
+<article>
+    <div class="container">
+        <div class="row">
 
             
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <p>$e_{ix} = cosx+isinx$</p>
 
 
-<ul class="pager" data-pagefind-ignore="all">
-    
-    <li class="previous">
-        <a href="/page/2/">&larr; Newer Posts</a>
-    </li>
-    
-    
-</ul>
+                
 
-
-       	</div>
-        
-
-<div class="
-    col-lg-3 col-lg-offset-0
-    col-md-3 col-md-offset-0
-    col-sm-12
-    col-xs-12
-    sidebar-container
-">
-    
-	
-    <section class="visible-md visible-lg">
-	
-        <div class="short-about">
-            
-            <a href="/about">
-               <img src="/img/avatar.png" alt="avatar" style="cursor: pointer" />
-            </a>
-            
-            
-                <p>:-)</p>
-            
-           
-           <ul class="list-inline">
-               
-               <li>
-                   <a href="mailto:empire258700@gmail.com">
-                      <span class="fa-stack fa-lg">
-                          <i class="fa fa-circle fa-stack-2x"></i>
-                          <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
-                      </span>
-                   </a>
-               </li>
-               
-               
-               
-               
-               
-               
-               
-               <li>
-                   <a target="_blank" href="https://github.com/ZephyrVictor">
-                       <span class="fa-stack fa-lg">
-                           <i class="fas fa-circle fa-stack-2x"></i>
-                           <i class="fab fa-github fa-stack-1x fa-inverse"></i>
-                       </span>
-                   </a>
-               </li>
-               
-               
-               
-               
-               
-               
-            
-            
-               
-               
-               
-               
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/dockerpull/" data-toggle="tooltip" data-placement="top" title="docker镜像拉取失败的解决方案">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/mips/" data-toggle="tooltip" data-placement="top" title="MIPS笔记">Next
+                            Post &rarr;</a>
+                    </li>
+                    
                 </ul>
+                
+
+                
+
+
             </div>
-    </section>
-	
-    
-    
-    
-    
-    <section>
-        <hr class="hidden-sm hidden-xs">
-        <h5>FEATURED TAGS</h5>
-        <div class="tags">
+
             
             
-               
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
             
-               
-                    <a href="/tags/course" title="course">
-                        course
-                    </a>
-               
+
             
-               
-                    <a href="/tags/crypto" title="crypto">
-                        crypto
-                    </a>
-               
-            
-               
-                    <a href="/tags/ctf" title="ctf">
-                        ctf
-                    </a>
-               
-            
-               
-            
-               
-            
-               
-            
-               
-            
-               
-                    <a href="/tags/notebook" title="notebook">
-                        notebook
-                    </a>
-               
-            
-               
-                    <a href="/tags/pwn" title="pwn">
-                        pwn
-                    </a>
-               
-            
-               
-            
-               
-            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/course" title="course">
+                            course
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/crypto" title="crypto">
+                            crypto
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ctf" title="ctf">
+                            ctf
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/notebook" title="notebook">
+                            notebook
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/pwn" title="pwn">
+                            pwn
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
         </div>
-    </section>
-    
-
-    
-    
-    
-</div>
-
-	</div>
-</div>
-
+    </div>
+</article>
 
 
 
@@ -460,7 +416,7 @@
             
            
                    <li>
-                       <a href='/index.xml' rel="alternate" type="application/rss+xml" title="#3" >
+                       <a href='' rel="alternate" type="application/rss+xml" title="#3" >
                            <span class="fa-stack fa-lg">
                                <i class="fas fa-circle fa-stack-2x"></i>
                                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
