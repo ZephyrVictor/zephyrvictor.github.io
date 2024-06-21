@@ -454,6 +454,665 @@
 <li>状态单元： 包含状态，时序逻辑实现，例如寄存器或存储器。</li>
 <li>寄存器堆：包含一系列寄存器的状态单元，可以通过提供寄存器号进行读写。</li>
 </ol>
+<h1 id="一个简单的mips单周期cpu实现">一个简单的MIPS单周期CPU实现</h1>
+<p>转自大作业的WORD,仅供参考</p>
+<h1 id="1-mips指令架构概览">1 MIPS指令架构概览</h1>
+<p>MIPS的指令是RISC架构，由美国MIPS计算机系统公司开发，具有高效、简洁和强大的特性，也是目前我国自主研发的“龙芯”芯片的架构。MIPS指令集有以下特点</p>
+<p>l 简单的Load/Store结构。</p>
+<p>l 易于流水线CPU设计。</p>
+<p>l 易于编译器开发。</p>
+<p>l MIPS指令的寻址方式非常简单，每条指令的操作也相对简洁。</p>
+<p>本课程设计使用组合逻辑实现。</p>
+<p>MIPS按照字节寻址，因此每次PC+4。</p>
+<h2 id="11---三种指令格式">1.1   三种指令格式</h2>
+<p>常见的MIPS指令体系，有三种指令格式，分别是R型、I型、J型</p>
+<p>l R型指令</p>
+<p>R型指令通常用于寄存器之间的操作，例如加法、减法、逻辑运算。其基本格式如下</p>
+<p>
+  <img src="./clip_image004.jpg" alt="img">
+
+</p>
+<p>图 1‑1 R型指令结构图</p>
+<ul>
+<li><strong>Op</strong>: 指令操作码</li>
+<li><strong>Rs</strong>: 第一个源操作数寄存器号，参与运算使用</li>
+<li><strong>Rt</strong>: 第二个源操作数寄存器号，参与运算使用</li>
+<li><strong>Rd</strong>: 目的操作数寄存器号，保存结果使用</li>
+<li><strong>Shamt</strong>: 位偏移量，仅在位移指令使用，在此直接置0</li>
+<li><strong>Func</strong>: 指令函数码，用于选择Op操作中的具体函数</li>
+</ul>
+<p><strong>例如：add $s1,$s2,$s3</strong> <strong>表示 $s1=$s2+$s3</strong></p>
+<p>l I型指令</p>
+<p>I型指令主要用于立即数操作或者内存读写操作</p>
+<p>
+  <img src="./clip_image006.jpg" alt="img">
+
+</p>
+<p>图 1‑2 I型指令结构图</p>
+<p>·     <strong>Op</strong>: 指令操作码</p>
+<p>·     <strong>Rs</strong>: 第一个源操作数寄存器号，参与运算使用</p>
+<p>·     <strong>Rt</strong>: 第二个源操作数寄存器号，参与运算使用</p>
+<p>·     <strong>16****位立即数</strong>: 作为数据，参与运算使用 立即数，顾名思义，就是可以立即使用的数，即在指令中就给了具体的数据，而不用先给出寄存器号到寄存器中去找。</p>
+<p>l <strong>J****型指令</strong></p>
+<p>J型指令主要用于跳转指令，如无条件跳转或者函数调用等</p>
+<p>
+  <img src="./clip_image008.jpg" alt="img">
+
+</p>
+<ul>
+<li><strong>Op</strong>：指令操作码</li>
+</ul>
+<p>26位地址数作为地址，参与寻址使用。 由于在MIPS中J是跳转指令，因此J型指令通常用于指令的跳转使用，后面的数据用于提供跳转地址。</p>
+<h2 id="12---32个寄存器">1.2   32个寄存器</h2>
+<p>本文实现的是一个基于32位的32个寄存器的MIPS指令架构的CPU，其中MIPS规定了32个通用寄存器，分别对应为编号0到编号31，每个寄存器还配有一个别名，俗称“助记符”。</p>
+<p>
+  <img src="./clip_image010.jpg" alt="img">
+
+</p>
+<p>图 1‑3 MIPS寄存器说明</p>
+<h1 id="2-指令的选取与指令格式的设计">2 指令的选取与指令格式的设计</h1>
+<h2 id="21---总览">2.1   总览</h2>
+<p>综合上文的内容，我们可以将指令格式概括为下表</p>
+<table>
+<thead>
+<tr>
+<th>名称 (字段大小)</th>
+<th>7 位</th>
+<th>5 位</th>
+<th>5 位</th>
+<th>3 位</th>
+<th>5 位</th>
+<th>7 位</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R 型</td>
+<td>funct7</td>
+<td>rs2</td>
+<td>rs1</td>
+<td>funct3</td>
+<td>rd</td>
+<td>opcode</td>
+<td>算术指令格式</td>
+</tr>
+<tr>
+<td>I 型</td>
+<td>immediate[11:0]</td>
+<td>rs1</td>
+<td>funct3</td>
+<td>rd</td>
+<td>opcode</td>
+<td>加载和立即数算术指令格式</td>
+<td></td>
+</tr>
+<tr>
+<td>S 型</td>
+<td>immed[11:5]</td>
+<td>rs2</td>
+<td>rs1</td>
+<td>funct3</td>
+<td>immed[4:0]</td>
+<td>opcode</td>
+<td>存储指令格式</td>
+</tr>
+<tr>
+<td>SB 型</td>
+<td>immed[12,10:5]</td>
+<td>rs2</td>
+<td>rs1</td>
+<td>funct3</td>
+<td>immed[4:1,11]</td>
+<td>opcode</td>
+<td>条件分支指令格式</td>
+</tr>
+<tr>
+<td>UJ 型</td>
+<td>immediate[20,10:1,11,19:12]</td>
+<td>rd</td>
+<td>opcode</td>
+<td>无条件跳转指令格式</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>U 型</td>
+<td>immediate[31:12]</td>
+<td>rd</td>
+<td>opcode</td>
+<td>上立即数指令格式</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>我们选择<strong>取字****(lw)<strong><strong>、存字(sw)</strong></strong>、相等则分支(beq)<strong><strong>，以及算数逻辑指令:<strong><strong>加法(add)</strong></strong>、减法(sub)</strong></strong>、与(AND)<strong><strong>、或(OR)</strong></strong>、小于则置位(set on Less than)****。</strong></p>
+<h2 id="22---指令格式设计">2.2   指令格式设计</h2>
+<h3 id="221-----lw指令">2.2.1     LW指令</h3>
+<p>LW 指令的汇编格式为 lw rt， offset(rs)，这将 offset 进行位拓展后与 rs 寄存器中数据相加获得访存地址，然后从该地址取出数据并存到 rt 寄存器中。</p>
+<p>
+  <img src="./clip_image012.jpg" alt="img">
+
+</p>
+<p>图 2‑1 LW指令编码</p>
+<h3 id="222-----sw指令">2.2.2     SW指令</h3>
+<p>SW 指令的汇编格式为 sw rt， offset(rs)，这将 rt 寄存器中的数据存到 offset 与 rs 寄存器中数据计算后得到的地址位置处。</p>
+<p>
+  <img src="./clip_image014.jpg" alt="img">
+
+</p>
+<p>图 2‑2 SW指令</p>
+<h3 id="223-----算数逻辑指令总览">2.2.3     算数逻辑指令总览</h3>
+<p>根据指令类型的不同，我们需要使ALU执行上述5中算数逻辑指令中的一种，对于取字和存储字指令，ALU用加法计算来实现计算地址的功能。对于R型指令，根据低六位的funct字段来确定ALU执行5种操作的哪一种（AND | OR | SUB |set on Less than）。对相等则分支指令，我们让ALU执行减法操作。</p>
+<p>使用一个小的控制单元就可以实现生成4位的ALU控制信号，输入是指令的funct字段和2位ALUop字段，ALUop指明了操作是加法(00)、beq的减法（01）还是由指令的funct字段来决定(10)，ALU单元输出4位信号。这种多级译码的方法可以减小主控单元规模，提高控制单元的速度，这种优化我认为是十分必要的。</p>
+<table>
+<thead>
+<tr>
+<th>ALU控制信号</th>
+<th>功能</th>
+<th>ALU控制信号</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0000</td>
+<td>与</td>
+<td>0110</td>
+<td>减</td>
+</tr>
+<tr>
+<td>0001</td>
+<td>或</td>
+<td>0111</td>
+<td>小于则置位</td>
+</tr>
+<tr>
+<td>0010</td>
+<td>加</td>
+<td>1100</td>
+<td>或非</td>
+</tr>
+</tbody>
+</table>
+<h3 id="224-----add指令">2.2.4     ADD指令</h3>
+<p>ADD 指令的汇编格式为 add rd， rs， rt，这实现了 32 位整数加的操作，加数与被加数分别置于 rs 和 rd 寄存器中，最后由 ALU 运算器计算出结果并存到 rd 寄存器中。</p>
+<p>
+  <img src="./clip_image016.jpg" alt="img">
+
+</p>
+<p>图 2‑3 add指令编码</p>
+<h3 id="225-----sub指令">2.2.5     Sub指令</h3>
+<p>SUB 指令的汇编格式为sub rd， rs， rt，这实现了 32 位整数减的操作，被减数与减数分别置于 rs 和 rd 寄存器中，最后由 ALU 运算器计算出结果并存到 rd 寄存器中.</p>
+<p>
+  <img src="./clip_image018.jpg" alt="img">
+
+</p>
+<p>图 2‑4 sub指令编码</p>
+<h3 id="226-----and指令">2.2.6     And指令</h3>
+<p>
+  <img src="./clip_image020.jpg" alt="img">
+
+</p>
+<p>图 2‑5 and指令编码</p>
+<h3 id="227-----or指令">2.2.7     Or指令</h3>
+<p>
+  <img src="./clip_image022.jpg" alt="img">
+
+</p>
+<p>图 2‑6 Or指令编码</p>
+<h3 id="228-----beq指令">2.2.8     Beq指令</h3>
+<p>
+  <img src="./clip_image024.jpg" alt="img">
+
+</p>
+<p>图 2‑7 beq指令编码</p>
+<p>beq 指令用于比较两个寄存器的值是否相等，如果相等则进行分支操作。指令中的立即数字段为 16 位有符号数，表示分支目标地址与顺序执行地址 PC+4 之间的字偏移，这个偏移量可以是正数也可以是负数（即可以向前或向后跳转）。由于指令长度为 4 字节，因此需要将 16 位立即数符号扩展成 32 位，并左移两位生成 32 位字节偏移量，然后再加上顺序执行地址 PC+4 才能得到分支目标地址。为了避免资源冲突，需要设置一个专门的加法器。当比较条件满足时，用分支目标地址更新 PC 的内容，即进行分支跳转；否则，将 PC 的值更新为 PC+4，程序顺序执行。为此，PC 的输入端还需要增加一个多路选择器，用于选择顺序执行或跳转执行。</p>
+<h2 id="23---总结">2.3   总结</h2>
+<p>这些指令都需要经过ALU，所以我们需要给出ALU的控制原理，在2.2.3节已经给出ALU的控制信号表，我们结合刚才编排的所有指令给出总结。</p>
+<p>整体指令格式如下</p>
+<p>
+  <img src="./clip_image026.jpg" alt="img">
+
+</p>
+<p>图 2‑8 指令格式</p>
+<p>对应的ALU控制信号表如下</p>
+<p>
+  <img src="./clip_image028.jpg" alt="img">
+
+</p>
+<p>图 2‑9 ALU控制信号</p>
+<p>根据信号绘制出真值表，该真值表的输入是ALUop字段和funct字段，在此我们只列出ALU控制有效的项，也包括一些无关项，例如ALUop不使用11，因此真值表包含1X和X1项，而不是10和01项。</p>
+<p>
+  <img src="./clip_image030.jpg" alt="img">
+
+</p>
+<p>图 2‑10 ALU控制信号的真值表</p>
+<h1 id="3-微操作与数据通路">3 微操作与数据通路</h1>
+<p>实现不同指令的多数工作都是相同的，与指令类型无关：</p>
+<ul>
+<li>取指：将 PC 送往 MEM</li>
+<li>取数：根据指令字中的地址域读寄存器</li>
+</ul>
+<p>执行操作各个指令不同，但同类指令非常类似：</p>
+<ul>
+<li>
+<p>算术逻辑指令</p>
+</li>
+<li>
+<ul>
+<li>R 类 ALU 指令：add x1, x2, x3</li>
+<li>I 类 ALU 指令：addi x3, x3, 4</li>
+</ul>
+</li>
+</ul>
+<p>不同类型指令也有相同之处，如都要使用 ALU：</p>
+<ul>
+<li>访存指令使用 ALU 计算地址：lw x1, 100(x2)</li>
+<li>算术逻辑指令使用 ALU 完成计算：add x1, x2, x3</li>
+<li>分支指令使用 ALU 进行条件比较：beq x1, x2, name</li>
+</ul>
+<p>其后，各个指令的工作就不同了：</p>
+<ul>
+<li>访存指令对存储器进行读写：lw x1, 100(x2)</li>
+<li>算术逻辑指令将 ALU 结果写回寄存器：add x1, x2, x3</li>
+<li>分支指令将基于比较结果修改下一条指令的地址：beq x1,     x2, name</li>
+</ul>
+<p>微操作就是将数据流用形式化的语言描述出来，本文使用更加具体的数据流，展示在设计的MIPS芯片中具体的数据流动，并利用语言来展示微操作。</p>
+<h2 id="31---数据流设计">3.1   数据流设计</h2>
+<p>l 寄存器计算指令的数据流，这种情况对应于源操作数和目的操作数都在寄存器中，例如add x1, x2, x3; x2+x3-&gt;x1这个命令的数据流如下：</p>
+<p>
+  <img src="./clip_image032.jpg" alt="img">
+
+</p>
+<p>图 3‑1 寄存器计算指令的数据流图</p>
+<p>如图所示，首先从寄存器堆中选出ra和rb,然后通过一个控制信号来将多选器muxb选择为非立即数，然后将ra和rb送入ALU的输入端，并将结果rc送回寄存器堆。</p>
+<p>l 立即数计算指令的数据流：有一个源寄存器在立即数寄存器中，例如addi x3,x3,4；x3 = x3 + 4</p>
+<p>
+  <img src="./clip_image034.jpg" alt="img">
+
+</p>
+<p>图 3‑2 立即数指令计算数据流图</p>
+<p>如图所示，这次我们通过多选器将立即数送入InB，然后流程与图3-1一样。</p>
+<p>综合上面的结论，我们可以绘制出如下的CPU指令数据通路总图</p>
+<p>
+  <img src="./clip_image036.jpg" alt="img">
+
+</p>
+<p>图 3‑3 指令数据通路总图</p>
+<p>l 寄存器堆的读写操作</p>
+<p>寄存器文件在一个周期中有两个读和一个写操作。</p>
+<p>n 在一个周期内，某个REG可以同时完成读写操作，但读出的是上一个周期写入的值</p>
+<p>n 寄存器文件不能同时进行读和写操作。我们选择在前半周期进行读操作，后半周期进行写操作。</p>
+<p>l 多路选择器</p>
+<p>通过多路选择器来进行选择，这个由控制信号来决定，控制信号会在后文中详细进行设计与阐释。</p>
+<p>由此我们的设计流程是先进行数据通路的设计，再进行控制部件的设计。</p>
+<p>我们将指令执行周期分为取指、译码、执行、访存、写回五个阶段。</p>
+<h2 id="32---取指">3.2   取指</h2>
+<p>
+  <img src="./clip_image038.jpg" alt="img">
+
+</p>
+<p>图 3‑4 取指对应的微操作</p>
+<p>
+  <img src="./clip_image040.jpg" alt="img">
+
+</p>
+<p>图 3‑5 取指对应的数据通路图</p>
+<p>如图所示，将PC的地址读取，然后访问对应的指令，并将指令输出，然后将PC和立即数送入ALU进行加法运算，也就形成了下一条指令的地址。</p>
+<h2 id="33---译码">3.3   译码</h2>
+<p>译码是将当前的指令进行解释，数据流图如下</p>
+<p>
+  <img src="./clip_image042.jpg" alt="img">
+
+</p>
+<p>图 3‑6 译码阶段数据流图</p>
+<p>如图，我们以R-type指令为例，R-type指令通常都操作三个寄存器数或立即数，首先将rs2、rs1的字段送入寄存器堆的“读寄存器1”和“读寄存器2”输入，然后将rd字段送入“写寄存器”字段，然后将opcode操作码送入control进行控制，表明rs1 op rs2 -&gt; rd</p>
+<h2 id="34---执行">3.4   执行</h2>
+<p>执行过程中由于指令不同而不同，我们将分开阐述</p>
+<h3 id="341-----r-type的数据通路">3.4.1     R-type的数据通路</h3>
+<p>R-type在本设计中是算数逻辑运算指令，因此我们根据3.3中的译码，设置好需要读取的寄存器文件和执行完毕需要写入的寄存器文件，然后并设置控制信号将ALU设置为特定的操作模式，然后执行下面的操作</p>
+<p>
+  <img src="./clip_image044.jpg" alt="img">
+
+</p>
+<p>
+  <img src="./clip_image046.jpg" alt="img">
+
+</p>
+<p>图 3‑7 R-type指令的数据通路</p>
+<p>其形式化语言就是(Y) op R(IR(16 20)) -&gt; Z，将寄存器的rs2与rs1读取，送入到ALU的输入，然后ALU根据控制信号来选择操作模式，然后将输出放入到ALU result中，并通过RegWrite写入寄存器。这里值得注意的是，ALU由Zero端，可以用来进行beq指令的实现。</p>
+<p>这里涉及到寄存器堆的操作</p>
+<p>l 读：给出寄存器编号，寄存器的值自动输出到端口。</p>
+<p>l 写：需要寄存器编号和控制信号RegWwrite，时钟边沿触发。</p>
+<p>l 在一个周期内，REG可以同时完成读写操作，但是读出的是上一个周期写入的值（读后写）</p>
+<p>由于我们没有采用流水线架构，不会遇到冒险的情况，因此不需要考虑用气泡来阻塞流水等复杂的操作，只需要忠实地搭建我们的数据通路即可。</p>
+<h3 id="342-----访存指令-ld">3.4.2     访存指令-ld</h3>
+<p>访存指令的编码如下图</p>
+<p>
+  <img src="./clip_image048.jpg" alt="img">
+
+</p>
+<p>图 3‑8 访存指令的编码</p>
+<p>其数据通路如下：
+
+  <img src="./clip_image050.jpg" alt="img">
+
+</p>
+<p>图 3‑9 ld指令的数据通路</p>
+<p>如图，rs寄存器中存的是基址，rt是ld目的寄存器</p>
+<p> <strong>指令获取和解码</strong>：</p>
+<p>· 从指令存储器中获取lw指令，并解码获取操作数。lw指令的格式是：lw rt, imm16(rs)，其中rt是目标寄存器，rs是基址寄存器，imm16是16位偏移量。</p>
+<p> <strong>寄存器读操作</strong>：</p>
+<p>· 将rs字段送入寄存器堆的R1#端口，从寄存器堆中读取基址寄存器rs的值。</p>
+<p> <strong>立即数扩展</strong>：</p>
+<p>· 将16位立即数imm16通过符号扩展单元扩展为32位。这是因为MIPS处理器内部操作是基于32位的，需要将16位偏移量扩展为32位才能进行加法运算。</p>
+<p> <strong>地址计算</strong>：</p>
+<p>· 扩展后的32位立即数与从寄存器堆读取到的rs寄存器值通过ALU进行加法操作，计算出最终的访存地址。ALU的操作符AluOp应设置为加法操作。</p>
+<p> <strong>访存操作</strong>：</p>
+<p>· 使用计算出的访存地址从数据存储器中读取数据。数据存储器的写使能控制信号WE应设置为0，以确保进行的是读操作。</p>
+<p> <strong>写回寄存器</strong>：</p>
+<p>· 将从数据存储器中读取到的数据送入寄存器堆的写数据端口WD，并将rt字段送入寄存器堆的写寄存器编号端W#。寄存器堆的写使能控制信号RegWrite应设置为1，以允许数据写回寄存器堆。</p>
+<p>例如：lw x1, offset(x2); M(x2+offset) -&gt; x1</p>
+<p>注：本指令中由Sign Extend对指令进行扩展。</p>
+<h3 id="343-----访存指令-sw">3.4.3     访存指令-sw</h3>
+<p>
+  <img src="./clip_image052.jpg" alt="img">
+
+</p>
+<p>图 3‑10 访存指令sw的格式</p>
+<p>
+  <img src="./clip_image054.jpg" alt="img">
+
+</p>
+<p>图 3‑11 访存指令sw的数据通路</p>
+<p><strong>寄存器读取</strong></p>
+<p>· 将rs1字段送入寄存器堆的R1#端口，从寄存器堆中读取基址寄存器rs1的值。</p>
+<p>· 将rs2字段送入寄存器堆的R2#端口，从寄存器堆中读取源寄存器rs2的值。</p>
+<p><strong>3.</strong> <strong>立即数扩展</strong></p>
+<p>· 由于设计的是32位的MIPS-CPU，故将其扩展为32位。</p>
+<p><strong>4.</strong> <strong>地址计算</strong></p>
+<p>· 将符号扩展后的32位立即数与基址寄存器rs1的值送入ALU。</p>
+<p>· ALU执行加法操作，计算得到最终的访存地址。</p>
+<p><strong>5.</strong> <strong>访存操作</strong></p>
+<p>· 使用计算得到的地址，将源寄存器rs2中的数据写入数据存储器的该地址。</p>
+<p>· 将写数据送入数据存储器的写数据端口。</p>
+<p><strong>6.</strong> <strong>控制信号设置</strong></p>
+<p>· MemWrite（数据存储器写使能控制信号）应设置为1，以允许写入数据到数据存储器。</p>
+<p>· RegWrite应设置为0，因为此指令不需要写回寄存器。</p>
+<p>· AluOp应设置为加法操作。</p>
+<p>· <strong>数据通路功能部件</strong></p>
+<p>· <strong>指令存储器</strong>: 存储并提供指令。</p>
+<p>· <strong>寄存器堆</strong>: 存储寄存器的值，进行读写操作。</p>
+<p>· <strong>符号扩展单元</strong>: 将12位立即数扩展为32位。</p>
+<p>· <strong>ALU</strong>: 执行加法操作，计算最终的访存地址。</p>
+<p>· <strong>数据存储器</strong>: 存储并提供数据，执行读写操作。</p>
+<h3 id="344-----数据通路综合">3.4.4     数据通路综合</h3>
+<p>
+  <img src="./clip_image056.jpg" alt="img">
+
+</p>
+<p>图 3‑12综合数据通路</p>
+<ul>
+<li>
+<p><strong>指令获取与PC****更新</strong></p>
+</li>
+<li>
+<p><strong>PC</strong>（程序计数器）提供当前指令的地址。</p>
+</li>
+<li>
+<p><strong>指令存储器</strong>从该地址读取指令并提供给后续处理单元。</p>
+</li>
+<li>
+<p><strong>PC****更新</strong>：PC通常在每次指令获取后增加4，以指向下一条指令。</p>
+</li>
+<li>
+<p><strong>2.</strong> <strong>指令解码和寄存器读取</strong></p>
+</li>
+<li>
+<p><strong>指令解码</strong>：将指令分解为不同的字段，例如操作码（opcode）、寄存器源地址（rs1、rs2）、目标寄存器地址（rd）、立即数（immediate）等。</p>
+</li>
+<li>
+<p><strong>寄存器读取</strong>：从寄存器堆中读取源寄存器（rs1、rs2）的值，并将它们送入ALU或数据存储器。</p>
+</li>
+<li>
+<p><strong>3.</strong> <strong>数据通路功能部件</strong></p>
+</li>
+</ul>
+<p><strong>寄存器堆</strong></p>
+<ul>
+<li><strong>读寄存器1****和2</strong>：根据指令中的rs1和rs2字段，从寄存器堆中读取数据。</li>
+<li><strong>写寄存器</strong>：根据指令中的rd字段，将计算或访存结果写回寄存器堆。</li>
+</ul>
+<p><strong>符号扩展单元</strong></p>
+<ul>
+<li>
+<p><strong>立即数扩展</strong>：对于I型和S型指令，将16位的立即数符号扩展为32位，供后续运算使用。</p>
+</li>
+<li>
+<p><strong>4. ALU****操作</strong></p>
+</li>
+<li>
+<p><strong>ALUSrc****选择</strong>：通过多路复用器（MUX）选择ALU的第二个操作数，选择rs2的值或扩展后的立即数。</p>
+</li>
+<li>
+<p><strong>ALU****操作</strong>：根据操作码和功能码，执行加法、减法、逻辑运算等操作。</p>
+</li>
+<li>
+<p><strong>ALU****结果</strong>：计算结果送至数据存储器地址端口或直接写回寄存器堆。</p>
+</li>
+<li>
+<p><strong>5.</strong> <strong>数据存储器访问（仅对访存指令）</strong></p>
+</li>
+<li>
+<p><strong>地址计算</strong>：ALU计算出最终的访存地址。</p>
+</li>
+<li>
+<p><strong>数据写入</strong>：对S型指令，将数据从寄存器写入到计算出的内存地址。</p>
+</li>
+<li>
+<p><strong>数据读取</strong>：对I型访存指令（如lw），从计算出的内存地址读取数据并送入寄存器堆。</p>
+</li>
+<li>
+<p><strong>6.</strong> <strong>控制信号</strong></p>
+</li>
+<li>
+<p><strong>RegWrite</strong>：写寄存器使能信号，控制是否写回寄存器堆（R型和I型指令中为1）</p>
+</li>
+<li>
+<p><strong>ALUSrc</strong>：ALU源操作数选择信号，用于选择ALU的第二个操作数是寄存器的值（rs2）还是扩展后的立即数。对于R型指令，选择寄存器值；对于I型和S型指令，选择立即数。</p>
+</li>
+<li>
+<p><strong>MemRead</strong>：内存读使能信号，用于控制是否从内存读取数据。对于lw指令，MemRead为1。</p>
+</li>
+<li>
+<p><strong>MemWrite</strong>：内存写使能信号，用于控制是否向内存写入数据。对于sw指令，MemWrite为1。</p>
+</li>
+<li>
+<p><strong>MemtoReg</strong>：选择寄存器写回数据的信号。对于lw指令，选择从内存读取的数据；对于R型指令，选择ALU的计算结果。</p>
+</li>
+</ul>
+<p>此外，为了实现beq分支指令，我们需要加一个mux来进行选择，得到总的数据通路图</p>
+<p>
+  <img src="./clip_image058.jpg" alt="img">
+
+</p>
+<p>图 3‑13 数据通路总图</p>
+<p>得到的微操作如下：</p>
+<p>
+  <img src="./clip_image060.jpg" alt="img">
+
+</p>
+<p>图 3‑14 微操作表</p>
+<h1 id="4-节拍的划分">4 节拍的划分</h1>
+<p>整体设计的节拍如下图所示</p>
+<p>
+  <img src="./clip_image062.jpg" alt="img">
+
+</p>
+<p>图 4‑1 节拍的划分</p>
+<h2 id="41---取指阶段">4.1   取指阶段</h2>
+<p>取指阶段各指令的操作是相同的，因此我们可以统一设计，操作如下表</p>
+<p>
+  <img src="./clip_image064.jpg" alt="img">
+
+</p>
+<p>图表 1 取指阶段的节拍划分</p>
+<h2 id="42---取数阶段">4.2   取数阶段</h2>
+<p>
+  <img src="./clip_image066.jpg" alt="img">
+
+</p>
+<p>图表 2 取数阶段的节拍划分</p>
+<h2 id="43---r型指令执行阶段">4.3   R型指令执行阶段</h2>
+<p>在本CPU中，R型都是操作三个寄存器的算数逻辑运算，因此可以用同样的节拍划分来概括。</p>
+<p>
+  <img src="./clip_image068.jpg" alt="img">
+
+</p>
+<p>图表 3 R-type节拍划分</p>
+<h2 id="44---访存指令">4.4   访存指令</h2>
+<h3 id="441-----ld指令">4.4.1     ld指令</h3>
+<p>
+  <img src="./clip_image070.jpg" alt="img">
+
+</p>
+<p>图表 4 ld指令节拍划分</p>
+<h3 id="442-----sw指令">4.4.2     sw指令</h3>
+<p>
+  <img src="./clip_image072.jpg" alt="img">
+
+</p>
+<p>图表 5 sw指令划分</p>
+<h1 id="5-控制信号">5 控制信号</h1>
+<p>ALU的控制信号在第2节已经详细阐述，这里不赘述，我们将重点放在控制信号的生成上</p>
+<p>
+  <img src="./clip_image074.jpg" alt="img">
+
+</p>
+<p>图 5‑1 控制信号</p>
+<p>根据控制信号，我们可以绘制出ALU的控制选择电路，由浅色（蓝色）的线来表示。</p>
+<p>
+  <img src="./clip_image076.jpg" alt="img">
+
+</p>
+<p>图表 6 ALU控制线路</p>
+<h2 id="51---对数据通路的控制">5.1   对数据通路的控制</h2>
+<p>根据设计的指令，我们可以得到每一个指令对应的信号</p>
+<p>
+  <img src="./clip_image078.jpg" alt="img">
+
+</p>
+<p>图表 7 指令对应的控制信号</p>
+<p>如图，按指令操作码设置的控制信号。表的第一行对应于R型指令(add、sub、AND、OR 和 slt):源寄存器字段都为rs和n，目的寄存器字段为rd，这决定了ALUSrc和RegDst信号如何设置;并且，R型指令写寄存器(RegWrite=1)，但是不读写数据存储器。当Branch 控制信号为0时PC无条件地由PC+4取代;反之，如果ALU的零输出也为高，则PC由分支目标地址取代。当R型指令的 ALUOp为 10 时，ALU 的控制信号应由 funct 字段生成。本表的第二行和第三行给出了1w、sw指令的控制信号设置:ALUSr和ALUOp被设为进行地址计算;MemRead 和MemWrite 被设为进行存储器访问;最后，RegDst和 RegWrite 被设为在装载指令中将结果存人寄存器rt中。分支指令与R型指令相似，因为它将寄存器rs和送人 ALU:分支指令的 ALUOp字段被设为进行减法(ALUOp=01)，以进行等值的测试。注意，RegWrite=0时MemtoReg的设置无关紧要&ndash;因为寄存器没有被写入，寄存器写端口的数据值不被使用，所以最后两行MemtoReg 的值由于不被关心而用X取代。RegWrite=0时，RegDst 的值也可用X取代。</p>
+<h2 id="52---各种指令的执行步骤">5.2   各种指令的执行步骤</h2>
+<p>我们站在控制的角度，需要重新进一步细化指令的设计。</p>
+<p>l R型指令</p>
+<p>✓第一步：取指和PC＋4</p>
+<p>✓第二步：读两个源操作数寄存器x2和x3</p>
+<p>✓第三步：ALU操作</p>
+<p>✓第四步：结果写回目的寄存器x1</p>
+<p>l Lw指令</p>
+<p>p第一步：取指和PC＋4</p>
+<p>p第二步：读寄存器x2</p>
+<p>p第三步：ALU操作完成x2与符号扩展后的offset加</p>
+<p>p第四步：ALU的结果作为访存地址，送往数据MEM</p>
+<p>p第五步：内存中的数据送往x1</p>
+<p>l Beq指令</p>
+<p>p第一步：取指和PC＋4</p>
+<p>p第二步：读寄存器x1，x2</p>
+<p>p第三步：ALU将x1和x2相减；PC+4与被左 移1位并进行符号扩展后的offset相加，作 为分支目标地址</p>
+<p>p第四步：ALU的Zero确定应送往PC的值</p>
+<h2 id="53---控制单元的实现">5.3   控制单元的实现</h2>
+<p>在有了对指令的详细操作之后，我们需要一个映射关系，输入是6位操作码
+  <img src="./clip_image080.png" alt="img">
+
+，输出是控制信号，这样，我们可以基于操作码的二进制编码来为每一个输出建立一个真值表，根据我们前面构建的信息，我们可以将控制单元包括所有的输出的逻辑综合起来，描述成如下图的一张真值表。</p>
+<p>
+  <img src="./clip_image082.jpg" alt="img">
+
+</p>
+<p>图表 8a 控制功能的真值表</p>
+<p>
+  <img src="./clip_image084.jpg" alt="img">
+
+</p>
+<p>图表 9b 控制功能的真值表</p>
+<p>如图，表a部分为输入，其包括操作码(对应于指令的31:26 位的 Op[5:0])的4种组合。表b部分为4种组合的输出。因此，RegWrite 对于两种不同的输人组合是有效的。如果只考虑这张表中的4个操作码，则可以用输入部分的无关项简化真值表。例如，可以由表达式
+  <img src="./clip_image086.png" alt="img">
+
+确定是否为R型指令，因为这已经足够将R型指令与 1w、sw和 beq指令区分开。之所以不用这种简化，是因为在 MIPS指令集的完整实现中会用到其他操作码</p>
+<h1 id="6-cpu结构框图">6 CPU结构框图</h1>
+<p>
+  <img src="./clip_image088.jpg" alt="img">
+
+</p>
+<p>图 6‑1 CPU结构框图</p>
+<p>
+  <img src="./clip_image090.jpg" alt="img">
+
+</p>
+<p>图 6‑2本文设计的MIPS-CPU总览</p>
+<p><strong>1.<strong><strong>控制单元（Control Unit</strong></strong>）：<strong>控制单元是 CPU 的核心部分，负责控制整个计算机系统的运
+行。它从内存中读取指令，解码指令，调度执行，以确保指令按照正确的顺序和时间被
+执行。
+<strong>2.</strong> <strong>算术逻辑单元（Arithmetic Logic Unit, ALU</strong></strong>）：</strong> ALU 执行各种算术运算（如加法、减法、
+乘法、除法）和逻辑运算（如与、或、非）的操作。它从寄存器中获取数据进行计算，
+并将结果存回寄存器。
+<strong>3.</strong> <strong>寄存器（Registers</strong>**）：**寄存器是 CPU 内部的高速存储器件，用于临时存储指令、数据和
+地址。不同类型的寄存器包括：
+a) 程序计数器（Program Counter, PC）：存储下一条要执行的指令的地址。
+b) 指令寄存器（Instruction Register, IR）：存储当前正在执行的指令。
+c) 累加器（Accumulator）：用于存储算术运算的结果。
+d) 数据寄存器（Data Registers）：存储计算过程中的数据。
+e) 地址寄存器（Address Register）：存储内存地址。</p>
+<p><strong>MIPS<strong><strong>规定了32</strong></strong>个通用寄存器，分别对应为编号0<strong><strong>到编号31</strong></strong>，每个寄存器还配有一个别名，俗称“助记符”。</strong></p>
+<ol start="4">
+<li>缓存（Cache）：缓存是位于 CPU 和主内存之间的高速存储器，在存储器访问频繁的数</li>
+</ol>
+<p>据和指令，以提高数据访问速度。在本CPU中并没有实现</p>
+<ol start="5">
+<li>数据总线（Data Bus）和地址总线（Address Bus）：数据总线用于传输数据，地址总线用</li>
+</ol>
+<p>于传输地址。它们是 CPU 和其他计算机组件之间进行通信的通道。</p>
+<ol start="6">
+<li>计时器（Timer）：计时器用于控制 CPU 内部的时钟频率和执行指令的速度，以确保指</li>
+</ol>
+<p>令按照正确的顺序和时间被执行。</p>
+<h1 id="7-总结与分析">7 总结与分析</h1>
+<p>我们其实通过了一个大致的自顶向下的思路逐步设计了一个单周期的MIPS-CPU，我们首先明确了MIPS常见的指令格式，然后根据MIPS架构模式，构建了基本的数据通路以及寄存器规范，然后我们挑选基本的指令进行设计，整体经过了从数据通路设计到控制部件设计的过程。</p>
+<p>我们实现的是一个简单的单周期MIPS处理器，单周期就意味着指令周期=1机器周期=1时钟周期,并且采用边缘触发方式，即所有指令在时钟的一个边开始执行，在下一个边结束</p>
+<p>
+  <img src="./clip_image092.jpg" alt="img">
+
+</p>
+<p>这种单周期CPU实际工作效率是特别低的，因为其
+  <img src="./clip_image094.png" alt="img">
+
+。</p>
+<p>我们可以进行一个简单的分析，设程序中load有24％，store有12％，R-type有44％，beq有18 ％，jump有2％。假设load, store,R,beq,jump指令的时间分别是 8,7,6,5,2ns（如下表）。如果时钟周期固定，单周期的时钟为 8ns；如果时钟周期不定长，单周期的时钟可以是2ns～8ns。试 比较时钟定长单周期实现和不定长单周期实现的性能。</p>
+<p>
+  <img src="./clip_image096.jpg" alt="img">
+
+</p>
+<p>则如果我们使用变长周期，我们有</p>
+<p>
+  <img src="./clip_image098.png" alt="img">
+
+</p>
+<p>我们发现，变长周期实现比定长单周期实现快
+  <img src="./clip_image100.png" alt="img">
+
+倍。</p>
+<p>此外，我们还可以使用流水线技术，但是流水线技术涉及到逻辑冒险和气泡阻塞流水，以及通过旁路来加速的更深入的知识，我们并没有在《计算机组成原理》中深入探讨，因此只能停留在“可以通过这么优化”的理论层面。不过，基于以上技术的一个单周期MIPS处理器已经足矣说明这些指令的处理流程。</p>
+<h1 id="8-参考资料">8 参考资料</h1>
+<p>[1] MIPS32™ Architecture For Programmers Volume II, Revision 1.00</p>
+<p>[2]计算机组成与设计 硬件/软件接口 原书第5版</p>
+<p>[3]计算机组成原理 唐硕飞 第三版</p>
+<p>[3]计算机组成原理 谭志虎</p>
 
 
                 
