@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>WriteUp on #3</title>
+    <link>https://zephyr369.online/tags/writeup/</link>
+    <description>Recent content in WriteUp on #3</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 23 Jun 2024 12:00:00 +0000</lastBuildDate>
+    <atom:link href="https://zephyr369.online/tags/writeup/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2024闽盾杯WriteUp</title>
+      <link>https://zephyr369.online/ctfmindunbei/</link>
+      <pubDate>Sun, 23 Jun 2024 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/ctfmindunbei/</guid>
+      <description>Pwn licensePWN 挖个漏洞获取管理员的权限和数据 fscanf(v1, &amp;#34;%s&amp;#34;, v6); 存在栈溢出，进到 sub_4012F0 函数中eip可控，题目中要求 if ( v3 == 999 ) sub_401340(); return 0; 没开pie，把后门函数地址 401340 塞eip</description>
+    </item>
+  </channel>
+</rss>

