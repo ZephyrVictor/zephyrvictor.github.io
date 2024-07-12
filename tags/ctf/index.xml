@@ -6,8 +6,15 @@
     <description>Recent content in CTF on #3</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 23 Jun 2024 12:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 05 Jul 2024 12:00:00 +0000</lastBuildDate>
     <atom:link href="https://zephyr369.online/tags/ctf/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2024春秋杯夏季赛WriteUp</title>
+      <link>https://zephyr369.online/2024ichunqiu/</link>
+      <pubDate>Fri, 05 Jul 2024 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/2024ichunqiu/</guid>
+      <description>[toc] Crypto ezzzecc 我们需要找到定义椭圆曲线的素数 p。通过计算 K 和 G 的坐标，来确定素数 p。具体方法如下： $p1=K[0]^3+a\cdot K[0]+b-K[1]^2$ $p2=G[0]^3+a\cdot G[0]+b-G[1]^2$ 我们利用求得的素数p来定义椭圆曲线E $E=ECC(GF(p),[a,b])$ 然后</description>
+    </item>
     <item>
       <title>2024闽盾杯WriteUp</title>
       <link>https://zephyr369.online/ctfmindunbei/</link>
