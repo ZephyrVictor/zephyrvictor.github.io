@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="#3">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="img/cover.jpg">
+    <meta property="twitter:image" content="img/cover.jpg" />
+    
+
+    
+    <meta name="title" content="SSH远程转发笔记" />
+    <meta property="og:title" content="SSH远程转发笔记" />
+    <meta property="twitter:title" content="SSH远程转发笔记" />
+    
+
+    
+    <meta name="description" content="SSH本地端口转发、远程端口转发、动态转发的学习笔记">
+    <meta property="og:description" content="SSH本地端口转发、远程端口转发、动态转发的学习笔记" />
+    <meta property="twitter:description" content="SSH本地端口转发、远程端口转发、动态转发的学习笔记" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="Zephyr, Zephyr, Zephyr, , Zephyr的网络日志, Zephyr的博客, Zephyr Blog, 博客, 个人网站, 互联网, Web, CTF,">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>SSH远程转发笔记 | Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
+
+    <link rel="canonical" href="/ssh/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+ 
+ <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+        displayMath: [
+          ["$$", "$$"],
+          ["\\[", "\\]"],
+        ],
+        processEscapes: true,
+        processEnvironments: true,
+      },
+      options: {
+        skipHtmlTags: ["script", "noscript", "style", "textarea", "pre"],
+      },
+    };
+  
+    window.addEventListener("load", (event) => {
+      document.querySelectorAll("mjx-container").forEach(function (x) {
+        x.parentElement.classList += "has-jax";
+      });
+    });
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    type="text/javascript"
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+</head>
+<style>
+    code.has-jax {
+      -webkit-font-smoothing: antialiased;
+      background: inherit !important;
+      border: none !important;
+      font-size: 100%;
+    }
+    </style>
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">#3</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+                        <li><a href="/life//">LIFE</a></li>
+                    
+                        <li><a href="/course//">HISTORY</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/cover.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/notebook" title="notebook">
+                            notebook
+                        </a>
+                        
+                        <a class="tag" href="/tags/ssh" title="SSH">
+                            SSH
+                        </a>
+                        
+                    </div>
+                    <h1>SSH远程转发笔记</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Zephyr
+                             
+                            on 
+                            Sunday, July 14, 2024
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <p>笔者最近在准备渗透学习，需要先了解基础的<code>ssh转发</code>知识。
+<a href="https://zhuanlan.zhihu.com/p/148825449">知乎-彻底搞懂SSH端口转发命令</a></p>
+<h1 id="本地端口转发">本地端口转发</h1>
+<p>A无法访问C的某个端口，但是B 可以访问C的这个端口，可以将主机A对某个端口的访问转发给主机B，让B对另一主机C指定端口Z访问</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>ssh <span style="color:#ff79c6">-</span>L 主机A端口X<span style="color:#ff79c6">:</span>主机C<span style="color:#ff79c6">:</span>主机C端口Z username@hostname
+</span></span></code></pre></div><ul>
+<li>绑定特定地址的请求</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>ssh <span style="color:#ff79c6">-</span>L [收听接口<span style="color:#ff79c6">:</span>]收听端口<span style="color:#ff79c6">:</span>目标主机<span style="color:#ff79c6">:</span>目标端口 username@hostname
+</span></span></code></pre></div><p>是本地端口转发的完整命令形式</p>
+<blockquote>
+<p>命令中方括号内的部分，即第一个参数可以不写；它的默认值一般是0.0.0.0（OpenSSH客户端配置文件「ssh_config」中「GatewayPorts」选项的值一般为「yes」），意味着SSH隧道会收听所有接口，接受来自任何地址的应用访问请求并进行转发。而如果在此处填写了绑定地址（bind address），SSH隧道连接就会只处理来自绑定地址的应用请求，而对其他地址发来的请求置之不理；</p>
+</blockquote>
+<p>例如在此处填写127.0.0.1，即可实现只有来自主机A本机的应用请求才被SSH隧道转发的效果。</p>
+<p>收听接口是面向 <code>A</code> 的，因此对应的 <code>收听端口</code> 应该是我们期望的 <code>A</code> 的端口</p>
+<p>我们用一张图来概括这个大致的过程</p>
+<p>左侧为 <code>HOST A</code> ，右侧是 <code>Host B</code></p>
+<p>
+  <img src="image.png" alt="alt text">
+
+</p>
+<h2 id="例子">例子</h2>
+<p>引自https://zhuanlan.zhihu.com/p/148825449</p>
+<h3 id="0x1-利用可以访问外网的主机访问不能访问外网的主机">0x1 利用可以访问外网的主机访问不能访问外网的主机</h3>
+<blockquote>
+<p>主机B与主机C处于同一内网中，主机B能够与外界联系而主机C不能。这时不处于内网中的主机A如果想要访问主机C，就可以通过SSH连接主机B＋端口转发来进行。即：</p>
+<p>A→C，某服务不可直连</p>
+<p>B→C，某服务可直连</p>
+<p>A→B，SSH可直连</p>
+<p>任务目标：A→B→C，某服务的间接连接</p>
+</blockquote>
+<p>台式机B上运行着虚拟机C，虚拟机使用虚拟机软件搭建的虚拟网络与其宿主——主机B相连接，但在主机B以外无法直接访问该虚拟网络。想要通过SSH，用与台式机B处于同一WiFi下的笔记本A来远程控制虚拟机C，（在A上）执行端口转发命令：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>ssh <span style="color:#ff79c6">-</span>L <span style="color:#bd93f9">22022</span><span style="color:#ff79c6">:</span><span style="color:#bd93f9">10.0.2.15</span><span style="color:#ff79c6">:</span><span style="color:#bd93f9">22</span> desktop_user@<span style="color:#bd93f9">192.168.1.11</span>	# cmd<span style="color:#bd93f9">.1</span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>
+</span></span></code></pre></div><p>其中，22022号端口是随便选的一个没被占用的端口；192.168.1.11是台式机B在WiFi中的IP；desktop_user是主机B上的用户名；10.0.2.15是虚拟机C在主机B为其搭建的虚拟网络中的IP；22号端口是默认的SSH端口。已知virtual_user是虚拟机C上的用户名，这时在笔记本A上执行应用的访问请求命令：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>ssh <span style="color:#ff79c6">-</span>p <span style="color:#bd93f9">22022</span> virtual_user@localhost	# cmd<span style="color:#bd93f9">.1</span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">2</span>
+</span></span></code></pre></div><p>我们在笔记本A上以SSH协议访问本机（localhost）的22022号端口，这个请求就像通过了隧道（SSH隧道）一样抵达台式机B，台式机B则把这个请求变为对虚拟机C的22号端口的访问，并为A返回结果。其中，使用「-p」旗标是为了访问主机A的特定端口而不是SSH默认的22号端口；由于我们在主机A上执行命令，A管自己叫localhost，假如在其他主机上执行则需相应地改为主机A的域名或IP等他们对A的称呼。</p>
+<p>cmd.1-2中我们是将SSH当作普通应用使用的。参考Fig.1，cmd.1-1在A与B之间建立SSH隧道，此时A上的SSH客户端和B上的SSH服务器对应图中的SSH Client和SSH Server；cmd.1-2则表达应用的访问请求，此时A上的SSH客户端和C上的SSH服务器对应图中的application client和application server。</p>
+<p>以上cmd.1-1和cmd.1-2合起来实际是想（在A上）进行：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>ssh <span style="color:#ff79c6">-</span>p <span style="color:#bd93f9">22</span> virtual_user@<span style="color:#bd93f9">10.0.2.15</span>	# cmd<span style="color:#bd93f9">.1</span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">3</span>
+</span></span></code></pre></div><h3 id="0x2-绕过防火墙">0x2 绕过防火墙</h3>
+<blockquote>
+<p>防火墙阻止了主机A对主机B一些端口的连接，但主机B仍有部分端口（含SSH）是对主机A开放的。这时主机A如果需要访问主机B上被防火墙阻挡的端口，就可以通过SSH连接主机B＋端口转发来进行。需注意，这时所谓的主机C就是主机B。即：</p>
+<p>A→B，某服务不可直连</p>
+<p>B→B，某服务可直连</p>
+<p>A→B，SSH可直连</p>
+<p>任务目标：A→B→B，某服务的间接连接</p>
+</blockquote>
+<p>某某云的云服务器B默认的防火墙设置仅开放了22号端口，其他入方向的访问都被屏蔽了。我们为云服务器B安装了桌面环境，现在想要在自己的计算机A上，通过VNC远程控制云服务器B的桌面。（在A上）执行端口转发命令：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>ssh <span style="color:#ff79c6">-</span>L <span style="color:#bd93f9">5920</span><span style="color:#ff79c6">:</span>localhost<span style="color:#ff79c6">:</span><span style="color:#bd93f9">5901</span> cloud_user@server.example.com	# cmd<span style="color:#bd93f9">.2</span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>
+</span></span></code></pre></div><p>因为C就是B自己，所以C的位置填localhost；5920随便选；5901是云服务器B上VNC服务进程收听的端口；cloud_user是B上的用户名；<a href="http://server.example.xn--comb-yk1gj6r062ay52a/">http://server.example.com是B的域名</a>，换成公网IP也行。</p>
+<p>下面在计算机A上打开RealVNC VNC Viewer（VNC客户端），输入VNC服务器地址：<code>localhost:20</code></p>
+<p>然后这个过程就会经过 <code>20-&gt;5920-&gt;5901</code></p>
+<h1 id="远程端口转发">远程端口转发</h1>
+<p>
+  <img src="image-1.png" alt="alt text">
+
+</p>
+<p>左侧为 <code>HOST A</code> ，右侧是 <code>Host B</code></p>
+<p>现在 <code>A</code> 建立了到 <code>B</code> 的ssh连接, <code>C</code> 上的某个端口提供了服务，但是 <code>B</code> 无法直接访问 <code>C</code> 或者该端口，因此我们在有 <code>A-&gt;B</code>  这一ssh连接的前提下，可以用远程端口转发</p>
+<ul>
+<li><strong>注：比较两张图我们可以发现，采取远程端口转发或本地端口转发，取决于SSH连接建立的方向</strong></li>
+</ul>
+<p>对于一个 <code>A-&gt;B</code> 的连接，执行命令、运行SSH客户端的主机，我们称为本地主机A【Host A】；接收连接请求、运行SSH服务器的主机，我们称为远程主机B【Host B】。通过密码或密钥等方式验证后，SSH连接建立，主机A可以使用命令行对主机B实施远程控制。请求是在 <code>HOST A</code> 发出，被转发走的，是 <code>本地转发</code> ，请求是在 <code>Host B</code> 发出的，是 <code>远程转发</code>。</p>
+<blockquote>
+<p>需注意，此时访问请求在主机B一侧发生，而SSH连接的方向却没有变化，仍是由A到B的。因此「本地与远程端口转发互为镜像」的说法并不完全准确；严格意义上的镜像，SSH连接也要变为由B到A，那时则应该是在B上采用本地端口转发。可以看出，采取哪种端口转发主要取决于SSH连接建立的方向。</p>
+</blockquote>
+<p>因此，远程端口转发是：我们在 <code>Host B</code> 上有一个对制定端口 <code>X</code> 的请求，经过远程端口转发交给了主机 <code>A</code> ，由主机 <code>A</code> 对另一个主机 <code>C</code> 的端口 <code>Y</code> 进行请求。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ssh -R 主机B端口Y:主机C:主机C端口Z username@hostnam
+</span></span></code></pre></div><p><code>将对B:Y的访问转变成对C:Z的访问</code></p>
+<h3 id="示例">示例</h3>
+<p>假设以下条件：</p>
+<ul>
+<li>Host B 上的端口 X 为 8080。</li>
+<li>目标主机 C 的地址为 192.168.1.100。</li>
+<li>目标主机 C 上的端口 Y 为 80。</li>
+<li>用于登录到 Host B 的用户名为 user，Host B 的地址为 hostB.example.com。</li>
+</ul>
+<p>那么相应的 SSH 命令如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ssh -R 8080:192.168.1.100:80 user@hostB.example.com
+</span></span></code></pre></div><p>执行这个命令后，在 Host B 上对端口 8080 的请求会通过 SSH 隧道被转发到 Host A，然后 Host A 将请求转发到目标主机 C 的端口 80。</p>
+<h2 id="例子-1">例子</h2>
+<h3 id="0x1">0x1</h3>
+<blockquote>
+<p>主机A与主机C处于同一内网中，主机A能够与外界联系而主机C不能。这时（在主机A上）如果想让不处于内网中的主机B访问主机C，就可以通过SSH连接主机B＋端口转发来进行。即：</p>
+<p>B→C，某服务不可直连</p>
+<p>A→C，某服务可直连</p>
+<p>A→B，SSH可直连</p>
+<p>任务目标：B→A→C，某服务的间接连接</p>
+</blockquote>
+<p>具体化为：台式机A上运行着虚拟机C，虚拟机使用虚拟机软件搭建的虚拟网络与宿主主机A相连接，但在主机A以外无法直接访问该虚拟网络。想要通过SFTP，用与台式机A处于同一WiFi下的笔记本B来向虚拟机C传输文件，（在A上）执行端口转发命令：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>ssh <span style="color:#ff79c6">-</span>R <span style="color:#bd93f9">22122</span><span style="color:#ff79c6">:</span><span style="color:#bd93f9">10.0.2.16</span><span style="color:#ff79c6">:</span><span style="color:#bd93f9">22</span> laptop_user@<span style="color:#bd93f9">192.168.1.233</span> 
+</span></span></code></pre></div><p>其中，22122号端口是随便选的一个没被占用的端口；192.168.1.233是笔记本B在WiFi中的IP；laptop_user是主机B上的用户名；10.0.2.16是虚拟机C在主机A为其搭建的虚拟网络中的IP；22号端口是默认的SFTP端口。已知virtual_user是虚拟机C上的用户名，这时在笔记本B上执行应用的访问请求命令：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>sftp <span style="color:#ff79c6">-</span>P <span style="color:#bd93f9">22122</span> virtual_user@localhost
+</span></span></code></pre></div><p>请注意这是一条运行在B上的应用命令；B上的SFTP客户端这时充当上图中的application client。由于请求是B发出的，因此B在自己眼中的地址就是 <a href="http://localhost"><code>localhost</code></a> 对B的22122号端口的访问被转发至A，A访问C，即10.0.2.16的22号端口并将结果返回给B。于是B就通过远程端口转发成功访问了C上的SFTP服务器。</p>
+<p>综合上述两条命令，我们实际上是想执行</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>sftp <span style="color:#ff79c6">-</span>P <span style="color:#bd93f9">22</span> virtual_user@<span style="color:#bd93f9">10.0.2.15</span>
+</span></span></code></pre></div><h3 id="0x2">0x2</h3>
+<blockquote>
+<p>处于内网之中的主机A可以访问公网，但不具有公网IP；公网中的主机B无法找到A，但为A开放各个端口的访问（A可以直接连接B，反之则不行）。这时A想要让B访问自己，就可以通过SSH连接主机B＋端口转发来进行。需注意，这时所谓的主机C就是主机A。即：</p>
+<p>B→A，某服务不可直连</p>
+<p>A→A，某服务可直连</p>
+<p>A→B，SSH可直连</p>
+<p>任务目标：B→A→A，某服务的间接连接</p>
+</blockquote>
+<ul>
+<li>注：OpenSSH服务器对于远程端口转发的设定，默认只接受远程主机B本机上的应用发起的请求。想要从其他连接到B的设备发起请求，需将「sshd_config」文件中「GatewayPorts」选项后的「no」修改为「yes」。</li>
+</ul>
+<p>手头上计算机A运行着http服务，但A没有公网IP，其他设备不能使用该服务。恰好云服务器B有公网IP（甚至域名），便于被访问。在不将http服务迁移至云服务器B的前提下，可以使用SSH端口转发使其他设备通过访问B的方式访问A上的http服务。（在A上）执行端口转发命令：（这个非常实用）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>ssh <span style="color:#ff79c6">-</span>R <span style="color:#bd93f9">80</span><span style="color:#ff79c6">:</span>localhost<span style="color:#ff79c6">:</span><span style="color:#bd93f9">80</span> cloud_user@server.example.com	# cmd<span style="color:#bd93f9">.4</span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>
+</span></span></code></pre></div><p>这时C便是A自己（localhost）；80号端口是http默认端口，为简便两个都用默认；cloud_user还是B上的用户名；<a href="http://server.example.xn--comb-yk1gj6r062ay52aiw1c/">http://server.example.com还是B的域名</a>。</p>
+<p>接下来在其他设备上打开浏览器，输入地址：<code>http://server.example.com/</code> 就可以直接访问</p>
+<h1 id="动态端口转发">动态端口转发</h1>
+<p>动态端口转发可以把本地主机A上运行的SSH客户端转变成一个SOCKS代理服务器；实际上它是一种特殊的本地端口转发，或者说叫它「动态本地端口转发」更科学。这个动态，就动在这种转发不规定目标地址（主机C）和目标端口（端口Z），而是去读取应用发起的请求，从请求中获取目标信息。</p>
+<p><code>ssh -D 主机A端口X username@hostname</code></p>
+<p>好像很强，但有一个问题：之前使用固定的端口转发时，应用的访问请求都是指向被转发的那个端口X的，但现在应用的访问请求必须指向目标，以指定动态端口转发的目标。可如果不指向端口X，如何让数据走SSH隧道呢？这就要求我们在系统或应用（浏览器等）中设置一个使用SOCKS5协议、服务器为localhost、端口为X的代理，利用代理使请求走端口X。</p>
+<p>这样应用的请求就从X进入隧道，抵达B后其中的目标信息被解析出来，B访问目标后再将结果通过隧道返回给A。比如在开启代理的A上的浏览器中访问<a href="http://zhihu.com/">http://zhihu.com</a>，经过端口转发，相当于是B在帮A访问<a href="http://zhihu.com/">http://zhihu.com</a>。</p>
+
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2024ichunqiu/" data-toggle="tooltip" data-placement="top" title="2024春秋杯夏季赛WriteUp">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+                
+
+                
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/course" title="course">
+                            course
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/crypto" title="crypto">
+                            crypto
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ctf" title="ctf">
+                            ctf
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/notebook" title="notebook">
+                            notebook
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/pwn" title="pwn">
+                            pwn
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/writeup" title="writeup">
+                            writeup
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:empire258700@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/ZephyrVictor">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="#3" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; #3 2024
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>

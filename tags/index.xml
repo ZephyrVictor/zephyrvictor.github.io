@@ -6,8 +6,22 @@
     <description>Recent content in Tags on #3</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 05 Jul 2024 12:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 14 Jul 2024 12:00:00 +0000</lastBuildDate>
     <atom:link href="https://zephyr369.online/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Notebook</title>
+      <link>https://zephyr369.online/tags/notebook/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/tags/notebook/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>SSH</title>
+      <link>https://zephyr369.online/tags/ssh/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/tags/ssh/</guid>
+      <description></description>
+    </item>
     <item>
       <title>CTF</title>
       <link>https://zephyr369.online/tags/ctf/</link>
@@ -27,13 +41,6 @@
       <link>https://zephyr369.online/tags/course/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://zephyr369.online/tags/course/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Notebook</title>
-      <link>https://zephyr369.online/tags/notebook/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://zephyr369.online/tags/notebook/</guid>
       <description></description>
     </item>
     <item>

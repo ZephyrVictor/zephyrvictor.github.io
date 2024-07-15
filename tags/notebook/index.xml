@@ -6,8 +6,15 @@
     <description>Recent content in Notebook on #3</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 03 Jul 2024 12:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 14 Jul 2024 12:00:00 +0000</lastBuildDate>
     <atom:link href="https://zephyr369.online/tags/notebook/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>SSH远程转发笔记</title>
+      <link>https://zephyr369.online/ssh/</link>
+      <pubDate>Sun, 14 Jul 2024 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/ssh/</guid>
+      <description>笔者最近在准备渗透学习，需要先了解基础的ssh转发知识。 知乎-彻底搞懂SSH端口转发命令 本地端口转发 A无法访问C的某个端口，但是B 可以访问C</description>
+    </item>
     <item>
       <title>马克思主义原理复习笔记</title>
       <link>https://zephyr369.online/marxisttheory/</link>
