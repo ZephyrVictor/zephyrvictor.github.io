@@ -6,8 +6,22 @@
     <description>Recent content in Tags on #3</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 14 Jul 2024 12:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 24 Jul 2024 12:00:00 +0000</lastBuildDate>
     <atom:link href="https://zephyr369.online/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Course</title>
+      <link>https://zephyr369.online/tags/course/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/tags/course/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Docker</title>
+      <link>https://zephyr369.online/tags/docker/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/tags/docker/</guid>
+      <description></description>
+    </item>
     <item>
       <title>Notebook</title>
       <link>https://zephyr369.online/tags/notebook/</link>
@@ -34,13 +48,6 @@
       <link>https://zephyr369.online/tags/writeup/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://zephyr369.online/tags/writeup/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Course</title>
-      <link>https://zephyr369.online/tags/course/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://zephyr369.online/tags/course/</guid>
       <description></description>
     </item>
     <item>

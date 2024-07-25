@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="#3">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="img/cover.jpg">
+    <meta property="twitter:image" content="img/cover.jpg" />
+    
+
+    
+    <meta name="title" content="Docker与HIT·服务计算实验" />
+    <meta property="og:title" content="Docker与HIT·服务计算实验" />
+    <meta property="twitter:title" content="Docker与HIT·服务计算实验" />
+    
+
+    
+    <meta name="description" content="HIT夏季学期服务计算">
+    <meta property="og:description" content="HIT夏季学期服务计算" />
+    <meta property="twitter:description" content="HIT夏季学期服务计算" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="Zephyr, Zephyr, Zephyr, , Zephyr的网络日志, Zephyr的博客, Zephyr Blog, 博客, 个人网站, 互联网, Web, CTF,">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Docker与HIT·服务计算实验 | Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
+
+    <link rel="canonical" href="/HitDocker/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+ 
+ <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+        displayMath: [
+          ["$$", "$$"],
+          ["\\[", "\\]"],
+        ],
+        processEscapes: true,
+        processEnvironments: true,
+      },
+      options: {
+        skipHtmlTags: ["script", "noscript", "style", "textarea", "pre"],
+      },
+    };
+  
+    window.addEventListener("load", (event) => {
+      document.querySelectorAll("mjx-container").forEach(function (x) {
+        x.parentElement.classList += "has-jax";
+      });
+    });
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    type="text/javascript"
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+</head>
+<style>
+    code.has-jax {
+      -webkit-font-smoothing: antialiased;
+      background: inherit !important;
+      border: none !important;
+      font-size: 100%;
+    }
+    </style>
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">#3</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+                        <li><a href="/life//">LIFE</a></li>
+                    
+                        <li><a href="/course//">HISTORY</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/cover.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/course" title="course">
+                            course
+                        </a>
+                        
+                        <a class="tag" href="/tags/docker" title="Docker">
+                            Docker
+                        </a>
+                        
+                    </div>
+                    <h1>Docker与HIT·服务计算实验</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Zephyr
+                             
+                            on 
+                            Wednesday, July 24, 2024
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <p>Docker真是一个好东西啊:-)，让我终于摆脱了大一年级时安装环境的苦恼，安装错误的乱七八糟的环境残留，就像是做了一桌满汉全席后的厨房，连收拾都不想收拾，久而久之，电脑的环境真是乱七八糟。</p>
+<h1 id="dockerbasicknowledge">DockerBasicKnowledge</h1>
+<h2 id="docker概念">Docker概念</h2>
+<p>Docker 是一种开放平台， 用于开发、 发布和运行应用程序。 它的主要功能
+是将应用程序与基础架构分离， 以便快速交付软件。 通过 Docker， 用户可以像
+管理应用程序一样管理基础架构， 这样就能够显著减少编写代码和在生产环境中
+运行之间的延迟。
+以简单的方式来说， Docker 就像是一个虚拟机， 但是更轻量、 更具可移植
+性。 用户可以将应用程序、 代码库、 编译工具以及构建运行环境都放在一个称为
+容器的独立单元中。 将整个 Docker 容器从源主机搬运到目标机上， 即可完成程
+序的发布， 省去了重新构建运行环境的复杂过程和时间。 另外， 容器之间完全使
+用沙箱机制进行隔离， 相互之间没有任何接口， 同时具有极低的性能开销。
+Docker 提供了工具和平台来管理容器的整个生命周期：</p>
+<ol>
+<li>
+<p>在容器中开发
+应用程序及其支持组件。</p>
+</li>
+<li>
+<p>将容器作为分发和测试应用程序的单元。</p>
+</li>
+<li>
+<p>准
+备就绪后， 将应用程序部署到生产环境中， 无论是本地数据中心、 云提供商还是
+两者的混合， 都能够以容器或编排服务的形式进行部署。
+这种隔离和安全性的方法使得用户能够在给定的主机上同时运行多个容器，
+实现更高效的应用程序开发、 测试和部署。</p>
+</li>
+</ol>
+<h2 id="docker组成">Docker组成</h2>
+<ol>
+<li>
+<p>客户端： Docker 客户端是用户与 Docker 引擎进行交互的工具。 通过 Docker
+客户端， 用户可以使用命令行界面（CLI） 或 API 向 Docker 服务端发送指令，
+执行各种操作， 如创建、 管理、 监视容器和镜像等。 客户端可以运行在任何支持
+Docker 的环境中， 如本地开发机器、 云服务器等。</p>
+</li>
+<li>
+<p>服务端： Docker 服务端是运行在宿主机上的 Docker 引擎， 负责管理容器、
+镜像、 网络和存储等资源。 服务端包括了 Docker 守护进程（Docker Daemon） 和
+Docker REST API。 Docker 守护进程监听来自客户端的请求， 并相应地执行操作，
+同时管理宿主机上的各种容器和镜像。</p>
+</li>
+<li>
+<p>镜像：Docker 镜像是用于创建容器的只读模板， 包含了运行应用程序所需
+的所有文件、 库、 环境变量和配置。 镜像可以被构建、 共享、 推送和拉取到 Docker
+仓库中。 镜像是 Docker 容器的基础， 用户可以基于现有的镜像创建新的容器实
+例， 实现应用程序的快速部署和扩展。</p>
+</li>
+<li>
+<p>镜像仓库： Docker 仓库是用于存储和分享 Docker 镜像的中央存储库。 它
+可以是公共的（Docker Hub） 也可以是私有的（企业内部的 Registry） 。 在仓库
+中， 用户可以搜索、 浏览、 下载和上传 Docker 镜像。 仓库为用户提供了方便的
+方式来共享、 分发和管理 Docker 镜像， Docker 的默认镜像仓库是 Docker Hub。出于某些特色原因，我们无法直接访问<code>DockerHub</code>，也无法直接<code>Docker pull</code>拉取镜像，直接会超时。您可以参考<a href="%E7%9B%B8%E5%BA%94%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88">https://zephyr369.online/dockerpull/</a>来优雅地赢应对。</p>
+</li>
+<li>
+<p>Docker容器： Docker 容器是 Docker 镜像的运行实例， 具有独立的文件系统、 网
+络和进程空间。 容器可以被创建、 启动、 停止、 删除或移动， 具有轻量级、 可移
+植和隔离的特性。 容器提供了一种一致的运行时环境， 可以在不同的环境中运行
+应用程序， 同时保持环境的一致性和可重复性。</p>
+</li>
+</ol>
+<p>综上所述， 客户端和服务端是 Docker 运行时的两个核心组件， 镜像是创建
+容器的只读模板， 仓库是存储和分享镜像的中央存储库， 容器是镜像的运行实例，
+它们共同组成了 Docker 生态系统， 为用户提供了便捷、 高效的容器化解决方案。</p>
+<h2 id="docker基本教程">Docker基本教程</h2>
+<p>市面上常见的<code>Docker</code>教程：</p>
+<ol>
+<li><a href="https://www.docker.com/">官方文档</a></li>
+<li><a href="https://www.runoob.com/docker/docker-tutorial.html">菜鸟教程</a></li>
+<li>
+
+
+<style>
+    #biliplayer {
+      width: 100%;
+      height: 600px;
+    }
+    @media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
+      #biliplayer {
+        width: 100%;
+        height: 250px;
+      }
+    }
+</style>
+
+
+    <div>
+        <iframe id="biliplayer" src="//player.bilibili.com/player.html?bvid=BV14s4y1i7Vf&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy" ></iframe>
+    </div>
+
+</li>
+</ol>
+<h3 id="docker基本命令">Docker基本命令</h3>
+<h4 id="构建镜像">构建镜像</h4>
+<p>以本次实验为例，我们用<code>python=3.10</code>环境为基础编写了一个<code>UDPClientServer.py</code>的程序，我们在项目目录的根目录下创建一个<code>Dockerfile</code>,然后在下面配置需要的依赖。例如</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Dockerfile" data-lang="Dockerfile"><span style="display:flex;"><span><span style="color:#ff79c6">ARG</span> <span style="color:#8be9fd;font-style:italic">APP_PORT</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">5678</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">ARG</span> <span style="color:#8be9fd;font-style:italic">ADDITIONAL_STRING</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;this is a default string for transporting&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># python env</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">FROM</span><span style="color:#f1fa8c"> python:3.10</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 工作目录</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">WORKDIR</span><span style="color:#f1fa8c"> /app</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">COPY</span> . /app
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">ENV</span> <span style="color:#8be9fd;font-style:italic">APP_PORT</span><span style="color:#ff79c6">=</span><span style="color:#8be9fd;font-style:italic">$APP_PORT</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">ENV</span> <span style="color:#8be9fd;font-style:italic">ADDITIONAL_STRING</span><span style="color:#ff79c6">=</span><span style="color:#8be9fd;font-style:italic">$ADDITIONAL_STRING</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 暴露端口（服务端用）</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">EXPOSE</span><span style="color:#f1fa8c"> $APP_PORT</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 设置默认的命令</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">CMD</span> [<span style="color:#f1fa8c">&#34;python&#34;</span>, <span style="color:#f1fa8c">&#34;udp_client_server.py&#34;</span>]
+</span></span></code></pre></div><p>其中我们可以用<code>ARG</code> 的方式来声明变量，然后用<code>$XX</code>的方式来进行引用。</p>
+<p>然后我们可以运行<code>docker build -t &lt;name&gt; .</code>，其中<code>&lt;name&gt;</code>是你打算给你要构建的镜像取的名字。<code>.</code>表示指定 Dockerfile 的位置，这里是当前目录。</p>
+<h4 id="将一个docker镜像实例化为一个容器并且运行">将一个Docker镜像实例化为一个容器并且运行</h4>
+<p>我们可以通过<code>docker image ls</code>来查看目前我们都有哪些镜像，例如笔者电脑下面的镜像有</p>
+<p>
+  <img src="image-2.png" alt="alt text">
+
+</p>
+<p>然后我们可以运行</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker run -d &lt;host-port&gt;:&lt;container-port&gt; --name &lt;container-name&gt; &lt;argsxxxxxx&gt;
+</span></span></code></pre></div><p>其中<code>-d</code>表示我们让这个容器<code>后台运行</code>，<code>host-port</code>是你主机的端口，<code>container-port</code>是这个容器的端口，比如我们本机手里有一个运行在<code>3306</code>端口下的<code>MYSQL服务器</code>，然后学习一个学校的专业课还非对你的数据库大搞特搞，你不希望把你原本的数据库搞得跟西游记里的盘丝洞一样乱，那么你就可以用docker起一个mysql服务器，然后在端口中设置<code>5555:3306</code>，这样我们容器中的<code>3306</code>端口就会被映射到主机的<code>5555</code>端口，然后我们用<code>navicat</code>或者什么其他的软件来连接<code>&lt;host&gt;:5555</code>就可以愉快使用了。</p>
+<p>此外，我们可以用参数<code>-it</code>来实现进入这个容器的终端，例如<code>docker run -it ubuntu /bin/bash</code>，这是因为<code>-i</code>表示交互式操作，<code>-t</code>表示终端，<code>ubuntu</code>是我们pull下来的一个ubunut的镜像，<code>/bin/bash</code>自然是<code>ubuntu</code>的交互式shell。退出终端<code>exit</code>即可。</p>
+<h4 id="对运行的容器进行操作">对运行的容器进行操作</h4>
+<p>我们可以用<code>docker ps -a</code>来查看现在运行的容器的状态。
+
+  <img src="imagexxx.png" alt="alt text">
+
+
+然后我们可以用<code>docker logs &lt;container-name&gt;</code>来查看这个容器的日志，比如您有一个容器中有一个<code>hello.c</code>，里面会输出一个<code>hello wolrd</code>，那我们运行这个logs后，就会在shell中显示<code>hello world</code></p>
+<p>此外，我们可以用<code>server_ip=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' &lt;container-name&gt;)</code>来获得这个容器的<code>ip</code>，然后可以在后续的shell中直接<code>$server_ip</code>拿到这个容器的ip</p>
+<p>当我们希望和某一个容器的<code>shell</code>交互的时候，我们有两种方式</p>
+<ol>
+<li>docker attach <!-- raw HTML omitted --></li>
+<li>docker docker exec -it <!-- raw HTML omitted --> /bin/sh</li>
+</ol>
+<p><strong>注意：当我们使用第一种方法退出容器的时候，会导致当前容器停止，需要后续手动启动</strong></p>
+<p>因此笔者推荐使用的第二种方式。</p>
+<p>我们使用<code>docker stop/start &lt;container-name&gt;</code>来停止/启动一个容器。</p>
+<h4 id="删除">删除</h4>
+<p>对于容器的删除可以使用<code>docker remove &lt;container-name&gt;</code>来删除，需要该容器处于停止状态，也可以使用<code>-f</code>参数来强制删除。（笔者在本次实验中多次反复删除容器，偷懒便直接强制删除）</p>
+<p>删除镜像则需要<code>docker rmi &lt;image&gt;</code></p>
+<h4 id="与dockerhub交互">与DockerHub交互</h4>
+<p>首先需要<code>docker login</code>，输入您的账户和密码来登录<code>DockerHub</code>,然后将您的镜像重命名以符合规定，一般是</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker tag oldname:latest &lt;your-dockerhubname&gt;/&lt;image-name&gt;:&lt;tag&gt;
+</span></span></code></pre></div><p>最后<code>docker push</code></p>
+<h1 id="服务测试实验">服务测试实验</h1>
+<h2 id="实验内容">实验内容</h2>
+<p>摸了，直接放实验文档</p>
+<p>
+  <img src="image-x.png" alt="alt text">
+
+</p>
+<p>
+  <img src="image-y.png" alt="alt text">
+
+</p>
+<h2 id="实验过程">实验过程</h2>
+<h3 id="客户端与服务端实现">客户端与服务端实现</h3>
+<p>UDP是一个无连接协议，服务端通过监听某个端口，并只接受对应端口的UDP数据包，而忽略不是这个端口的数据包。</p>
+<p>在实现的过程中，我们使用<code>python</code>的<code>socket</code>包来实现，并将服务端的接收数据和客户端发送数据的函数都封装在一个类中，通过运行程序时的参数来区分程序作为服务器还是客户端。</p>
+<p>我们将各种参数，包括但不限于<code>目的host</code>，<code>来源host</code>，<code>目的端口</code>，<code>来源端口</code>封装在<code>config</code>属性中，然后利用<code>mode</code>来区分作为<code>客户端</code>还是<code>服务端</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">def</span> __init__(self, mode, config):
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># 配置</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>config <span style="color:#ff79c6">=</span> config
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># server ? client</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>mode <span style="color:#ff79c6">=</span> mode
+</span></span></code></pre></div><p>编写服务端接口，首先我们可以读取到<code>host</code>和<code>port</code>，让服务器监听这个对应的端口,利用socket绑定对应的的地址和端口，实现监听，然后当收到数据的时候，来将<code>data</code>解析并保存，同时解析出来源的<code>ip</code>和<code>端口</code>，并最终用日志的方法存储。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">start_server</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># default host is 0.0.0.0</span>
+</span></span><span style="display:flex;"><span>        host <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>config<span style="color:#ff79c6">.</span>get(<span style="color:#f1fa8c">&#39;host&#39;</span>, <span style="color:#f1fa8c">&#39;0.0.0.0&#39;</span>)
+</span></span><span style="display:flex;"><span>        port <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>config<span style="color:#ff79c6">.</span>get(<span style="color:#f1fa8c">&#39;port&#39;</span>, <span style="color:#bd93f9">6666</span>)
+</span></span><span style="display:flex;"><span>        output_file <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>config<span style="color:#ff79c6">.</span>get(<span style="color:#f1fa8c">&#39;output_file&#39;</span>, <span style="color:#f1fa8c">&#39;data.log&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">with</span> socket<span style="color:#ff79c6">.</span>socket(socket<span style="color:#ff79c6">.</span>AF_INET, socket<span style="color:#ff79c6">.</span>SOCK_DGRAM) <span style="color:#ff79c6">as</span> server_socket:
+</span></span><span style="display:flex;"><span>            <span style="color:#6272a4"># ipv4           udp          </span>
+</span></span><span style="display:flex;"><span>            server_socket<span style="color:#ff79c6">.</span>bind((host, port))  <span style="color:#6272a4"># 绑定套接字到指定端口和ip</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd;font-style:italic">print</span>(<span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;Server listening on </span><span style="color:#f1fa8c">{</span>host<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">:</span><span style="color:#f1fa8c">{</span>port<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">while</span> <span style="color:#ff79c6">True</span>:
+</span></span><span style="display:flex;"><span>                data, addr <span style="color:#ff79c6">=</span> server_socket<span style="color:#ff79c6">.</span>recvfrom(_size)
+</span></span><span style="display:flex;"><span>                <span style="color:#8be9fd;font-style:italic">print</span>(<span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;Received data from </span><span style="color:#f1fa8c">{</span>addr<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">{</span>data<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">&#34;</span>)
+</span></span><span style="display:flex;"><span>                parsed_data <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>parse_data(data)
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">with</span> <span style="color:#8be9fd;font-style:italic">open</span>(output_file, <span style="color:#f1fa8c">&#39;a&#39;</span>) <span style="color:#ff79c6">as</span> f:
+</span></span><span style="display:flex;"><span>                    f<span style="color:#ff79c6">.</span>write(<span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">{</span>parsed_data<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>)
+</span></span></code></pre></div><p>发送数据也是需要先配置好自己的<code>host</code>和<code>port</code>，然后我们用python的<code>dict</code>数据类型来维护一个包含<code>序列号``目标Ip``目标端口``数据</code>的四元组，然后将他利用<code>json.dump</code>的方法转储为一个<code>json</code>格式的数据，并将其利用<code>socket</code>发送给服务端。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">send_data</span>(self):
+</span></span><span style="display:flex;"><span>        host <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>config<span style="color:#ff79c6">.</span>get(<span style="color:#f1fa8c">&#39;host&#39;</span>, <span style="color:#f1fa8c">&#39;127.0.0.1&#39;</span>)
+</span></span><span style="display:flex;"><span>        port <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>config<span style="color:#ff79c6">.</span>get(<span style="color:#f1fa8c">&#39;port&#39;</span>, <span style="color:#bd93f9">5678</span>)
+</span></span><span style="display:flex;"><span>        start_sequence_number <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>config<span style="color:#ff79c6">.</span>get(<span style="color:#f1fa8c">&#39;sequence_number&#39;</span>, <span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>        num_messages <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>config<span style="color:#ff79c6">.</span>get(<span style="color:#f1fa8c">&#39;num_messages&#39;</span>, <span style="color:#bd93f9">5</span>)  <span style="color:#6272a4"># Number of messages to send</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        target_ip <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>config<span style="color:#ff79c6">.</span>get(<span style="color:#f1fa8c">&#39;target_ip&#39;</span>, <span style="color:#f1fa8c">&#39;192.168.1.1&#39;</span>)
+</span></span><span style="display:flex;"><span>        target_port <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>config<span style="color:#ff79c6">.</span>get(<span style="color:#f1fa8c">&#39;target_port&#39;</span>, <span style="color:#bd93f9">5555</span>)
+</span></span><span style="display:flex;"><span>        additional_string <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>config<span style="color:#ff79c6">.</span>get(<span style="color:#f1fa8c">&#39;additional_string&#39;</span>, <span style="color:#f1fa8c">&#39;hello world&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">with</span> socket<span style="color:#ff79c6">.</span>socket(socket<span style="color:#ff79c6">.</span>AF_INET, socket<span style="color:#ff79c6">.</span>SOCK_DGRAM) <span style="color:#ff79c6">as</span> client:
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">range</span>(num_messages):
+</span></span><span style="display:flex;"><span>                sequence_number <span style="color:#ff79c6">=</span> start_sequence_number <span style="color:#ff79c6">+</span> i
+</span></span><span style="display:flex;"><span>                data_dict <span style="color:#ff79c6">=</span> {
+</span></span><span style="display:flex;"><span>                    <span style="color:#f1fa8c">&#34;sequence_number&#34;</span>: sequence_number,
+</span></span><span style="display:flex;"><span>                    <span style="color:#f1fa8c">&#34;target_ip&#34;</span>: target_ip,
+</span></span><span style="display:flex;"><span>                    <span style="color:#f1fa8c">&#34;target_port&#34;</span>: target_port,
+</span></span><span style="display:flex;"><span>                    <span style="color:#f1fa8c">&#34;data&#34;</span>: additional_string,
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>                data_json <span style="color:#ff79c6">=</span> json<span style="color:#ff79c6">.</span>dumps(data_dict) <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#39;,&#39;</span> <span style="color:#ff79c6">+</span> additional_string
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                client<span style="color:#ff79c6">.</span>sendto(data_json<span style="color:#ff79c6">.</span>encode(), (host, port))
+</span></span><span style="display:flex;"><span>                <span style="color:#8be9fd;font-style:italic">print</span>(<span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;Sent data to </span><span style="color:#f1fa8c">{</span>host<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">:</span><span style="color:#f1fa8c">{</span>port<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c"> with sequence number </span><span style="color:#f1fa8c">{</span>sequence_number<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                time<span style="color:#ff79c6">.</span>sleep(<span style="color:#bd93f9">1</span>)  <span style="color:#6272a4"># 等待一秒钟再发送下一个数据包</span>
+</span></span></code></pre></div><h3 id="解析数据成员">解析数据成员</h3>
+<p>首先将字符串解析成json格式，然后将他转换为<code>dict</code>，然后通过索引的方式拿到<code>序列号``目标Ip``目标端口``数据</code>数据，并最后返回一个格式化字符串</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">parse_data</span>(self, data):
+</span></span><span style="display:flex;"><span>        data_str <span style="color:#ff79c6">=</span> data<span style="color:#ff79c6">.</span>decode()
+</span></span><span style="display:flex;"><span>        data_json, additional_string <span style="color:#ff79c6">=</span> data_str<span style="color:#ff79c6">.</span>rsplit(<span style="color:#f1fa8c">&#39;,&#39;</span>, <span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>        data_dict <span style="color:#ff79c6">=</span> json<span style="color:#ff79c6">.</span>loads(data_json)
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        sequence_number <span style="color:#ff79c6">=</span> data_dict[<span style="color:#f1fa8c">&#34;sequence_number&#34;</span>]
+</span></span><span style="display:flex;"><span>        target_ip <span style="color:#ff79c6">=</span> data_dict[<span style="color:#f1fa8c">&#34;target_ip&#34;</span>]
+</span></span><span style="display:flex;"><span>        target_port <span style="color:#ff79c6">=</span> data_dict[<span style="color:#f1fa8c">&#34;target_port&#34;</span>]
+</span></span><span style="display:flex;"><span>        _string <span style="color:#ff79c6">=</span> data_dict[<span style="color:#f1fa8c">&#34;data&#34;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;Sequence Number: </span><span style="color:#f1fa8c">{</span>sequence_number<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">, Target IP: </span><span style="color:#f1fa8c">{</span>target_ip<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">, Target Port: </span><span style="color:#f1fa8c">{</span>target_port<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">, Additional String: </span><span style="color:#f1fa8c">{</span>additional_string<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">&#34;</span>
+</span></span></code></pre></div><h3 id="参数识别与转换">参数识别与转换</h3>
+<p>首先需要实例化一个parser,然后根据参数设置<code>mode</code>和<code>config</code>，并根据这两个的值来实例化一个<code>udp_client_serve</code>对象。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">if</span> __name__ <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    parser <span style="color:#ff79c6">=</span> argparse<span style="color:#ff79c6">.</span>ArgumentParser(description<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;UDP Client/Server&#39;</span>)
+</span></span><span style="display:flex;"><span>    parser<span style="color:#ff79c6">.</span>add_argument(<span style="color:#f1fa8c">&#39;mode&#39;</span>, choices<span style="color:#ff79c6">=</span>[<span style="color:#f1fa8c">&#39;client&#39;</span>, <span style="color:#f1fa8c">&#39;server&#39;</span>], help<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;Mode to run the program in&#39;</span>)
+</span></span><span style="display:flex;"><span>    parser<span style="color:#ff79c6">.</span>add_argument(<span style="color:#f1fa8c">&#39;config&#39;</span>, help<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;Configuration as a string representing a dictionary&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    args <span style="color:#ff79c6">=</span> parser<span style="color:#ff79c6">.</span>parse_args()
+</span></span><span style="display:flex;"><span>    mode <span style="color:#ff79c6">=</span> args<span style="color:#ff79c6">.</span>mode
+</span></span><span style="display:flex;"><span>    config <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">eval</span>(args<span style="color:#ff79c6">.</span>config)  <span style="color:#6272a4"># Convert string to dictionary</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    udp_client_server <span style="color:#ff79c6">=</span> UDPClientServer(mode, config)
+</span></span><span style="display:flex;"><span>    udp_client_server<span style="color:#ff79c6">.</span>run()
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">run</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> self<span style="color:#ff79c6">.</span>mode <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#39;server&#39;</span>:
+</span></span><span style="display:flex;"><span>            self<span style="color:#ff79c6">.</span>start_server()
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">elif</span> self<span style="color:#ff79c6">.</span>mode <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#39;client&#39;</span>:
+</span></span><span style="display:flex;"><span>            self<span style="color:#ff79c6">.</span>send_data()
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">else</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">raise</span> ValueError(<span style="color:#f1fa8c">&#34;Mode must be either &#39;server&#39; or &#39;client&#39;&#34;</span>)
+</span></span></code></pre></div><h3 id="编写dockerfile">编写Dockerfile</h3>
+<p>我们需要pull一个<code>python</code>基础环境，然后将<code>/app</code>设置为基本目录，然后将当前所有文件(其实只有一个<code>udp_client_server.py</code>文件)拷贝到<code>/app</code>目录下，并设置默认的命令。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Dockerfile" data-lang="Dockerfile"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># python env</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">FROM</span><span style="color:#f1fa8c"> python:3.10</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 工作目录</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">WORKDIR</span><span style="color:#f1fa8c"> /app</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">COPY</span> . /app
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 暴露端口（服务端用）</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">EXPOSE</span><span style="color:#f1fa8c"> 5678</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 设置默认的命令</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">CMD</span> [<span style="color:#f1fa8c">&#34;python&#34;</span>, <span style="color:#f1fa8c">&#34;udp_client_server.py&#34;</span>]
+</span></span></code></pre></div><h1 id="使用">使用</h1>
+<h2 id="docker-build">Docker Build</h2>
+<p>首先我们需要创建一个将当前的代码build为一个docker镜像。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker build -t experiment .
+</span></span></code></pre></div><p>然后查看</p>
+<p>
+  <img src="image-2.png" alt="alt text">
+
+</p>
+<h2 id="运行服务端和客户端">运行服务端和客户端</h2>
+<h3 id="启动服务端">启动服务端</h3>
+<p>首先输入</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker run -it -d -p 5678:5678 --name exp-server experiment python  udp_client_server.py server <span style="color:#f1fa8c">&#34;{&#39;host&#39;: &#39;0.0.0.0&#39;, &#39;port&#39;: 5678, &#39;output_file&#39;: &#39;data.log&#39;}&#34;</span>
+</span></span></code></pre></div><p>创建一个<code>docker</code>容器，监听<code>5678</code>端口，同时将输出文件设置为<code>output_file</code></p>
+<p>输入<code>docker ps</code>查看
+
+  <img src="image-3.png" alt="alt text">
+
+</p>
+<p>然后输入<code>docker logs exp-server</code>查看当前容器的输出
+
+  <img src="image-4.png" alt="alt text">
+
+
+工作正常</p>
+<h3 id="启动客户端">启动客户端</h3>
+<p>输入</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">server_ip</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span>docker inspect -f <span style="color:#f1fa8c">&#39;{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}&#39;</span> exp-server<span style="color:#ff79c6">)</span>
+</span></span></code></pre></div><p>获得<code>exp-server</code>容器的<code>ip</code>
+
+  <img src="image-6.png" alt="alt text">
+
+
+可以看到<code>exp-server</code>的<code>ip</code>是<code>172.17.0.2</code></p>
+<p>然后我们输入</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker run --name exp-client experiment python udp_client_server.py client <span style="color:#f1fa8c">&#34;{&#39;host&#39;: &#39;</span><span style="color:#8be9fd;font-style:italic">$server_ip</span><span style="color:#f1fa8c">&#39;, &#39;port&#39;: 5678, &#39;sequence_number&#39;: 1, &#39;target_ip&#39;: &#39;</span><span style="color:#8be9fd;font-style:italic">$server_ip</span><span style="color:#f1fa8c">&#39;, &#39;target_port&#39;: 6666, &#39;additional_string&#39;: &#39;hello world&#39;, &#39;num_messages&#39;: 10}&#34;</span>
+</span></span></code></pre></div><p>
+  <img src="image-7.png" alt="alt text">
+
+</p>
+<h2 id="查看服务端的输出">查看服务端的输出</h2>
+<p>客户端的输出已经直接展示到<code>stdout</code>中了，我们只需要查看服务端即可。</p>
+<p>我们输入</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker <span style="color:#8be9fd;font-style:italic">exec</span> -it exp-server /bin/sh
+</span></span></code></pre></div><p>来开一个<code>exp-server</code>下的<code>shell</code>，并将他放到当前<code>linux</code>的<code>shell</code>的前端用于实时交互。
+
+  <img src="image-8.png" alt="alt text">
+
+</p>
+<p>得到下面结果</p>
+<p>
+  <img src="image-10.png" alt="alt text">
+
+</p>
+<h1 id="推送到dockerhub">推送到DockerHub</h1>
+<p>首先登录自己的docker账号</p>
+<p>然后吧自己的<code>image</code>规范化命名</p>
+<p>
+  <img src="image-11.png" alt="alt text">
+
+</p>
+<p><a href="https://hub.docker.com/repository/docker/zephyr369/st-exp/general">最后DockerHub上的结果</a></p>
+<h1 id="总结与反思">总结与反思</h1>
+<p>由于整个项目比较简单，而且目的是让我们熟悉<code>docker</code>的使用教程，因此直接用很长的命令来执行</p>
+<p>实际上可以编写一个<code>docker-compose.yaml</code>配置文件来方便的进行配置</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">version</span>: <span style="color:#f1fa8c">&#39;3&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">services</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">server</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">image</span>: experiment
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">container_name</span>: server-container
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">command</span>: [<span style="color:#f1fa8c">&#34;server&#34;</span>, <span style="color:#f1fa8c">&#34;{&#39;host&#39;: &#39;0.0.0.0&#39;, &#39;port&#39;: 5678, &#39;output_file&#39;: &#39;data.log&#39;}&#34;</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f1fa8c">&#34;5678:5678&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">client</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">image</span>: experiment
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">container_name</span>: client-container
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">command</span>: [<span style="color:#f1fa8c">&#34;client&#34;</span>, <span style="color:#f1fa8c">&#34;{&#39;host&#39;: &#39;server-container&#39;, &#39;port&#39;: 5678, &#39;sequence_number&#39;: 1, &#39;target_ip&#39;: &#39;server-container&#39;, &#39;target_port&#39;: 5678, &#39;additional_string&#39;: &#39;hello world&#39;, &#39;num_messages&#39;: 10}&#34;</span>]
+</span></span></code></pre></div><p>然后每次可以<code>docker-compose up</code>和<code>docker-compose down</code>就可以方便的开启和关闭。</p>
+<p>此外，只是为了演示数据传递的过程，正常的字符串应当进行裁切，在项目中用一个<code>_size</code>来控制，便于以后扩展。</p>
+<p><strong>注：演示视频中第一次data.log中有多次数据，是因为在最初build的时候将原来的测试的日志也放进去了</strong></p>
+
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/ssh/" data-toggle="tooltip" data-placement="top" title="SSH远程转发笔记">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+                
+
+                
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/course" title="course">
+                            course
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/crypto" title="crypto">
+                            crypto
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ctf" title="ctf">
+                            ctf
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/notebook" title="notebook">
+                            notebook
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/pwn" title="pwn">
+                            pwn
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/writeup" title="writeup">
+                            writeup
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:empire258700@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/ZephyrVictor">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="#3" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; #3 2024
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>
