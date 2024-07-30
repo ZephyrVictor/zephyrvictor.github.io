@@ -6,8 +6,15 @@
     <description>Recent content in CTF on #3</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 05 Jul 2024 12:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 29 Jul 2024 12:00:00 +0000</lastBuildDate>
     <atom:link href="https://zephyr369.online/tags/ctf/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>格式化字符串漏洞由浅入深</title>
+      <link>https://zephyr369.online/fmtperspective/</link>
+      <pubDate>Mon, 29 Jul 2024 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/fmtperspective/</guid>
+      <description>原理介绍 格式化字符串函数 格式化字符串函数可以接受可变数量的参数，并将第一个参数作为格式化字符串，根据其来解析之后的参数。通俗来说，格式化字符</description>
+    </item>
     <item>
       <title>2024春秋杯夏季赛WriteUp</title>
       <link>https://zephyr369.online/2024ichunqiu/</link>

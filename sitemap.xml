@@ -3,10 +3,28 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://zephyr369.online/</loc>
-    <lastmod>2024-07-24T12:00:00+00:00</lastmod>
+    <lastmod>2024-07-29T12:00:00+00:00</lastmod>
   </url><url>
     <loc>https://zephyr369.online/categories/</loc>
-    <lastmod>2024-07-24T12:00:00+00:00</lastmod>
+    <lastmod>2024-07-29T12:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://zephyr369.online/tags/ctf/</loc>
+    <lastmod>2024-07-29T12:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://zephyr369.online/post/</loc>
+    <lastmod>2024-07-29T12:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://zephyr369.online/tags/pwn/</loc>
+    <lastmod>2024-07-29T12:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://zephyr369.online/tags/</loc>
+    <lastmod>2024-07-29T12:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://zephyr369.online/categories/tech/</loc>
+    <lastmod>2024-07-29T12:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://zephyr369.online/fmtperspective/</loc>
+    <lastmod>2024-07-29T12:00:00+00:00</lastmod>
   </url><url>
     <loc>https://zephyr369.online/tags/course/</loc>
     <lastmod>2024-07-24T12:00:00+00:00</lastmod>
@@ -15,15 +33,6 @@
     <lastmod>2024-07-24T12:00:00+00:00</lastmod>
   </url><url>
     <loc>https://zephyr369.online/HitDocker/</loc>
-    <lastmod>2024-07-24T12:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://zephyr369.online/post/</loc>
-    <lastmod>2024-07-24T12:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://zephyr369.online/tags/</loc>
-    <lastmod>2024-07-24T12:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://zephyr369.online/categories/tech/</loc>
     <lastmod>2024-07-24T12:00:00+00:00</lastmod>
   </url><url>
     <loc>https://zephyr369.online/tags/notebook/</loc>
@@ -36,9 +45,6 @@
     <lastmod>2024-07-14T12:00:00+00:00</lastmod>
   </url><url>
     <loc>https://zephyr369.online/2024ichunqiu/</loc>
-    <lastmod>2024-07-05T12:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://zephyr369.online/tags/ctf/</loc>
     <lastmod>2024-07-05T12:00:00+00:00</lastmod>
   </url><url>
     <loc>https://zephyr369.online/tags/writeup/</loc>
@@ -66,9 +72,6 @@
     <lastmod>2024-06-11T12:00:00+00:00</lastmod>
   </url><url>
     <loc>https://zephyr369.online/matplotlibgraph/</loc>
-    <lastmod>2024-06-11T12:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://zephyr369.online/tags/pwn/</loc>
     <lastmod>2024-06-11T12:00:00+00:00</lastmod>
   </url><url>
     <loc>https://zephyr369.online/2024/06/10/test/</loc>

