@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="#3">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="img/cover.jpg">
+    <meta property="twitter:image" content="img/cover.jpg" />
+    
+
+    
+    <meta name="title" content="统计学习1：线性回归与分类问题" />
+    <meta property="og:title" content="统计学习1：线性回归与分类问题" />
+    <meta property="twitter:title" content="统计学习1：线性回归与分类问题" />
+    
+
+    
+    <meta name="description" content="介绍了线性回归问题，以及利用logistic回归和判别分析方式进行分类的一些常用算法">
+    <meta property="og:description" content="介绍了线性回归问题，以及利用logistic回归和判别分析方式进行分类的一些常用算法" />
+    <meta property="twitter:description" content="介绍了线性回归问题，以及利用logistic回归和判别分析方式进行分类的一些常用算法" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="Zephyr, Zephyr, Zephyr, , Zephyr的网络日志, Zephyr的博客, Zephyr Blog, 博客, 个人网站, 互联网, Web, CTF,">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>统计学习1：线性回归与分类问题 | Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
+
+    <link rel="canonical" href="/islchapter34/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+ 
+ <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+        displayMath: [
+          ["$$", "$$"],
+          ["\\[", "\\]"],
+        ],
+        processEscapes: true,
+        processEnvironments: true,
+      },
+      options: {
+        skipHtmlTags: ["script", "noscript", "style", "textarea", "pre"],
+      },
+    };
+  
+    window.addEventListener("load", (event) => {
+      document.querySelectorAll("mjx-container").forEach(function (x) {
+        x.parentElement.classList += "has-jax";
+      });
+    });
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    type="text/javascript"
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+</head>
+<style>
+    code.has-jax {
+      -webkit-font-smoothing: antialiased;
+      background: inherit !important;
+      border: none !important;
+      font-size: 100%;
+    }
+    </style>
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">#3</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+                        <li><a href="/life//">LIFE</a></li>
+                    
+                        <li><a href="/course//">HISTORY</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/cover.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0" title="统计学习">
+                            统计学习
+                        </a>
+                        
+                        <a class="tag" href="/tags/notebook" title="notebook">
+                            notebook
+                        </a>
+                        
+                    </div>
+                    <h1>统计学习1：线性回归与分类问题</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Zephyr
+                             
+                            on 
+                            Monday, July 29, 2024
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <blockquote>
+<p>统计学习是一个大范畴，机器学习也好，简单常见的统计分布也罢，从大一就想一直弄明白，打了无数次数学建模，概率论与数理统计学的也不错，奈何从没有真正系统和扎实了解过这里面的内涵和在解决问题中使用的具体办法，颇为感慨数学基础是第一大关，将数学基础变化为代码是第二大关，均需联系，建模屡屡受挫，值此忙碌之际，仍打算提起一些精神借帮同学打建模比赛为契机倒逼自己学一些这里面的真实基础，也算不留遗憾。</p>
+</blockquote>
+<h1 id="总览">总览</h1>
+<h2 id="一些前置定义">一些前置定义</h2>
+<p>为了便于说明，我们构想一堆人领工资的场景，我们考虑 <code>年</code> <code>年纪</code> <code>竞争</code> ….共p个因素，我们称这些因素为 <code>特征</code> ，一共有 <code>n</code> 个人来领工资，我们都测到了每个人这 <code>p</code> 个人的数据。因此我们可以将这些数据放成一个矩阵</p>
+<p>$$
+\mathbf{X}=\begin{pmatrix}x_{11}&amp;x_{12}&amp;\ldots&amp;x_{1p}\x_{21}&amp;x_{22}&amp;\ldots&amp;x_{2p}\\vdots&amp;\vdots&amp;\ddots&amp;\vdots\x_{n1}&amp;x_{n2}&amp;\ldots&amp;x_{np}\end{pmatrix}
+$$</p>
+<p>我们按照行来看，也就是 $x_1,x_2,…,x_n$ ，其中 $x_i$都是一个长度为p的向量，也就是</p>
+<p>$$
+x_i=\begin{pmatrix}x_{i1}\x_{i2}\\vdots\x_{ip}\end{pmatrix}
+$$</p>
+<p>这样一个 $x_i$ 是按照行看的，这样我们常常把矩阵 $X$ 写成</p>
+<p>$$
+\mathbf{X}=\begin{pmatrix}x_1^T\x_2^T\\vdots\x_n^T\end{pmatrix}
+$$</p>
+<p>我们成功将矩阵按人来划分</p>
+<p>或者我们也可以按照列来划分，也就是对于一个特征，相当于我们单拉出来看看每个人年纪都是多少，这样我们可以将矩阵写成</p>
+<p>$$
+\mathbf{X}=\begin{pmatrix}\mathbf{x}_1&amp;\mathbf{x}_2&amp;\cdots&amp;\mathbf{x}_p\end{pmatrix}
+$$</p>
+<h2 id="一个统计学习的使命">一个统计学习的使命</h2>
+<p>常理来看，统计学习一直期望找到一个函数 $f$ ,我们希望观测到了一堆值 $X_1,X_2,…X_p$  我们假设这些特征和一个输出 $Y$ 是有关系的，寻求</p>
+<p>$$
+Y = f(X) + \epsilon
+$$</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/Untitled.png" alt="Untitled">
+
+</p>
+<h3 id="预测">预测</h3>
+<p>我们管预测到的函数f和预测值Y叫</p>
+<p>$$
+\hat{Y}=\hat{f}(X)
+$$</p>
+<p>误差分为可以避免的误差和不可避免的误差，前者可以通过用更牛逼（准确）的算法并且不断迭代来减小使之在期望中和真实的f差距逼近0，后者是因为可能有些别的特征我们没有考虑等因素。对于后者，我们可以尝试多做一做特征工程，或者纳入更多考虑因素来做。</p>
+<p>$$
+\begin{aligned}\operatorname{E}(Y-\hat{Y})^2&amp;=\quad\operatorname{E}[f(X)+\epsilon-\hat{f}(X)]^2\&amp;=\quad\underbrace{[f(X)-\hat{f}(X)]^2}<em>{\text{可以划归}}+\underbrace{\text{Var}(\epsilon)}</em>{\text{不可以划归}},\end{aligned}
+$$</p>
+<p>在预测中，我们不关心这些特征 $X_i$ 他们的系数，也就是f是一个黑盒。</p>
+<p><strong>此外，有时候我们也做分类问题，比如希望模型的输入是这些特征，让他进行分类，比如逻辑斯蒂回归就是一个二分类问题，当然他也可以用于预测中。</strong></p>
+<h3 id="推断"><strong>推断</strong></h3>
+<p>需要知道f中我们选用的特征 $X_i$ 具体系数。</p>
+<h2 id="估计f的具体方法">估计f的具体方法</h2>
+<h2 id="参数方法">参数方法</h2>
+<ol>
+<li>假设f关于特征 $X_i$ 的形式，例如，一个常见的线性方程。</li>
+</ol>
+<p>$$
+f(X)=\beta_0+\beta_1X_1+\beta_2X_2+\cdots+\beta_pX_p.
+$$</p>
+<ol>
+<li>训练模型求出参数</li>
+</ol>
+<p>这里面需要考虑我们选用的模型，越简单的模型往往不灵活，但是对数据集数量要求很小，同时特征也要求很小。越复杂的模型越灵活，但是对数据集的要求也大，特征需求也大，而且容易出现过拟合。</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/Untitled%201.png" alt="Untitled">
+
+</p>
+<p>↑正常的回归</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/Untitled%202.png" alt="Untitled">
+
+</p>
+<p>↑收到一些噪声和垃圾数据的干扰，产生了过拟合。</p>
+<h2 id="无参数方法">无参数方法</h2>
+<p>不假设f的特定形式，而是尝试尽可能不过于松也不过与紧地拟合样本的各个点。</p>
+<h2 id="比较">比较</h2>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/Untitled%203.png" alt="Untitled">
+
+</p>
+<h2 id="聚类分析">聚类分析</h2>
+<p>另外有一种情况，我们有一堆输入，但是我们无法（或者说）很难得到输出，先前的例子是我们有一堆特征，然后输出一个今天的股票价格。而现在这种例子是你开一个超市，有一堆各种各样的人来买东西，我们收集了他的性别、收入、家庭状况等一堆参数，然后画在一个图中，看看能不能将他们分成特定的几类。</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/Untitled%204.png" alt="Untitled">
+
+</p>
+<h2 id="评估模型精度">评估模型精度</h2>
+<h3 id="mse-均方误差">MSE 均方误差</h3>
+<p>$$
+MSE = \frac{1}{n}\Sigma^n_{i = 1}(y_i - \hat{f}(x_i))^2
+$$</p>
+<p>我们关心MSE在测试集的表现，比如我们不感兴趣模型对于过去股票预测有多准，我们感兴趣的是模型能预测明天股票的值有多准。</p>
+<p>我们对MSE求期望有</p>
+<p>$$
+E(y_0-\hat{f}(x_0))^2= D(\hat{f}(x_0)) + [Bias(\hat{f}(x_0))]^2+Var(\epsilon)
+$$</p>
+<p>其中 $D(\hat{f}(x_0))$是方差</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/Untitled%205.png" alt="Untitled">
+
+</p>
+<p>通常的三种情况，后续的所有算法的核心目的都是寻求第一项和第二项的和为最小化，至于 $Var(\epsilon)$ 是不可划归的误差。</p>
+<h3 id="分类问题">分类问题</h3>
+<p>用</p>
+<p>$$
+\frac{1}{n}\Sigma^n_{i=1}I(y_i\ne\hat{y}_i)
+$$</p>
+<p>来进行衡量，函数I对于 $y_i \ne \hat{y}_i$ 输出1，否则输出0.我们的目的是寻求上面的式子最小。</p>
+<h3 id="贝叶斯分类器">贝叶斯分类器</h3>
+<p>$$
+\Pr(Y=j|X=x_0)
+$$</p>
+<p>$$
+1-E\left(\max_j\Pr(Y=j|X)\right),
+$$</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/Untitled%206.png" alt="Untitled">
+
+</p>
+<p>由于我们很少能提前知道这条分界线的分布，因此贝叶斯分类往往作为一种判断，而不是在分类过程中使用</p>
+<h3 id="k近邻算法knn">K近邻算法（KNN）</h3>
+<p>$$
+\Pr(Y=j|X=x_0)=\frac{1}{K}\sum_{i\in\mathcal{N}_0}I(y_i=j).
+$$</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/Untitled%207.png" alt="Untitled">
+
+</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/Untitled%208.png" alt="Untitled">
+
+</p>
+<h1 id="线性回归">线性回归</h1>
+<h2 id="简单线性回归">简单线性回归</h2>
+<p>书中有一个关于寻求 <code>报纸</code> <code>广播</code> <code>电视</code> 三种广告投放渠道和最终收入的模型，我们寻求将单一的变量作为输入 $X$ 以及销量输出 $Y$， $Y \approx \beta_0 + \beta_1X$</p>
+<p>我们可以将上式的约等号理解为 <code>近似模拟</code> ，将 $b_1$和 $b_2$理解为截距和斜率。我们管他叫模型的 <code>系数</code> 或 <code>参数</code></p>
+<h3 id="如何评估系数的好坏">如何评估系数的好坏</h3>
+<p>在实践中，我们无法得知真实映射关系的系数，因此我们需要一种评估体系来评估我们求出的系数的好坏。</p>
+<p>我们使用 $\hat{y}_i = \hat{\beta}_0 + \hat{\beta}_1x_i$ 来表达第 $i$ 个变量的预测值，那么 $e_i = y_i - \hat{y}_i$ 就是第 $i$ 个样本的拟合残差。</p>
+<p>我们定义 <code>RSS(**Residual Sum Of Squares**)</code> 来评估模型总体的 <code>拟合好坏</code></p>
+<p>$$
+RSS = \Sigma_1^n(e_i^2) = (y_1 - \hat{\beta}_0-\hat{\beta}_1x_i)+\cdots+(y_n-\hat{\beta}-\hat{\beta}_1x_n)
+$$</p>
+<p>我们的目的是让 <code>RSS</code> 最小，因此最后的系数就是我们常见的最小二乘法。</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/Untitled%209.png" alt="Untitled">
+
+</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/Untitled%2010.png" alt="Untitled">
+
+</p>
+<h3 id="0假设">0假设</h3>
+<p>在多元线性回归中一起讲了</p>
+<h3 id="t-检验">t-检验</h3>
+<p>就是我们在概率论中算的  <code>t检验</code> 。我们通过这个假设来判断这条回归直线是否存在，也就是<strong>输入变量和输出变量之间的线性关系到底强弱与否</strong></p>
+<p>因此我们有假设</p>
+<p>$$
+H_0: X和Y之间没有关系 =&gt; \beta_1 \iff 0
+$$</p>
+<p>$$
+H_\alpha: X和Y之间存在某种关系 \iff \beta_1 \ne 0
+$$</p>
+<p>我们在概率论中经常遇到，这个数据的真实平均值 $\mu$ 是不知道的，我们只能知道抽取的样本中的平均值 $\hat{\mu}$ ，因此我们可以近似来求方差 $D(\hat{\mu})=\mathrm{SE}(\hat{\mu})^2=\frac{\sigma^2}{n}$</p>
+<p>参数的估计的标准差</p>
+<p>$$
+\mathrm{SE}(\hat{\beta}<em>{0})^{2}=\sigma^{2}\left[\frac{1}{n}+\frac{\bar{x}^{2}}{\sum</em>{i=1}^{n}(x_{i}-\bar{x})^{2}}\right],\quad\mathrm{SE}(\hat{\beta}<em>{1})^{2}=\frac{\sigma^{2}}{\sum</em>{i=1}^{n}(x_{i}-\bar{x})^{2}}
+$$</p>
+<p>t分布的公式是</p>
+<p>$$
+t=\frac{\widehat{\beta}<em>{1}-0}{SE(\widehat{\beta}</em>{1})}
+$$</p>
+<p>t分布呈钟形，当n大于30时，它与标准正态分布非常相似。因此，假设β1 = 0，计算观察到绝对值等于或大于t的任何数的概率是一件很简单的事情。我们称这个概率为p值。因此，如果我们看到一个小的p值，那么我们可以推断预测器和响应之间存在关联。如果p值足够小，<strong>我们拒绝零假设——也就是说，我们声明X和Y之间存在关系</strong>。拒绝零假设的典型p值截止值为5%或1%</p>
+<p>我们可以这么计算 <code>p值</code>  也可以古典查表法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span><span style="color:#ff79c6">import</span> numpy as np
+</span></span><span style="display:flex;"><span>from scipy.stats <span style="color:#ff79c6">import</span> chi2_contingency, fisher_exact
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>obs <span style="color:#ff79c6">=</span> np.array([[<span style="color:#bd93f9">8157</span>, <span style="color:#bd93f9">8</span>],[<span style="color:#bd93f9">7906</span>,<span style="color:#bd93f9">10</span>]])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>g, p, dof, expctd <span style="color:#ff79c6">=</span> chi2_contingency(obs, correction <span style="color:#ff79c6">=</span> False)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0.59094761107842753</span>
+</span></span></code></pre></div><p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/Untitled%2011.png" alt="Untitled">
+
+</p>
+<p>比如我们注意到， <code>radio</code>和 <code>newspaper</code> 的p值都是 &lt;0.0001，因此他们都和我们的输出Y有很强的关系。（我们在后续的多元回归中会观察到一个完全不同的现象）</p>
+<h3 id="如何评估模型的准确性">如何评估模型的准确性</h3>
+<p>我们当然希望能够评估构建模型的表现，也就是他的准确性到底如何。</p>
+<ol>
+<li>残差标准误差(Residual Standard Error)</li>
+</ol>
+<p>回顾先前的统计学知识，我们认为每一个观测到的样本值会带有一定的偏差项 $\epsilon$ ，由于这个偏差项的存在，即使我们知道真实的曲线方程，我们也没办法完全准确地通过 $X$ 预测 $Y$</p>
+<p>RSE粗劣的概念可以理解成平均上，我们的每一个预测值与真实曲线间的偏离量</p>
+<p>$$
+RSE=\sqrt{\frac1{n-2}RSS}=\sqrt{\frac1{n-2}\sum_{i=1}^n(y_i-\hat{y_i})^2}
+$$</p>
+<p>残差平方和 <code>RSS</code> 的计算公式是 $RSS=\sum_{i=1}^n(y_i-\hat{y_i})^2$
+<code>RSE</code> 可以理解为 <code>模型拟合</code>  与 <code>真实目标值</code> 的实际误差</p>
+<p>比如对于书中的数据集我们求得</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/Untitled%2012.png" alt="Untitled">
+
+</p>
+<p>比如我们求得 <code>RSE</code> 是 3.26，这样就是如果我们按照美元为单位，每一个回归求得的值与真实值的误差平均下来相差 <code>3260</code> 个单位，进一步地，整体平均收入是 <code>14000</code> 的单位，因此我们的百分误差是 3260/14000=23%，也就是我们预测的浮动是23%，具体能不能接受，要看具体情况。</p>
+<ol>
+<li>R方</li>
+</ol>
+<p><code>RSS</code> 的主要缺陷是带量纲，我们可以用 $R_2$ 来评估</p>
+<p>$$
+R^2 = \frac{TSS-RSS}{TSS} = 1 - \frac{RSS}{TSS}
+$$</p>
+<p><strong>总结</strong></p>
+<ul>
+<li>$R^2$可以量化模型响应变量和变量间的关系强弱（这条回归线到底预测的准不准）</li>
+<li>p-value可以决定拟合方程的可靠程度，评估线性关系存在与否及其强弱（我们到底可以不可以划一根回归线来预测）</li>
+</ul>
+<h2 id="多元线性回归">多元线性回归</h2>
+<p>我们要考虑很多变量时候，不能单独将各个变量做简单线性回归，然后一起看。比如下面的例子就是一个误差分析</p>
+<p>下面的表格是用多元线性回归模型后的一些具体统计量</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/Untitled%2013.png" alt="Untitled">
+
+</p>
+<p>我们注意到报纸和最终的收益的 <code>p-value</code> 为 0.8599 ，这表明他们的相关性很弱。</p>
+<p>但是看相关矩阵</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/Untitled%2014.png" alt="Untitled">
+
+</p>
+<p>在这其中， <code>报纸</code> 和 <code>广播</code> 的相关系数 是 <code>0.3541</code>  ，也就是，我们的报纸这个变量变化，会很显著的影响广播，而广播和最终的销量又有很强的关系，因此 <code>报纸</code> 沾了 <code>广播</code> 的光而和最终的销量有很强的相关性。</p>
+<ul>
+<li>一个例子
+<ul>
+<li>这个有点违反直觉的结果在现实生活中很常见。考虑一个荒谬的例子来说明这一点。对某一特定海滩社区在一段时间内收集的数据进行鲨鱼袭击与冰淇淋销售之间的回归分析，会显示出正相关关系，类似于销售与报纸之间的关系。当然，(到目前为止)还没有人建议在海滩上禁止吃冰淇淋以减少鲨鱼袭击。事实上，更高的温度导致更多的人去海滩，这反过来又导致了更多的冰淇淋销售和更多的鲨鱼袭击。鲨鱼袭击对冰淇淋销量和温度的多重回归表明，正如直觉所暗示的那样，在调整温度后，冰淇淋销量不再是一个重要的预测因素。</li>
+</ul>
+</li>
+</ul>
+<p>我们对于一个由 <code>p</code> 个独立变量的问题，可以用如下回归方程来拟合</p>
+<p>$$
+Y=\beta_0+\beta_1X_1+\beta_2X_2+\cdots+\beta_pX_p+\epsilon
+$$</p>
+<p>同样可以用 <code>RSS</code> 求最优解的方式来求</p>
+<h3 id="进行多元线性回归时我们关心的一些问题">进行多元线性回归时我们关心的一些问题</h3>
+<ol>
+<li>是否<strong>至少</strong>有一个特征对于最终的预测是有用的</li>
+<li><strong>所有的特征</strong>都有助于预测 <code>Y</code> 吗，还是<strong>仅仅一部分</strong>特征对于预测 <code>Y</code> 是有效的</li>
+<li>模型本身拟合程度好坏</li>
+<li>对于给定的样本特征对应的样本值，我们如何根据给定的数据预测结果？预测的结果准确率如何？</li>
+</ol>
+<h3 id="特征与预测集是否真的有关系"><strong>特征与预测集是否真的有关系</strong></h3>
+<p>在简单的线性回归setting中，我们为了确认X和Y之间确实有关系，我们可以简单的将 $\beta_1 = 0$</p>
+<p>同样的在多元线性回归的场景下，我们需要确认是否全部的回归系数都是0，也就是逐一确认null hypothisis</p>
+<p>$$
+H_0: \beta_1=\beta_2=\cdots=\beta_p=0
+$$</p>
+<p>以及 $H_\alpha ：至少有一个系数不是0$</p>
+<p>我们通过 <code>F分布</code> 来进行检验</p>
+<p>$$
+F=\frac{(\mathrm{TSS}-\mathrm{RSS})/p}{\mathrm{RSS}/(n-p-1)}
+$$</p>
+<p>从式子中我们得出，如果我们希望 $H_\alpha$ 成立，我们希望我们求出的 $F$ 值大于1.</p>
+<blockquote>
+<p>依赖<strong>样本量n</strong>和<strong>特征数量p</strong>。当样本量n非常大的时候，F-statistic哪怕非常非常接近1，我们依然有机会来拒绝原假设H0。与之相反的，当我们样本量很少的时候，我们需要一个非常大的F-statistic值才能有信心去拒绝原假设H0。</p>
+</blockquote>
+<p><strong>注意：我们不能用单个特征的 <code>p-value</code> 来判断最起码有一个特征是与我们的模型是有关系的。</strong></p>
+<blockquote>
+<p>假设有一个情况，我们一共有100个特征，所以p=100，并且原假设 $H_0: \beta_1=\beta_2\ldots\ldots=\beta_p=0$ 成立，所以没有任何一个变量真正的与Y有关系。但是在这个场景下，我们仍然会有5%的特征的p-value会&lt;=0.05。换句话说，我们有5%的概率在明明不显著的变量中发现变量的显著性。但是，我们的F-Statistic就不会有类似的问题发生，因为他会将我们的特征数量考虑在内，所以当 $H_0$成立时，我们只会有5%的概率发现发现p-value会&lt;0.05，无论有多少特征p和样本量n。不过需要注意的事，当p&gt;n的时候，F-Statistic就不太好用。</p>
+</blockquote>
+<h3 id="决策哪些特征比较重要">决策哪些特征比较重要</h3>
+<p>这块我们可以通过：</p>
+<ol>
+<li>前向选择</li>
+<li>后向选择</li>
+<li>混合选择</li>
+</ol>
+<p>三种方式来进行解决，这三种方式在做评分卡的时候其实都挺常见的。</p>
+<h3 id="模型拟合评估">模型拟合评估</h3>
+<p>还是用RSS和R方来进行评估</p>
+<h3 id="模型预测">模型预测</h3>
+<p>一旦我们模型拟合完毕，我们就可以进行预测了，但整个预测过程从统计学的角度来说还存在三个维度的不确定性：</p>
+<ol>
+<li>我们的拟合方程 $\hat{Y}=\hat{\beta}{0}+\hat{\beta}{1}X_{1}+\cdots+\hat{\beta}{p}X{p}$ 只是真实函数 $f(X)=\beta_{0}+\beta_{1}X_{1}+\cdots+\beta_{p}X_{p}.$ 的一种近似。对于这种参数估计的不确定性，与所谓的 <code>不可划归错误</code>有关。</li>
+<li>当然实际上对于真实函数用f(x)来去拟合肯定还是带有近似的成分你在里面，所以模型的选择本身也会带有model bias。（这种bias一般也是直接无视的）</li>
+<li>最后，哪怕我们知道真实的f(X)的系数 $\beta_0,…\beta_p$，因为有随机误差ϵ的存在，我们也没有办法去完美的拟合模型。’</li>
+</ol>
+<h2 id="线性模型的其他问题">线性模型的其他问题</h2>
+<h3 id="处理离散型随机变量">处理离散型随机变量</h3>
+<p>离散随机变量可以用于对定性问题的分析，比如own(房屋所有权)，student(学生身份)，status(婚姻状况)和region (East, West or South)。</p>
+<p>做 01 encoding</p>
+<p>$$
+x_i=\begin{cases}1&amp;\quad\text{if }i\text{th person is female}\0&amp;\quad\text{if }i\text{th person is male},\end{cases}
+$$</p>
+<p>在这种情况下，系数其实就是两个类别之间的均值</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/Untitled%2015.png" alt="Untitled">
+
+</p>
+<p>对于多值的离散分布问题</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/Untitled%2016.png" alt="Untitled">
+
+</p>
+<h2 id="线性回归的六个潜在的问题">线性回归的六个潜在的问题</h2>
+<ul>
+<li>共线性(Collinearity)</li>
+<li>误差项自相关(Correlation of Error terms)</li>
+<li>误差项方差非恒定(Non-constant variance)</li>
+<li>离群点(Outliers)</li>
+<li>高杠杆点(High-leverage Points)</li>
+<li>非线性(Nonlinearity Relationship)</li>
+</ul>
+<p>以前面的信用卡数据作为例子来逐一说明下面的问题</p>
+<h3 id="问题1-额度与信用评分的高度共线性">问题1 额度与信用评分的高度共线性</h3>
+<p><strong>共线性是指两个或更多的预测变量高度相关，导致难以分离出单个变量对响应变量的影响</strong></p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/image.png" alt="image.png">
+
+</p>
+<p>我们将不同的特征画在一张散点图上，左边是 <code>age</code> 和 <code>limit</code> 的图，他们没有共线性，但是右侧 <code>rating</code> 和 <code>limiting</code> 就有着明显的共线性</p>
+<p>信用额度<code>limit</code>和信用评分<code>rating</code>往往同时增加和减少，很难确定单一变量与信用卡债务<code>balance</code>的相关性</p>
+<ul>
+<li>共线性的特征判断</li>
+</ul>
+<p>具有高度共线性两个变量的RSS等高线中，等高线之间非常狭窄</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/image%201.png" alt="image.png">
+
+</p>
+<p>我们用 <code>RSS</code> 来寻求 <code>RSS</code> 最小值来构建回归拟合， <code>RSS</code> 是 参数 $\beta$ 的函数，每张图的黑点代表了 最小<code>RSS</code>  对应的系数。在左侧我们可以发现最小值可以很好的被定义，但是右侧对于许多 $\beta{limit},\beta{rating}$ 都有类似的 <code>RSS</code></p>
+<p>因此 <code>共线性</code> 降低了回归系数的准确性，会导致 $\hat{\beta_j}$标准误差增加</p>
+<p>而 我们的每一个预测值 $\hat{X}$ 的 $t-statistic$ 是 $\hat{\beta_j}$ 除以标准误差得到的，因此共线性会降低t值，因此可能会导致我们无法拒绝假设 $H_0:\beta_j = 0$</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/image%202.png" alt="image.png">
+
+</p>
+<p>由于共线性的存在，<code>limit</code> 变量的重要性被掩盖了</p>
+<ul>
+<li>共线性的检测</li>
+</ul>
+<ol>
+<li>用相关矩阵 ：预测变量的相关系数矩阵中出现**「绝对值最大的元素」<strong>表示有</strong>「一对」**变量高度相关,
+<ul>
+<li>因此数据中可能存在共线性问题</li>
+<li>但相关系数矩阵无法检测到 <strong>「三个或更多」<strong>变量之间是否存在</strong>「多重共线性」</strong>：</li>
+</ul>
+</li>
+<li>方差膨胀因子(VIF)评估多重共线性</li>
+</ol>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/image%203.png" alt="image.png">
+
+</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/image%204.png" alt="image.png">
+
+</p>
+<ul>
+<li>共线性的解决方案</li>
+</ul>
+<ol>
+<li><strong>从回归中踢除一个变量</strong></li>
+</ol>
+<p>当我们作<code>balance</code>对<code>age</code>和<code>limit</code>不包含<code>rating</code>的回归：
+如果我们不需要对拟合做出妥协的话，我们可以直接踢除其中一个多余的变量来解决共线性问题。</p>
+<ol>
+<li><strong>融合两个共线变量</strong></li>
+</ol>
+<p>把共线变量组合成一个单一的预测变量：</p>
+<ul>
+<li>对标准化后的<code>limit</code>和<code>rating</code>求平均创建新变量<code>credit worthiness</code></li>
+</ul>
+<h3 id="问题2--误差项自相关">问题2  误差项自相关</h3>
+<p>在线性回归中一个重要的假设就是 误差项 $\epsilon_1,…\epsilon_n$ 不相关，如果误差项存在自相关问题，那么估计的标准误差往往会低估了真实的标准误差。</p>
+<ul>
+<li>95%CI包含真实参数的实际概率远远低于0.95</li>
+<li>p-value降低导致错误的结论，认为参数是统计显著的</li>
+<li>模型的置信度无法保证</li>
+</ul>
+<p>例如我们将样本错误的重复了一次，也就是样本数量 $n⇒2n$ ，那么对2n个样本对参数估计和对n个样本对估计相同，但后者CI对宽度是前者的 $\sqrt{2}$ 倍。</p>
+<p><strong>问题2常见于时间序列，时间序列中误差往往有相关性。</strong></p>
+<p>假设我们相邻的时间点产生的误差有正相关性，比如常见的九轴imu都是存在零漂的，误差会随着时间而不断积累，且上一个时间单位误差变大，下一个时间单位误差往往也会变大。</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/image%205.png" alt="image.png">
+
+</p>
+<p>我们原本的数据是一个上下震荡非常激烈的时间数据，但是随着误差项的相关系数 $ρ$ 不断增加，他的震荡越来越不明显，因为他更加依赖于先前的数据。</p>
+<p><strong>假设【误差项不相关】对线性回归和其他统计方法都很重要，良好的实验设计(控制变量、环境)可以降低误差项自相关带来的风险</strong></p>
+<h3 id="问题3-误差项方差不恒定">问题3 误差项方差不恒定</h3>
+<p>线性回归模型的另一个重要假设是误差项的方差是恒定的</p>
+<p>即 $D(\epsilon_i)$ = $\sigma^2$</p>
+<p>我们可以画一个残差图</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/image%206.png" alt="image.png">
+
+</p>
+<p>红线是对残差的光滑你和，目的是看清楚趋势。蓝线描绘了残差的外分位数。</p>
+<p>左侧的漏斗状残差表示存在异方差，右侧表示经过了对数变换然后再线性回归拟合的变量，异方差不是很明显。</p>
+<p><strong>解决方案：</strong></p>
+<ol>
+<li>当残差随拟合值增加而增加，用**「凹函数」<strong>对响应值  $y$ 做变换，比如 $logY$ $\sqrt{Y}$这种变换使较大的响应值有</strong>「更大的收缩(shrinkage)」**==&gt; 降低异方差性</li>
+<li></li>
+</ol>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/image%207.png" alt="image.png">
+
+</p>
+<h3 id="问题4-异常值">问题4 异常值</h3>
+<p><strong>异常值是 y偏离很多的</strong></p>
+<p>最直觉明显的，异常值会对回归造成很大影响，我们应当敏锐发现异常值并且大胆踢除。</p>
+<p>问题是如何确定哪些点是异常点，我们可以用 <code>t分布</code> 来进行求证，我们知道 <code>t分布</code> 是在不知道样本分布函数下的，根据观测值进行拟合的，他是正态分布的近似，因此我们可以求 <code>t残差</code> 然后绝对值 大于3 的 $X_i$ 可能是异常值，（对应 $3\sigma$原则）</p>
+<h3 id="问题5-高杠杆点">问题5 高杠杆点</h3>
+<p><strong>高杠杆点是 x偏离很多的，例如图中左侧 <code>41</code> 的点就是高杠杆点</strong></p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/image%208.png" alt="image.png">
+
+</p>
+<p>高杠杆点对回归直线的估计有很大影响，这可能会导致整个拟合的失效</p>
+<p>在简单线性回归中好找，直接画图即可。</p>
+<p>在多元线性回归中，量化观测点的杠杆，计算 <code>杠杆统计量</code></p>
+<p>$$
+h_i=\frac1n+\frac{(x_i-\bar{x})^2}{\sum_{i=1}^n(x_i)}
+$$</p>
+<p>这里 $h_i$ 经常在 $\frac{1}{n}$到 1之间，他的平均值尝尝等于 $\frac{p+1}{n}$</p>
+<h3 id="问题6-非线性关系">问题6 非线性关系</h3>
+<p>可以画一个残差图来看</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/image%209.png" alt="image.png">
+
+</p>
+<p>左边拟合曲线呈现 <code>U</code> 形，有很强的模式，说明数据很明显是非线性的，右边散点图分布的乱七八糟，表明数据分布没什么规律。</p>
+<p>因此需要非线性变换</p>
+<h2 id="和k-近邻进行比较">和K-近邻进行比较</h2>
+<p>在目前讨论的 <code>回归任务</code> 中， <code>线性回归</code> 是 <code>参数化模型</code> , <code>k近邻算法</code> 是 <code>非参数化模型</code></p>
+<p>参数化模型的特点就是将需要解决的问题落地到一个非常具体的假设，然后优化我们的假设参数，非参数模型就没有这个问题。</p>
+<p>参数化模型的缺陷就是先天存在 <code>Bias</code> ，很依赖我们的假设，如果真实的数据和我的假设大相径庭，那我怎么做都是不好的. 而 <code>knn</code> 算法容易过拟合，过度的学习已知的数据，有一点 <code>死记硬背</code> 的感觉</p>
+<p>例如我们可以看一张图</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/image%2010.png" alt="image.png">
+
+</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/image%2011.png" alt="image.png">
+
+</p>
+<p>对于一个回归问题，KNN和线性模型的拟合效果可见下图，可以看到KNN对于假设与true function非常接近的问题来说，无论超参怎么调，拟合的效果相比线性模型还是差一些的。</p>
+<p>所以在做回归任务的时候，我们可以先对数据有一个感性的认识，然后选择不同的模型来感受，实在是万不得已可以用 <code>k-nn</code> 分析</p>
+<h2 id="分类问题-1">分类问题</h2>
+<p>站在刚才一大堆线性模型预测的肩膀上，我们来看看生活中更常见的分类问题。</p>
+<p>我们经常需要根据一些判据来对事物进行分类，比如我们需要根据邮件的内容来分析是垃圾邮件还是正常邮件，此时我们的输出就是一个 <code>qualitive</code> 问题，而输入依然是我们选择的那些特征。不过分类器给出的一个常常是一个概率，然后我们来根据这些概率进行决策，比如我们认为输出的概率大于 <code>0.9</code> 认为是一个垃圾短信，否则是正常短信。</p>
+<h3 id="原有线性模型预测的局限性">原有线性模型预测的局限性</h3>
+<ol>
+<li>出现非预期的值</li>
+</ol>
+<p>考虑一个问题，医生在给出诊断的时候，只会判断是 <code>中风</code> 和 <code>药物过量</code> 中的其中一种。这是一个典型的 <code>二分类</code> 问题，比如 <code>中风</code> 输出 0,  <code>药物过量</code> 输出 1.我们当然可以像上一节一样构建一个线性回归模型，然后简单让他给出预测，如果输出的值大于一个阈值，我们就认为这个人患病，否则就没有。这种方式是合理的，但是他的<strong>局限性</strong>在于，模型的输出可能会超出我们的既定范围 <code>[0,1]</code> 这在概率里面是无法解释的，如下图</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/image%2012.png" alt="image.png">
+
+</p>
+<ol>
+<li>隐含着主次关系</li>
+</ol>
+<p>假设这个医生现在牛逼了，他还可以诊断 <code>癫痫</code> ，我们可以直接用简单的用 <code>1,2,3</code> 来分别代表 <code>中风，药物过量，癫痫</code> 。但是这样编码是线性的，因为 <code>1,2,3</code> 有明显的排序性，我们在实际生活中这三种病的差异是无法量化表达的，但是在我们这种分类中，明显的重要性就是 <code>中风&lt;药物过量&lt;癫痫</code>  而且他们的差距幅度是 <code>1</code> 。因此我们如果换一种分类标签，拟合出来的模型很可能会大不相同，这并不是我们所期望的。</p>
+<h2 id="logistics回归">logistics回归</h2>
+<p>我们先从单变量说起。考虑先前提到的 <code>信用卡贷款数据集</code> 某个人的 <code>信贷余额（欠款）</code> 来预测 <code>违约</code> , 我们如果要来分类这个人是否会违约，实际上可以将问题转化为根据 <code>信贷余额</code> 来预测 <code>违约 = yes</code>  的概率，也就是 $P(违约 = yes | 余额)$ 这个概率。</p>
+<p>更通用的表达就是</p>
+<p>$$
+p(X) = P(Y = 1 | X)
+$$</p>
+<p>用先前的线性回归模型显然会超出边界 $[0,1]$ ，因此我们可以做转换</p>
+<p>$$
+\frac{p(X)}{1-p(X)} = e^{\beta_0+\beta_1X}
+$$</p>
+<p>然后两边取对数，并化简，得到</p>
+<p>$$
+p(X) = \frac{e^{\beta_0+\beta_1X}}{1+e^{\beta_0+\beta_1X}}
+$$</p>
+<p>这样，我们对一个 <code>分类问题</code> 就变成了一个 <code>等于其中一个值的概率问题</code></p>
+<h3 id="参数估计">参数估计</h3>
+<p>用最大自然估计法来估计logistics的参数 $\beta_0,\beta_1$</p>
+<p>然后我们一般在程序中会得到下表</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/image%2013.png" alt="image.png">
+
+</p>
+<p>我们依然可以看 <code>p-value</code> 来判断这个特征是否有意义， 这里的 <code>Z</code> 就相当于之前的 <code>t值</code></p>
+<h3 id="预测概率">预测概率</h3>
+<p>有了模型之后，我们可以计算概率，比如我们可以计算当 $balance == 1000$ 时候的违约概率是</p>
+<p>$$
+\hat{p}(X)=\frac{e^{\hat{\beta}_0+\hat{\beta}_1X}}{1+e^{\hat{\beta}_0+\hat{\beta}_1X}}=\frac{e^{-10.6513+0.0055\times1,000}}{1+e^{-10.6513+0.0055\times1,000}}=0.00576
+$$</p>
+<p>同样的，我们可以对 <code>离散型</code> 的变量进行逻辑回归，比如是否是 <code>学生身份</code> 来预测，我们需要将学生身份映射为 <code>0-1</code></p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/image%2014.png" alt="image.png">
+
+</p>
+<p>$$
+\widehat{\mathrm{Pr}}(\text{default=Yes|student=Yes})=\frac{e^{-3.5041+0.4049\times1}}{1+e^{-3.5041+0.4049\times1}}=0.0431,\\widehat{\mathrm{Pr}}(\text{default=Yes|student=No})=\frac{e^{-3.5041+0.4049\times0}}{1+e^{-3.5041+0.4049\times0}}=0.0292.
+$$</p>
+<h3 id="多元logistics回归">多元logistics回归</h3>
+<p>遵循同样的推导方式，多元回归的公式是</p>
+<p>$$
+p(X)=\frac{e^{\beta_0+\beta_1X_1+\cdots+\beta_pX_p}}{1+e^{\beta_0+\beta_1X_1+\cdots+\beta_pX_p}}.
+$$</p>
+<p>我们这次根据 <code>收入</code> 和 <code>学生身份</code> 来预测 <code>违约概率</code></p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/image%2015.png" alt="image.png">
+
+</p>
+<p>比较上面的图，我们发现 这次 <code>学生</code> 反而不会促进 <code>违约</code></p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/image%2016.png" alt="image.png">
+
+</p>
+<p>图中 <code>橘色</code> 表示 <code>学生</code> 而蓝色 代表 <code>非学生</code> 我们发现，如果欠钱数量相同，学生违约的概率比不是学生的小，但是从水平来看，同样违约率，学生欠钱多。但学生总体上往往拥有更高的信用卡余额这一事实意味着，总体而言，学生的违约率往往高于非学生</p>
+<blockquote>
+<p>这个简单的示例说明了当其他预测因子也可能相关时，仅涉及单个预测因子时执行回归的危险和微妙之处。在线性回归设置中，使用一个预测器获得的结果可能与使用多个预测器获得的结果大不相同，特别是当预测器之间存在相关性时。</p>
+</blockquote>
+<h2 id="判别分析">判别分析</h2>
+<p>我们生活中有很多分类问题的<strong>类别大于2</strong>，尽管我们可以对逻辑回归进行扩展来处理多种分类，但是我们通常不采用，一般可以看看判别分析。</p>
+<h3 id="线性判别分析">线性判别分析</h3>
+<p><strong>逻辑回归参照先前的线性模型，先根据假设来给出一些预测特征，然后求出各个特征的参数。</strong></p>
+<p>线性判别遵循的方法：</p>
+<ol>
+<li>根据 $Y$ 在每个类别 $k$ 下，各个自变量 $x$ 的**概率分布。**求得 $P(X= x | Y = k)$</li>
+<li>利用贝叶斯公式求出 $P(Y = k | X = x)$</li>
+</ol>
+<h3 id="判别分析和逻辑回归的区别和适用范围">判别分析和逻辑回归的区别和适用范围</h3>
+<p>逻辑回归是先求概率分布的方程，然后用这个来预测，判别分析是先随便在样本里抽，然后判断他是属于哪个类的，然后利用贝叶斯公式推出分类的概率。</p>
+<ol>
+<li><strong>当样本的类别区分度很高时</strong>，这意味着<strong>类别之间</strong>的差异较大，而<strong>类别内部</strong>的差异较小。在这种情况下，<strong>逻辑回归模型的参数估计可能是不稳定的</strong>。这里的“不稳定”意味着当使用小量数据或稍微改变数据来进行重新估计时，参数可能会发生较大的变化。</li>
+<li><strong>如果样本量较小，并且自变量</strong><em>X</em><strong>的分布在每个类别中又近似正态分布</strong>，那么还是<strong>判别分析更稳定</strong>。</li>
+<li>相较于逻辑回归，<strong>判别分析在解决多类别分类问题上更具优势</strong>。</li>
+</ol>
+<p>LR用最大似然求参数，判别分析用均值和正态分布的方差来计算。</p>
+<h3 id="贝叶斯思想分类">贝叶斯思想分类</h3>
+<p>贝叶斯做了以下这些事：</p>
+<ol>
+<li>我们管 $\pi_k$ 叫做 <code>先验概率</code> ,从样本集合中随机选一个样本，然后计算这个样本属于 <code>k</code> 类的概率。</li>
+<li>让 $f_k(x) = p(X = x | Y = k)$ 表示 在 $k$ 类样本中 $x$ 的密度函数（回想概率论学的知识）</li>
+<li>基于上面的定义，我们可以求出 $p_k(X) = P(Y = k | X = x)$ 也就是后验概率</li>
+</ol>
+<p>$$
+\Pr(Y=k|X=x)=\frac{\pi_kf_k(x)}{\sum_{l=1}^K\pi_lf_l(x)}.
+$$</p>
+<p>一般来说 $\pi_k$ 是我们抽样得到的，可以根据样本来求，但是 $f_k(x)$ 除非我们人为根据假设定义一些简单的分布，否则很难直接预知。根据前面的知识，贝叶斯分类的误差是最小的，如果我们能准确估计 $f_k(x)$, 那么就可以构造贝叶斯分类器来完美的进行分类。</p>
+<h3 id="一元线性判别分析">一元线性判别分析</h3>
+<p>当我们只有一个特征的时候，我们可以假设这个特征的先验概率分布 $f_k(x)$ 为 <strong>正态分布。</strong></p>
+<p>$$
+f_k(x)=\frac1{\sqrt{2\pi}\sigma_k}\exp\left(-\frac1{2\sigma_k^2}(x-\mu_k)^2\right)
+$$</p>
+<p>代入贝叶斯公式，得到概率为</p>
+<p>$$
+p_k(x)=\frac{\pi_k\frac{1}{\sqrt{2\pi}\sigma}\exp\left(-\frac{1}{2\sigma^2}(x-\mu_k)^2\right)}{\sum_{l=1}^K\pi_l\frac{1}{\sqrt{2\pi}\sigma}\exp\left(-\frac{1}{2\sigma^2}(x-\mu_l)^2\right)}
+$$</p>
+<p>取对数后，我们发现一个关于 $x$ 的线性函数。</p>
+<p>$$
+\delta_k(x)=x\cdot\frac{\mu_k}{\sigma^2}-\frac{\mu_k^2}{2\sigma^2}+\log(\pi_k)
+$$</p>
+<p>分析思路：</p>
+<ol>
+<li>假设特征 $X_p$ 在每个类别下的概率分布（通常是正态分布）</li>
+<li>用训练样本估计 $u_k,\pi_k,\sigma_k^2$ 。</li>
+<li>将待分类的样本点的自变量取值代入上述公式求概率。</li>
+<li>将待分类样本点放到概率最高的类中。</li>
+</ol>
+<h3 id="多元判别分析">多元判别分析</h3>
+<p>多元概率密度公式是</p>
+<p>$$
+f(x)=\frac{1}{(2\pi)^{p/2}|\boldsymbol{\Sigma}|^{1/2}}\exp\left(-\frac{1}{2}(x-\mu)^T\boldsymbol{\Sigma}^{-1}(x-\mu)\right)
+$$</p>
+<p>其中 $u$ 是一个向量，代表 特征 $X_p$ 分别对应的均值， $\Sigma$ 代表变量之间的协方差，他是一个 $p×p$ 的矩阵。</p>
+<p>整理之后，我们发现其实特征 $x$ 变成了一个向量 $X$ 他本质还是线性的</p>
+<p>$$
+\delta_k(x)=x^T\boldsymbol{\Sigma}^{-1}\mu_k-\frac{1}{2}\mu_k^T\boldsymbol{\Sigma}^{-1}\mu_k+\log\pi_k
+$$</p>
+<p>因此分析思路可以类比单变量。</p>
+<p><strong>注意：线性判别分析的重要假设：1.</strong>   $X_i ,i \in (1 , p)$ 是正态分布。 2. 属于不同类别<em>k</em>的数据集共享同一个方差（或者协方差）</p>
+<h3 id="二次判别分析">二次判别分析</h3>
+<p>前面的线性判别分析中属于不同类别的数据共享同一个方差，但是二次判别分析中则不需要第二个约束。</p>
+<p>$$
+\begin{aligned}\delta_{k}(x)&amp; \begin{array}{rcl}=&amp;-\frac{1}{2}(x-\mu_k)^T\boldsymbol{\Sigma}_k^{-1}(x-\mu_k)-\frac{1}{2}\log|\boldsymbol{\Sigma}_k|+\log\pi_k\end{array} \&amp;\begin{array}{rcl}=&amp;-\frac{1}{2}x^T\boldsymbol{\Sigma}_k^{-1}x+x^T\boldsymbol{\Sigma}_k^{-1}\mu_k-\frac{1}{2}\mu_k^T\boldsymbol{\Sigma}_k^{-1}\mu_k-\frac{1}{2}\log|\boldsymbol{\Sigma}_k|+\log\pi_k\end{array}\end{aligned}
+$$</p>
+<h3 id="线性和二次的选择">线性和二次的选择</h3>
+<ol>
+<li>看看是否存在显著非线性关系，如果有，那就二次</li>
+<li>如果不是很确定非线性关系，先线性判别分析一下，他的时间复杂度小很多。</li>
+<li>数据不充裕选线性判别分析，充裕选二次（永远记住导论中的原则，越复杂的模型在小数据集下越容易过拟合而不是欠拟合）</li>
+</ol>
+<h3 id="非线性模型的博弈">非线性模型的博弈</h3>
+<p>我们已经学过两种非线性模型了，一个是带有参数的 <code>二次判别</code> 一个是非参数的 <code>KNN</code> 。在非线性的时候， <code>KNN</code> 有可能更出色，因为他是非参数的，可以不局限于我们的假设而造成的不可回避误差 $\epsilon$  但是KNN常常过拟合，而且没办法给出变量重要性的排序信息。因此 <code>二次判别分析</code> 是一个很实用的选择。</p>
+<h3 id="一个实例后记">一个实例后记</h3>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/image%2017.png" alt="image.png">
+
+</p>
+<p>这是一个 洛杉矶骑单车的数据集，绿色的线是 平均值 $\mu$ ,蓝色是样本点。我们可以发现<strong>随着平均值增加，样本的方差也在增加。这表明用Poisson分布更好一些</strong></p>
+<p>我们可以用各种分布对我们的回归进行扩展，比如伯努利二项分布 Poisson分布 和正态分布。</p>
+
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/HitDocker/" data-toggle="tooltip" data-placement="top" title="Docker与HIT·服务计算实验">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/fmtperspective/" data-toggle="tooltip" data-placement="top" title="格式化字符串漏洞由浅入深">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+
+                
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/course" title="course">
+                            course
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/crypto" title="crypto">
+                            crypto
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ctf" title="ctf">
+                            ctf
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/notebook" title="notebook">
+                            notebook
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/pwn" title="pwn">
+                            pwn
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/writeup" title="writeup">
+                            writeup
+                        </a>
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:empire258700@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/ZephyrVictor">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="#3" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; #3 2024
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>

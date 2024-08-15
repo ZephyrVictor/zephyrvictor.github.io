@@ -16,6 +16,13 @@
       <description>原理介绍 格式化字符串函数 格式化字符串函数可以接受可变数量的参数，并将第一个参数作为格式化字符串，根据其来解析之后的参数。通俗来说，格式化字符</description>
     </item>
     <item>
+      <title>统计学习1：线性回归与分类问题</title>
+      <link>https://zephyr369.online/islchapter34/</link>
+      <pubDate>Mon, 29 Jul 2024 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/islchapter34/</guid>
+      <description>统计学习是一个大范畴，机器学习也好，简单常见的统计分布也罢，从大一就想一直弄明白，打了无数次数学建模，概率论与数理统计学的也不错，奈何从没有</description>
+    </item>
+    <item>
       <title>Docker与HIT·服务计算实验</title>
       <link>https://zephyr369.online/HitDocker/</link>
       <pubDate>Wed, 24 Jul 2024 12:00:00 +0000</pubDate>

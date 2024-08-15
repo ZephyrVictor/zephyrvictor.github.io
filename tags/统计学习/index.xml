@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>统计学习 on #3</title>
+    <link>https://zephyr369.online/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0/</link>
+    <description>Recent content in 统计学习 on #3</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 29 Jul 2024 12:00:00 +0000</lastBuildDate>
+    <atom:link href="https://zephyr369.online/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>统计学习1：线性回归与分类问题</title>
+      <link>https://zephyr369.online/islchapter34/</link>
+      <pubDate>Mon, 29 Jul 2024 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/islchapter34/</guid>
+      <description>统计学习是一个大范畴，机器学习也好，简单常见的统计分布也罢，从大一就想一直弄明白，打了无数次数学建模，概率论与数理统计学的也不错，奈何从没有</description>
+    </item>
+  </channel>
+</rss>
