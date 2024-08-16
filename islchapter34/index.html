@@ -259,40 +259,40 @@
 <h1 id="总览">总览</h1>
 <h2 id="一些前置定义">一些前置定义</h2>
 <p>为了便于说明，我们构想一堆人领工资的场景，我们考虑 <code>年</code> <code>年纪</code> <code>竞争</code> ….共p个因素，我们称这些因素为 <code>特征</code> ，一共有 <code>n</code> 个人来领工资，我们都测到了每个人这 <code>p</code> 个人的数据。因此我们可以将这些数据放成一个矩阵</p>
-<p>$$
+<p>$
 \mathbf{X}=\begin{pmatrix}x_{11}&amp;x_{12}&amp;\ldots&amp;x_{1p}\x_{21}&amp;x_{22}&amp;\ldots&amp;x_{2p}\\vdots&amp;\vdots&amp;\ddots&amp;\vdots\x_{n1}&amp;x_{n2}&amp;\ldots&amp;x_{np}\end{pmatrix}
-$$</p>
+$</p>
 <p>我们按照行来看，也就是 $x_1,x_2,…,x_n$ ，其中 $x_i$都是一个长度为p的向量，也就是</p>
-<p>$$
-x_i=\begin{pmatrix}x_{i1}\x_{i2}\\vdots\x_{ip}\end{pmatrix}
-$$</p>
+<p>$
+x_i=\begin{pmatrix}x_{1}\x_{i2}\\vdots\x_{ip}\end{pmatrix}
+$</p>
 <p>这样一个 $x_i$ 是按照行看的，这样我们常常把矩阵 $X$ 写成</p>
-<p>$$
+<p>$
 \mathbf{X}=\begin{pmatrix}x_1^T\x_2^T\\vdots\x_n^T\end{pmatrix}
-$$</p>
+$</p>
 <p>我们成功将矩阵按人来划分</p>
 <p>或者我们也可以按照列来划分，也就是对于一个特征，相当于我们单拉出来看看每个人年纪都是多少，这样我们可以将矩阵写成</p>
-<p>$$
+<p>$
 \mathbf{X}=\begin{pmatrix}\mathbf{x}_1&amp;\mathbf{x}_2&amp;\cdots&amp;\mathbf{x}_p\end{pmatrix}
-$$</p>
+$</p>
 <h2 id="一个统计学习的使命">一个统计学习的使命</h2>
 <p>常理来看，统计学习一直期望找到一个函数 $f$ ,我们希望观测到了一堆值 $X_1,X_2,…X_p$  我们假设这些特征和一个输出 $Y$ 是有关系的，寻求</p>
-<p>$$
+<p>$
 Y = f(X) + \epsilon
-$$</p>
+$</p>
 <p>
   <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/Untitled.png" alt="Untitled">
 
 </p>
 <h3 id="预测">预测</h3>
 <p>我们管预测到的函数f和预测值Y叫</p>
-<p>$$
+<p>$
 \hat{Y}=\hat{f}(X)
-$$</p>
+$</p>
 <p>误差分为可以避免的误差和不可避免的误差，前者可以通过用更牛逼（准确）的算法并且不断迭代来减小使之在期望中和真实的f差距逼近0，后者是因为可能有些别的特征我们没有考虑等因素。对于后者，我们可以尝试多做一做特征工程，或者纳入更多考虑因素来做。</p>
-<p>$$
+<p>$
 \begin{aligned}\operatorname{E}(Y-\hat{Y})^2&amp;=\quad\operatorname{E}[f(X)+\epsilon-\hat{f}(X)]^2\&amp;=\quad\underbrace{[f(X)-\hat{f}(X)]^2}<em>{\text{可以划归}}+\underbrace{\text{Var}(\epsilon)}</em>{\text{不可以划归}},\end{aligned}
-$$</p>
+$</p>
 <p>在预测中，我们不关心这些特征 $X_i$ 他们的系数，也就是f是一个黑盒。</p>
 <p><strong>此外，有时候我们也做分类问题，比如希望模型的输入是这些特征，让他进行分类，比如逻辑斯蒂回归就是一个二分类问题，当然他也可以用于预测中。</strong></p>
 <h3 id="推断"><strong>推断</strong></h3>
@@ -302,9 +302,9 @@ $$</p>
 <ol>
 <li>假设f关于特征 $X_i$ 的形式，例如，一个常见的线性方程。</li>
 </ol>
-<p>$$
+<p>$
 f(X)=\beta_0+\beta_1X_1+\beta_2X_2+\cdots+\beta_pX_p.
-$$</p>
+$</p>
 <ol>
 <li>训练模型求出参数</li>
 </ol>
@@ -334,14 +334,14 @@ $$</p>
 </p>
 <h2 id="评估模型精度">评估模型精度</h2>
 <h3 id="mse-均方误差">MSE 均方误差</h3>
-<p>$$
+<p>$
 MSE = \frac{1}{n}\Sigma^n_{i = 1}(y_i - \hat{f}(x_i))^2
-$$</p>
+$</p>
 <p>我们关心MSE在测试集的表现，比如我们不感兴趣模型对于过去股票预测有多准，我们感兴趣的是模型能预测明天股票的值有多准。</p>
 <p>我们对MSE求期望有</p>
-<p>$$
+<p>$
 E(y_0-\hat{f}(x_0))^2= D(\hat{f}(x_0)) + [Bias(\hat{f}(x_0))]^2+Var(\epsilon)
-$$</p>
+$</p>
 <p>其中 $D(\hat{f}(x_0))$是方差</p>
 <p>
   <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/Untitled%205.png" alt="Untitled">
@@ -350,26 +350,26 @@ $$</p>
 <p>通常的三种情况，后续的所有算法的核心目的都是寻求第一项和第二项的和为最小化，至于 $Var(\epsilon)$ 是不可划归的误差。</p>
 <h3 id="分类问题">分类问题</h3>
 <p>用</p>
-<p>$$
+<p>$
 \frac{1}{n}\Sigma^n_{i=1}I(y_i\ne\hat{y}_i)
-$$</p>
+$</p>
 <p>来进行衡量，函数I对于 $y_i \ne \hat{y}_i$ 输出1，否则输出0.我们的目的是寻求上面的式子最小。</p>
 <h3 id="贝叶斯分类器">贝叶斯分类器</h3>
-<p>$$
+<p>$
 \Pr(Y=j|X=x_0)
-$$</p>
-<p>$$
+$</p>
+<p>$
 1-E\left(\max_j\Pr(Y=j|X)\right),
-$$</p>
+$</p>
 <p>
   <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/Untitled%206.png" alt="Untitled">
 
 </p>
 <p>由于我们很少能提前知道这条分界线的分布，因此贝叶斯分类往往作为一种判断，而不是在分类过程中使用</p>
 <h3 id="k近邻算法knn">K近邻算法（KNN）</h3>
-<p>$$
+<p>$
 \Pr(Y=j|X=x_0)=\frac{1}{K}\sum_{i\in\mathcal{N}_0}I(y_i=j).
-$$</p>
+$</p>
 <p>
   <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/Untitled%207.png" alt="Untitled">
 
@@ -386,9 +386,9 @@ $$</p>
 <p>在实践中，我们无法得知真实映射关系的系数，因此我们需要一种评估体系来评估我们求出的系数的好坏。</p>
 <p>我们使用 $\hat{y}_i = \hat{\beta}_0 + \hat{\beta}_1x_i$ 来表达第 $i$ 个变量的预测值，那么 $e_i = y_i - \hat{y}_i$ 就是第 $i$ 个样本的拟合残差。</p>
 <p>我们定义 <code>RSS(**Residual Sum Of Squares**)</code> 来评估模型总体的 <code>拟合好坏</code></p>
-<p>$$
+<p>$
 RSS = \Sigma_1^n(e_i^2) = (y_1 - \hat{\beta}_0-\hat{\beta}_1x_i)+\cdots+(y_n-\hat{\beta}-\hat{\beta}_1x_n)
-$$</p>
+$</p>
 <p>我们的目的是让 <code>RSS</code> 最小，因此最后的系数就是我们常见的最小二乘法。</p>
 <p>
   <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/Untitled%209.png" alt="Untitled">
@@ -403,21 +403,21 @@ $$</p>
 <h3 id="t-检验">t-检验</h3>
 <p>就是我们在概率论中算的  <code>t检验</code> 。我们通过这个假设来判断这条回归直线是否存在，也就是<strong>输入变量和输出变量之间的线性关系到底强弱与否</strong></p>
 <p>因此我们有假设</p>
-<p>$$
+<p>$
 H_0: X和Y之间没有关系 =&gt; \beta_1 \iff 0
-$$</p>
-<p>$$
+$</p>
+<p>$
 H_\alpha: X和Y之间存在某种关系 \iff \beta_1 \ne 0
-$$</p>
+$</p>
 <p>我们在概率论中经常遇到，这个数据的真实平均值 $\mu$ 是不知道的，我们只能知道抽取的样本中的平均值 $\hat{\mu}$ ，因此我们可以近似来求方差 $D(\hat{\mu})=\mathrm{SE}(\hat{\mu})^2=\frac{\sigma^2}{n}$</p>
 <p>参数的估计的标准差</p>
-<p>$$
+<p>$
 \mathrm{SE}(\hat{\beta}<em>{0})^{2}=\sigma^{2}\left[\frac{1}{n}+\frac{\bar{x}^{2}}{\sum</em>{i=1}^{n}(x_{i}-\bar{x})^{2}}\right],\quad\mathrm{SE}(\hat{\beta}<em>{1})^{2}=\frac{\sigma^{2}}{\sum</em>{i=1}^{n}(x_{i}-\bar{x})^{2}}
-$$</p>
+$</p>
 <p>t分布的公式是</p>
-<p>$$
+<p>$
 t=\frac{\widehat{\beta}<em>{1}-0}{SE(\widehat{\beta}</em>{1})}
-$$</p>
+$</p>
 <p>t分布呈钟形，当n大于30时，它与标准正态分布非常相似。因此，假设β1 = 0，计算观察到绝对值等于或大于t的任何数的概率是一件很简单的事情。我们称这个概率为p值。因此，如果我们看到一个小的p值，那么我们可以推断预测器和响应之间存在关联。如果p值足够小，<strong>我们拒绝零假设——也就是说，我们声明X和Y之间存在关系</strong>。拒绝零假设的典型p值截止值为5%或1%</p>
 <p>我们可以这么计算 <code>p值</code>  也可以古典查表法</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span><span style="color:#ff79c6">import</span> numpy as np
@@ -441,9 +441,9 @@ $$</p>
 </ol>
 <p>回顾先前的统计学知识，我们认为每一个观测到的样本值会带有一定的偏差项 $\epsilon$ ，由于这个偏差项的存在，即使我们知道真实的曲线方程，我们也没办法完全准确地通过 $X$ 预测 $Y$</p>
 <p>RSE粗劣的概念可以理解成平均上，我们的每一个预测值与真实曲线间的偏离量</p>
-<p>$$
+<p>$
 RSE=\sqrt{\frac1{n-2}RSS}=\sqrt{\frac1{n-2}\sum_{i=1}^n(y_i-\hat{y_i})^2}
-$$</p>
+$</p>
 <p>残差平方和 <code>RSS</code> 的计算公式是 $RSS=\sum_{i=1}^n(y_i-\hat{y_i})^2$
 <code>RSE</code> 可以理解为 <code>模型拟合</code>  与 <code>真实目标值</code> 的实际误差</p>
 <p>比如对于书中的数据集我们求得</p>
@@ -456,9 +456,9 @@ $$</p>
 <li>R方</li>
 </ol>
 <p><code>RSS</code> 的主要缺陷是带量纲，我们可以用 $R_2$ 来评估</p>
-<p>$$
+<p>$
 R^2 = \frac{TSS-RSS}{TSS} = 1 - \frac{RSS}{TSS}
-$$</p>
+$</p>
 <p><strong>总结</strong></p>
 <ul>
 <li>$R^2$可以量化模型响应变量和变量间的关系强弱（这条回归线到底预测的准不准）</li>
@@ -486,9 +486,9 @@ $$</p>
 </li>
 </ul>
 <p>我们对于一个由 <code>p</code> 个独立变量的问题，可以用如下回归方程来拟合</p>
-<p>$$
+<p>$
 Y=\beta_0+\beta_1X_1+\beta_2X_2+\cdots+\beta_pX_p+\epsilon
-$$</p>
+$</p>
 <p>同样可以用 <code>RSS</code> 求最优解的方式来求</p>
 <h3 id="进行多元线性回归时我们关心的一些问题">进行多元线性回归时我们关心的一些问题</h3>
 <ol>
@@ -500,14 +500,14 @@ $$</p>
 <h3 id="特征与预测集是否真的有关系"><strong>特征与预测集是否真的有关系</strong></h3>
 <p>在简单的线性回归setting中，我们为了确认X和Y之间确实有关系，我们可以简单的将 $\beta_1 = 0$</p>
 <p>同样的在多元线性回归的场景下，我们需要确认是否全部的回归系数都是0，也就是逐一确认null hypothisis</p>
-<p>$$
+<p>$
 H_0: \beta_1=\beta_2=\cdots=\beta_p=0
-$$</p>
+$</p>
 <p>以及 $H_\alpha ：至少有一个系数不是0$</p>
 <p>我们通过 <code>F分布</code> 来进行检验</p>
-<p>$$
+<p>$
 F=\frac{(\mathrm{TSS}-\mathrm{RSS})/p}{\mathrm{RSS}/(n-p-1)}
-$$</p>
+$</p>
 <p>从式子中我们得出，如果我们希望 $H_\alpha$ 成立，我们希望我们求出的 $F$ 值大于1.</p>
 <blockquote>
 <p>依赖<strong>样本量n</strong>和<strong>特征数量p</strong>。当样本量n非常大的时候，F-statistic哪怕非常非常接近1，我们依然有机会来拒绝原假设H0。与之相反的，当我们样本量很少的时候，我们需要一个非常大的F-statistic值才能有信心去拒绝原假设H0。</p>
@@ -537,9 +537,9 @@ $$</p>
 <h3 id="处理离散型随机变量">处理离散型随机变量</h3>
 <p>离散随机变量可以用于对定性问题的分析，比如own(房屋所有权)，student(学生身份)，status(婚姻状况)和region (East, West or South)。</p>
 <p>做 01 encoding</p>
-<p>$$
+<p>$
 x_i=\begin{cases}1&amp;\quad\text{if }i\text{th person is female}\0&amp;\quad\text{if }i\text{th person is male},\end{cases}
-$$</p>
+$</p>
 <p>在这种情况下，系数其实就是两个类别之间的均值</p>
 <p>
   <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/Untitled%2015.png" alt="Untitled">
@@ -667,9 +667,9 @@ $$</p>
 <p>高杠杆点对回归直线的估计有很大影响，这可能会导致整个拟合的失效</p>
 <p>在简单线性回归中好找，直接画图即可。</p>
 <p>在多元线性回归中，量化观测点的杠杆，计算 <code>杠杆统计量</code></p>
-<p>$$
+<p>$
 h_i=\frac1n+\frac{(x_i-\bar{x})^2}{\sum_{i=1}^n(x_i)}
-$$</p>
+$</p>
 <p>这里 $h_i$ 经常在 $\frac{1}{n}$到 1之间，他的平均值尝尝等于 $\frac{p+1}{n}$</p>
 <h3 id="问题6-非线性关系">问题6 非线性关系</h3>
 <p>可以画一个残差图来看</p>
@@ -713,17 +713,17 @@ $$</p>
 <h2 id="logistics回归">logistics回归</h2>
 <p>我们先从单变量说起。考虑先前提到的 <code>信用卡贷款数据集</code> 某个人的 <code>信贷余额（欠款）</code> 来预测 <code>违约</code> , 我们如果要来分类这个人是否会违约，实际上可以将问题转化为根据 <code>信贷余额</code> 来预测 <code>违约 = yes</code>  的概率，也就是 $P(违约 = yes | 余额)$ 这个概率。</p>
 <p>更通用的表达就是</p>
-<p>$$
+<p>$
 p(X) = P(Y = 1 | X)
-$$</p>
+$</p>
 <p>用先前的线性回归模型显然会超出边界 $[0,1]$ ，因此我们可以做转换</p>
-<p>$$
+<p>$
 \frac{p(X)}{1-p(X)} = e^{\beta_0+\beta_1X}
-$$</p>
+$</p>
 <p>然后两边取对数，并化简，得到</p>
-<p>$$
+<p>$
 p(X) = \frac{e^{\beta_0+\beta_1X}}{1+e^{\beta_0+\beta_1X}}
-$$</p>
+$</p>
 <p>这样，我们对一个 <code>分类问题</code> 就变成了一个 <code>等于其中一个值的概率问题</code></p>
 <h3 id="参数估计">参数估计</h3>
 <p>用最大自然估计法来估计logistics的参数 $\beta_0,\beta_1$</p>
@@ -735,22 +735,22 @@ $$</p>
 <p>我们依然可以看 <code>p-value</code> 来判断这个特征是否有意义， 这里的 <code>Z</code> 就相当于之前的 <code>t值</code></p>
 <h3 id="预测概率">预测概率</h3>
 <p>有了模型之后，我们可以计算概率，比如我们可以计算当 $balance == 1000$ 时候的违约概率是</p>
-<p>$$
+<p>$
 \hat{p}(X)=\frac{e^{\hat{\beta}_0+\hat{\beta}_1X}}{1+e^{\hat{\beta}_0+\hat{\beta}_1X}}=\frac{e^{-10.6513+0.0055\times1,000}}{1+e^{-10.6513+0.0055\times1,000}}=0.00576
-$$</p>
+$</p>
 <p>同样的，我们可以对 <code>离散型</code> 的变量进行逻辑回归，比如是否是 <code>学生身份</code> 来预测，我们需要将学生身份映射为 <code>0-1</code></p>
 <p>
   <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/image%2014.png" alt="image.png">
 
 </p>
-<p>$$
+<p>$
 \widehat{\mathrm{Pr}}(\text{default=Yes|student=Yes})=\frac{e^{-3.5041+0.4049\times1}}{1+e^{-3.5041+0.4049\times1}}=0.0431,\\widehat{\mathrm{Pr}}(\text{default=Yes|student=No})=\frac{e^{-3.5041+0.4049\times0}}{1+e^{-3.5041+0.4049\times0}}=0.0292.
-$$</p>
+$</p>
 <h3 id="多元logistics回归">多元logistics回归</h3>
 <p>遵循同样的推导方式，多元回归的公式是</p>
-<p>$$
+<p>$
 p(X)=\frac{e^{\beta_0+\beta_1X_1+\cdots+\beta_pX_p}}{1+e^{\beta_0+\beta_1X_1+\cdots+\beta_pX_p}}.
-$$</p>
+$</p>
 <p>我们这次根据 <code>收入</code> 和 <code>学生身份</code> 来预测 <code>违约概率</code></p>
 <p>
   <img src="%E7%BB%9F%E8%AE%A1-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%2074f8d849a99f40929d380c665cdcd598/image%2015.png" alt="image.png">
@@ -789,23 +789,23 @@ $$</p>
 <li>让 $f_k(x) = p(X = x | Y = k)$ 表示 在 $k$ 类样本中 $x$ 的密度函数（回想概率论学的知识）</li>
 <li>基于上面的定义，我们可以求出 $p_k(X) = P(Y = k | X = x)$ 也就是后验概率</li>
 </ol>
-<p>$$
+<p>$
 \Pr(Y=k|X=x)=\frac{\pi_kf_k(x)}{\sum_{l=1}^K\pi_lf_l(x)}.
-$$</p>
+$</p>
 <p>一般来说 $\pi_k$ 是我们抽样得到的，可以根据样本来求，但是 $f_k(x)$ 除非我们人为根据假设定义一些简单的分布，否则很难直接预知。根据前面的知识，贝叶斯分类的误差是最小的，如果我们能准确估计 $f_k(x)$, 那么就可以构造贝叶斯分类器来完美的进行分类。</p>
 <h3 id="一元线性判别分析">一元线性判别分析</h3>
 <p>当我们只有一个特征的时候，我们可以假设这个特征的先验概率分布 $f_k(x)$ 为 <strong>正态分布。</strong></p>
-<p>$$
+<p>$
 f_k(x)=\frac1{\sqrt{2\pi}\sigma_k}\exp\left(-\frac1{2\sigma_k^2}(x-\mu_k)^2\right)
-$$</p>
+$</p>
 <p>代入贝叶斯公式，得到概率为</p>
-<p>$$
+<p>$
 p_k(x)=\frac{\pi_k\frac{1}{\sqrt{2\pi}\sigma}\exp\left(-\frac{1}{2\sigma^2}(x-\mu_k)^2\right)}{\sum_{l=1}^K\pi_l\frac{1}{\sqrt{2\pi}\sigma}\exp\left(-\frac{1}{2\sigma^2}(x-\mu_l)^2\right)}
-$$</p>
+$</p>
 <p>取对数后，我们发现一个关于 $x$ 的线性函数。</p>
-<p>$$
+<p>$
 \delta_k(x)=x\cdot\frac{\mu_k}{\sigma^2}-\frac{\mu_k^2}{2\sigma^2}+\log(\pi_k)
-$$</p>
+$</p>
 <p>分析思路：</p>
 <ol>
 <li>假设特征 $X_p$ 在每个类别下的概率分布（通常是正态分布）</li>
@@ -815,21 +815,21 @@ $$</p>
 </ol>
 <h3 id="多元判别分析">多元判别分析</h3>
 <p>多元概率密度公式是</p>
-<p>$$
+<p>$
 f(x)=\frac{1}{(2\pi)^{p/2}|\boldsymbol{\Sigma}|^{1/2}}\exp\left(-\frac{1}{2}(x-\mu)^T\boldsymbol{\Sigma}^{-1}(x-\mu)\right)
-$$</p>
+$</p>
 <p>其中 $u$ 是一个向量，代表 特征 $X_p$ 分别对应的均值， $\Sigma$ 代表变量之间的协方差，他是一个 $p×p$ 的矩阵。</p>
 <p>整理之后，我们发现其实特征 $x$ 变成了一个向量 $X$ 他本质还是线性的</p>
-<p>$$
+<p>$
 \delta_k(x)=x^T\boldsymbol{\Sigma}^{-1}\mu_k-\frac{1}{2}\mu_k^T\boldsymbol{\Sigma}^{-1}\mu_k+\log\pi_k
-$$</p>
+$</p>
 <p>因此分析思路可以类比单变量。</p>
 <p><strong>注意：线性判别分析的重要假设：1.</strong>   $X_i ,i \in (1 , p)$ 是正态分布。 2. 属于不同类别<em>k</em>的数据集共享同一个方差（或者协方差）</p>
 <h3 id="二次判别分析">二次判别分析</h3>
 <p>前面的线性判别分析中属于不同类别的数据共享同一个方差，但是二次判别分析中则不需要第二个约束。</p>
-<p>$$
+<p>$
 \begin{aligned}\delta_{k}(x)&amp; \begin{array}{rcl}=&amp;-\frac{1}{2}(x-\mu_k)^T\boldsymbol{\Sigma}_k^{-1}(x-\mu_k)-\frac{1}{2}\log|\boldsymbol{\Sigma}_k|+\log\pi_k\end{array} \&amp;\begin{array}{rcl}=&amp;-\frac{1}{2}x^T\boldsymbol{\Sigma}_k^{-1}x+x^T\boldsymbol{\Sigma}_k^{-1}\mu_k-\frac{1}{2}\mu_k^T\boldsymbol{\Sigma}_k^{-1}\mu_k-\frac{1}{2}\log|\boldsymbol{\Sigma}_k|+\log\pi_k\end{array}\end{aligned}
-$$</p>
+$</p>
 <h3 id="线性和二次的选择">线性和二次的选择</h3>
 <ol>
 <li>看看是否存在显著非线性关系，如果有，那就二次</li>
