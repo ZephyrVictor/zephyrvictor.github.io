@@ -6,8 +6,15 @@
     <description>Recent content in Tech on #3</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 29 Jul 2024 12:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 02 Aug 2024 12:00:00 +0000</lastBuildDate>
     <atom:link href="https://zephyr369.online/categories/tech/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>统计学习2：重采样</title>
+      <link>https://zephyr369.online/islchapter5/</link>
+      <pubDate>Fri, 02 Aug 2024 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/islchapter5/</guid>
+      <description>统计-重采样 我们经常会遇到样本量有限的这种情况，因此需要引入 重采样 来提高堆模型预测准确性的评估。 重采样的本质 重采样是利用有限的样本数据通过重</description>
+    </item>
     <item>
       <title>格式化字符串漏洞由浅入深</title>
       <link>https://zephyr369.online/fmtperspective/</link>
@@ -16,7 +23,7 @@
       <description>原理介绍 格式化字符串函数 格式化字符串函数可以接受可变数量的参数，并将第一个参数作为格式化字符串，根据其来解析之后的参数。通俗来说，格式化字符</description>
     </item>
     <item>
-      <title>统计学习1：线性回归与分类问题</title>
+      <title>统计学习1：回归问题与分类问题</title>
       <link>https://zephyr369.online/islchapter34/</link>
       <pubDate>Mon, 29 Jul 2024 12:00:00 +0000</pubDate>
       <guid>https://zephyr369.online/islchapter34/</guid>

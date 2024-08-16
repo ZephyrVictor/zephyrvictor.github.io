@@ -15,15 +15,15 @@
     
 
     
-    <meta name="title" content="Pwngdb·堆指令笔记" />
-    <meta property="og:title" content="Pwngdb·堆指令笔记" />
-    <meta property="twitter:title" content="Pwngdb·堆指令笔记" />
+    <meta name="title" content="统计学习2：重采样" />
+    <meta property="og:title" content="统计学习2：重采样" />
+    <meta property="twitter:title" content="统计学习2：重采样" />
     
 
     
-    <meta name="description" content="Zephyr&#39;s blog">
-    <meta property="og:description" content="Zephyr&#39;s blog" />
-    <meta property="twitter:description" content="Zephyr&#39;s blog" />
+    <meta name="description" content="介绍了在验证集法和交叉验证，以及自助法">
+    <meta property="og:description" content="介绍了在验证集法和交叉验证，以及自助法" />
+    <meta property="twitter:description" content="介绍了在验证集法和交叉验证，以及自助法" />
     
 
     
@@ -34,9 +34,9 @@
     <meta name="keyword"  content="Zephyr, Zephyr, Zephyr, , Zephyr的网络日志, Zephyr的博客, Zephyr Blog, 博客, 个人网站, 互联网, Web, CTF,">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>Pwngdb·堆指令笔记 | Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
+    <title>统计学习2：重采样 | Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
 
-    <link rel="canonical" href="/pwngdbheapinstrcution/">
+    <link rel="canonical" href="/islchapter5/">
 
     
     
@@ -209,8 +209,8 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/pwn" title="Pwn">
-                            Pwn
+                        <a class="tag" href="/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0" title="统计学习">
+                            统计学习
                         </a>
                         
                         <a class="tag" href="/tags/notebook" title="notebook">
@@ -218,7 +218,7 @@
                         </a>
                         
                     </div>
-                    <h1>Pwngdb·堆指令笔记</h1>
+                    <h1>统计学习2：重采样</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         
@@ -227,7 +227,7 @@
                                 Zephyr
                              
                             on 
-                            Monday, May 20, 2024
+                            Friday, August 2, 2024
                             
                             
                             
@@ -253,124 +253,127 @@
                 post-container">
 
                 
-                <h1 id="arena">arena</h1>
-<p><strong>用法:</strong> <code>arena [-h] [addr]</code></p>
-<p>打印main arena或特定地址的arena。</p>
-<h1 id="arenas">arenas</h1>
-<p><strong>用法:</strong> <code>arenas [-h]</code></p>
-<p>打印所有的arena。</p>
-<h1 id="bins">bins</h1>
-<p><strong>用法:</strong> <code>bins [-h] [addr] [tcache_addr]</code></p>
-<p>打印所有main_arena或者指定地址中的bins信息，包括tcachebins、fastbins、unsortedbin、smallbins和largebins。</p>
-<h1 id="heap">heap</h1>
-<p><strong>用法:</strong> <code>heap [-h] [addr]</code></p>
-<p>打印从指定地址（addr）开始块的信息。</p>
-<h1 id="fastbins">fastbins</h1>
-<p><strong>用法:</strong> <code>fastbins [-h] [addr] [verbose]</code></p>
-<p>打印main arena或者指定地址的fastbins。</p>
-<h1 id="find_fake_fast">find_fake_fast</h1>
-<p><strong>用法:</strong> <code>find_fake_fast [-h] addr size</code></p>
-<p>查找与指定地址重叠的候选fake fast块。用于fastbin dups和house of spirit。</p>
-<h1 id="largebins">largebins</h1>
-<p><strong>用法:</strong> <code>largebins [-h] [addr] [verbose]</code></p>
-<p>打印main arena或指定地址的largebins信息。</p>
-<h1 id="malloc_chunk">malloc_chunk</h1>
-<p><strong>用法:</strong> <code>malloc_chunk [-h] [addr] [fake]</code></p>
-<p>打印指定地址的malloc_chunk。如果这个chunk是一个fake chunk，则使用<code>fake</code>选项（默认: False）。</p>
-<h1 id="mp">mp</h1>
-<p><strong>用法:</strong> <code>mp [-h]</code></p>
-<p>打印glibc中的mp_结构。</p>
-<h1 id="smallbins">smallbins</h1>
-<p><strong>用法:</strong> <code>smallbins [-h] [addr] [verbose]</code></p>
-<p>打印main arena或指定地址的smallbins信息。</p>
-<h1 id="tcache">tcache</h1>
-<p><strong>用法:</strong> <code>tcache [-h] [addr]</code></p>
-<p>打印malloc线程缓存信息。</p>
-<h1 id="tcachebins">tcachebins</h1>
-<p><strong>用法:</strong> <code>tcachebins [-h] [addr] [verbose]</code></p>
-<p>打印当前线程tcache或指定地址tcache中的bins信息。<code>verbose</code>选项用于是否显示更多细节（默认: False）。</p>
-<h1 id="top_chunk">top_chunk</h1>
-<p><strong>用法:</strong> <code>top_chunk [-h] [addr]</code></p>
-<p>打印main arena或指定地址的top chunk地址。</p>
-<h1 id="unsortedbin">unsortedbin</h1>
-<p><strong>用法:</strong> <code>unsortedbin [-h] [addr] [verbose]</code></p>
-<p>打印main arena或指定地址的unsorted bin内容。<code>verbose</code>选项用于是否显示更多细节（默认: True）。</p>
-<h1 id="vis_heap_chunks">vis_heap_chunks</h1>
-<p><strong>用法:</strong> <code>vis_heap_chunks [-h] [--naive] [count] [address]</code></p>
-<p>可视化指定地址的heap块。</p>
-<ul>
-<li><code>count</code>: 要可视化的块数（默认: 10）</li>
-<li><code>address</code>: 起始地址</li>
-</ul>
-<h2 id="觉得有用的几个命令">觉得有用的几个命令</h2>
-<h1 id="dads">da/ds</h1>
-<p><strong>用法:</strong> <code>da [-h] address [max]</code></p>
-<p>打印指定地址的字符串。<code>max</code>是最大字符串长度（默认: 256）。</p>
-<h1 id="dds">dds</h1>
-<p><strong>用法:</strong> <code>dds [-h] addr</code></p>
-<p>打印指定地址的指针和符号。</p>
-<h1 id="bl">bl</h1>
-<p><strong>用法:</strong> <code>bl</code></p>
-<p>列出断点。</p>
-<h1 id="u">u</h1>
-<p><strong>用法:</strong> <code>u [-h] [where] [n]</code></p>
-<p>从指定地址（where）开始反汇编N条指令。</p>
-<h1 id="k">k</h1>
-<p><strong>用法:</strong> <code>k [-h]</code></p>
-<p>打印回溯（别名 &lsquo;bt&rsquo;）。</p>
-<h1 id="ln">ln</h1>
-<p><strong>用法:</strong> <code>ln [-h] [address]</code></p>
-<p>列出最接近提供地址的符号。</p>
-<h1 id="nextjump">nextjump</h1>
-<p><strong>用法:</strong> <code>nextjmp [-h]</code></p>
-<p>在下一个跳转指令处设置断点。类似的命令还有nextcall、nextret、nextsyscall、nextproginstr。</p>
-<h1 id="entry">entry</h1>
-<p><strong>用法:</strong> <code>entry [-h] [args [args ...]]</code></p>
-<p>在目标二进制文件的第一个执行指令处设置断点。<code>args</code>是要运行的程序名。</p>
-<h1 id="j">j</h1>
-<p><strong>用法:</strong> <code>j [-h]</code></p>
-<p>将IDA的光标与GDB同步。</p>
-<h1 id="main">main</h1>
-<p><strong>用法:</strong> <code>main [-h]</code></p>
-<p>先<code>start</code>再<code>main</code>到main函数。</p>
-<h1 id="sstart">sstart</h1>
-<p>从<code>__libc_start_main</code>开始。</p>
-<h1 id="libs">libs</h1>
-<p>显示各种模块映射和地址，相当于<code>cat /proc/pid_of_program/maps</code>。</p>
-<h1 id="elfheader">elfheader</h1>
-<p>打印elf文件的段映射。</p>
-<h1 id="got命令">got命令</h1>
-<p><strong>用法:</strong> <code>got [-h] [name_filter]</code></p>
-<p>不加参数则打印所有函数的got信息，否则打印指定函数的got信息。</p>
-<h1 id="plt">plt</h1>
-<p>打印plt信息。</p>
-<h1 id="gotplt">gotplt</h1>
-<p>打印<code>.got.plt</code>中的信息。</p>
-<h1 id="auxv">auxv</h1>
-<p>打印辅助ELF向量的信息。</p>
-<h1 id="xinfo">xinfo</h1>
-<p><strong>用法:</strong> <code>xinfo [-h] [address]</code></p>
-<p>显示指定地址到其他有用位置的偏移。</p>
-<h1 id="xuntil">xuntil</h1>
-<p><strong>用法:</strong> <code>xuntil [-h] target</code></p>
-<p>继续执行程序，直到在目标函数或地址处暂停。</p>
-<h1 id="regs">regs</h1>
-<p><strong>用法:</strong> <code>regs [-h] [regs [regs ...]]</code></p>
-<p>打印所有寄存器并增强信息。</p>
-<h1 id="search">search</h1>
-<p><strong>用法:</strong> <code>search [-h] [-t {byte,short,word,dword,qword,pointer,string,bytes}] [-1] [-2] [-4] [-8] [-p] [-x] [-s] [-e] [-w] [--save] [--no-save] [-n] value [mapping_name]</code></p>
-<p>在内存中搜索字节序列、字符串、指针和整数值。</p>
-<h1 id="hexdump">hexdump</h1>
-<p><strong>用法:</strong> <code>hexdump [-h] [address] [count]</code></p>
-<p>以16进制形式展示指定地址处的内容。</p>
-<h1 id="piebase">piebase</h1>
-<p>展示PIE地址。</p>
-<h1 id="dumpargs">dumpargs</h1>
-<p><strong>用法:</strong> <code>dumpargs [-h] [-f]</code></p>
-<p>展示函数调用参数。</p>
-<h1 id="distance">distance</h1>
-<p><strong>用法:</strong> <code>distance [-h] a b</code></p>
-<p>打印两个参数之间的距离。</p>
+                <h1 id="统计-重采样">统计-重采样</h1>
+<p>我们经常会遇到样本量有限的这种情况，因此需要引入 <code>重采样</code> 来提高堆模型预测准确性的评估。</p>
+<h1 id="重采样的本质">重采样的本质</h1>
+<p>重采样是利用有限的样本数据通过重复随机抽样的方式生成新的数据集，以便在样本量不足或分布假设不明确的情况下，更准确地估计统计量的额抽样分布和模型的预测性能。</p>
+<h1 id="重采样算法">重采样算法</h1>
+<p>在样本量不足的时候，我们往往能很容易计算出训练误差，但是测试误差会被低估，但是测试误差是衡量模型好坏的关键指标，因此徐可以用两种方法来解决：</p>
+<ol>
+<li>对用于计算训练误差的数学公式进行调整，给样本加一个权重。</li>
+<li>采用 (Hold-Out)方法，将原始数据集划分成 <code>训练集</code> 和 <code>测试集</code> 训练集用于训练模型，用测试集来计算测试误差。</li>
+</ol>
+<h1 id="从回归问题来看">从回归问题来看</h1>
+<h2 id="验证集法">验证集法</h2>
+<p>把样本集随机拆成两份，一份用于训练模型，另一份用于验证模型，用验证误差来代替真实的测试误差。</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E9%87%8D%E9%87%87%E6%A0%B7%20a285d3be415644f782578a1b415f6e75/image.png" alt="image.png">
+
+</p>
+<p>在 <code>回归分析</code> 中，我们用 <code>马力</code> 来预测 <code>每加仑英里数</code> ，其中注意到二者有明显非线性关系，自然想到用 $马力^2$  $马力^3$ 来回归，同时观测 <code>p-value</code> 的值来看关系是否显著。</p>
+<p>我们可以使用 <code>验证集法</code> 来判断这种关系。</p>
+<p>下面的左图展示了仅进行一次数据集划分的情况。随着模型中        <code>horsepower</code>的指数从1增加到10，每个指数对应一个模型。在训练集上拟合模型后，我们在测试集上评估其性能（即均方误差MSE）。从图中可以观察到，当指数从1增加到2时，MSE显著降低，表明模型性能有了明显提升。然而，当指数从2继续增加到10时，MSE的变化变得逐渐平缓，这意味着并不是指数越高模型性能就越好。</p>
+<p>为了进一步验证这一趋势，右图展示了进行10次数据集划分的情况，每次划分都得到了不同的训练集和测试集。尽管具体每组数据集上的MSE存在差异，但整体趋势保持一致。这表明无论数据集如何划分，模型指数的选择对于性能的影响都有一定的规律。</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E9%87%8D%E9%87%87%E6%A0%B7%20a285d3be415644f782578a1b415f6e75/image%201.png" alt="image.png">
+
+</p>
+<p>通过对比左右两图，我们可以得出结论：<strong>单纯的线性模型（即指数为1的模型）不足以精确地拟合这个汽车数据集</strong>。</p>
+<h2 id="留一交叉验证和k-折交叉验证">留一交叉验证和K-折交叉验证</h2>
+<p>验证集法存在两个缺点：</p>
+<ol>
+<li>对测试误差的估计有很大波动。</li>
+<li>验证集法使用部分数据来训练模型，容易导致欠拟合。</li>
+</ol>
+<p>为了解决这个，我们引申出了交叉验证</p>
+<h3 id="留一交叉验证">留一交叉验证</h3>
+<p>即 <code>LOOCV</code> 我们每次只使用一个样本点做验证集，其余的全是训练集。</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E9%87%8D%E9%87%87%E6%A0%B7%20a285d3be415644f782578a1b415f6e75/image%202.png" alt="image.png">
+
+</p>
+<p>这个方法的好处是最大利用数据集进行训练。这种仅仅依赖于 <code>一个样本点</code> 估计方法，在理论上是对参数的 <code>无偏估计</code> ，但是波动很大，我们需要将每个样本点都执行这个步骤，然后获得 $n$个不同的均方误差，计算这些均方误差的平均值，作为对最后测试集误差的最终估计。</p>
+<p>我们可以在线性回归和多项式回归模型中，如果存在特定的表达式，可以直接用来计算测试误差的均值，无需重复进行模型拟合。</p>
+<p>$$
+CV_{(n)} = \frac{1}{n}\Sigma^n_{i = 1}(\frac{y_i - \hat{y_i}}{1-h_i})^2
+$$</p>
+<p>其中 $n$ 是样本总数， $h_i$ 是第 $i$ 个样本点的杠杆值， $\hat{y_i}$ 是第 $i$个样本点的预测值。</p>
+<h3 id="k-折交叉验证">K-折交叉验证</h3>
+<p>LOOCV的耗时太长了，因此我们可以将整个样本集随机均匀划分成 $k$个子集，每次迭代中，一个子集用作验证，另外的用作训练集。在这种情况下，留一交叉验证可以看做是 k-折交叉验证的一个特例。</p>
+<p>$$
+CV_{(k)} = \frac{1}{k}\Sigma^k_{i=1}MSE_i
+$$</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E9%87%8D%E9%87%87%E6%A0%B7%20a285d3be415644f782578a1b415f6e75/image%203.png" alt="image.png">
+
+</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E9%87%8D%E9%87%87%E6%A0%B7%20a285d3be415644f782578a1b415f6e75/image%204.png" alt="image.png">
+
+</p>
+<p>保留了准确性的同时，降低了计算复杂度。</p>
+<p>一般采用 <code>5-10</code>折交叉验证即可。</p>
+<h3 id="误差与方差的权衡">误差与方差的权衡</h3>
+<p>验证集法倾向于高估测试误差，因为它通常只使用大约一半的数据进行模型训练。与此相反，LOOCV由于几乎利用了所有样本进行训练，因此其测试误差的估计值可被视为无偏的。K-折交叉验证则介于这两者之间，它使用的样本数量既少于LOOCV，又远多于验证集法。</p>
+<p><strong>从偏差的角度来看，LOOCV在误差预估方面具有优势，因为它最大限度地减少了由于训练样本不足而导致的偏差。</strong></p>
+<p>在考虑偏差（bias）的同时，我们也不能忽视方差（variance）的影响。对于LOOCV，尽管我们会为每个样本训练一个模型，但由于每次训练时所用的训练样本仅有一个观测值不同，导致这些模型之间具有很高的相关性。因此，从这些模型中获得的测试误差估计值之间的相关性也很高。相比之下，在K-折交叉验证中，每次用于训练的数据集之间的差异较大，导致不同模型以及它们所生成的测试误差估计值之间的相关性较低。由于当数值之间的相关性较高时，它们的平均值会呈现出更高的波动率，相比之下，低相关性的数值在取平均值时则更</p>
+<p><strong>因此，从方差的角度来看，K-折交叉验证相较于LOOCV表现更优秀</strong>。</p>
+<h1 id="从分类问题看">从分类问题看</h1>
+<p>回归问题的误差衡量用均方误差（MSE）,衡量分类模型用混淆矩阵</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E9%87%8D%E9%87%87%E6%A0%B7%20a285d3be415644f782578a1b415f6e75/image%205.png" alt="image.png">
+
+</p>
+<p>这是分类的预测值以及真实值的表格，落在对角线上的是模型正确分类的，而其余部分是模型分类错误的。</p>
+<p>我们将他分类成</p>
+<ol>
+<li>TN：真阴性，实际是假，预测为假，分类正确</li>
+<li>TP：真阳性，实际是真，预测是真，分类正确</li>
+<li>FN：假阴性，实际是真，预测是假，分类错误</li>
+<li>FP：假阳性，实际是假，预测是真，分类错误</li>
+</ol>
+<p>通过混淆矩阵，我们可以计算评价质量的指标：</p>
+<ol>
+<li>准确率，用 $\frac{TP + TN }{TP +TN+FN+FP}$来计算，表示的是模型分类正确的比率。</li>
+<li>精确率，是指分类模型为正确预测的正例样本数占所有预测正例样本数的比例。用 $\frac{TP}{FP+TP}$来计算。比如一卡车里面有1000个西瓜，有500个好瓜，模型预测出600个好瓜，实际上只挑对了300个，那精确率就是50%</li>
+<li>召回率：指分类模型正确预测为正例的样本数，也叫<strong>灵敏度</strong>，用 $\frac{TP}{TP+FN}$来计算。召回率越高，表示模型将实际为正例的样本全部预测为正例的能力越强。（不过假如刚才那个挑西瓜案例，我将1000个西瓜都认为是好瓜，那他也是召回率100%）</li>
+<li>特异度：是指对于实际为反例的样本，模型预测为反例的概率，也称为真阴性率。 $\frac{TN}{TN+FP}$.特异度越高，表示模型将实际为反例的样本预测为反例的能力越强。</li>
+<li>F1值：F1值是综合考虑精确率和召回率的指标， $\frac{2×(精确率 ×召回率)}{精确率+召回率}$ F1值越高，表示模型的性能越好。</li>
+</ol>
+<p>ROC曲线</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E9%87%8D%E9%87%87%E6%A0%B7%20a285d3be415644f782578a1b415f6e75/image%206.png" alt="image.png">
+
+</p>
+<p>1）准备数据：首先，需要准备用于绘制ROC曲线的数据。这些数据通常包括真正例率（True Positive Rate，TPR）和假正例率（False Positive Rate，FPR）。这些数据可以通过调整分类器的阈值来获得，每次调整阈值时，计算出相应的TPR和FPR。
+2）绘制ROC曲线：接下来，使用真正例率和假正例率数据绘制ROC曲线。在二维坐标系中，横轴表示假正例率（FPR），纵轴表示真正例率（TPR）。根据计算出的TPR和FPR数据点，使用折线连接各点。
+3）计算AUC值：在绘制完ROC曲线后，需要计算ROC曲线下的面积（Area Under the Curve，AUC），以量化分类器的性能。AUC值越接近于1，表示分类器的性能越好；AUC值越接近于0.5，表示分类器的性能越差。
+4）评估分类器性能：根据计算出的AUC值和其他评价指标（如精度、召回率等），评估分类器的性能。如果分类器的性能不理想，可能需要调整分类器参数或使用其他算法。</p>
+<h2 id="交叉验证的作用">交叉验证的作用</h2>
+<p>与回归问题相似，我们可以通过交叉验证来确定最佳的多项式指数，从而优化模型的分类性能。比如下图就是用不同指数的多项式来拟合而成的</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E9%87%8D%E9%87%87%E6%A0%B7%20a285d3be415644f782578a1b415f6e75/image%207.png" alt="image.png">
+
+</p>
+<p>再如这图</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E9%87%8D%E9%87%87%E6%A0%B7%20a285d3be415644f782578a1b415f6e75/image%208.png" alt="image.png">
+
+</p>
+<p>左图和右图分别展示了使用多项式回归模型和KNN回归处理同一数据集的结果。其中，蓝色线条代表训练集的误差，棕色线条代表真实的误差，而黑色线条则反映了10-折交叉验证的误差情况。</p>
+<p>随着模型复杂度的增加（如图中多项式指数的提高或KNN中K值的减小），训练误差往往会呈现出整体单调下降的趋势。然而，这种趋势并不能真实反映模型在未知数据上的表现。相比之下，10-折交叉验证误差能够更好地评估模型的泛化能力。它不仅呈现出预期的U形状态，而且与真实的测试误差形态相近。</p>
+<h1 id="bootstrap方法">BootStrap方法</h1>
+<p>自助法在量化统计量不确定性方面有显著作用。</p>
+<p>在现实生活中，我们往往不能大量抽样，很难从一个总体中反复抽样出不同的训练集，因此bootstrap方法就是从总体中抽样出一个样本，再在这个样本中反复抽样来生成新的数据集，通过这个来估计 $\mu$ 和 $\sigma$</p>
+<p>左面是实验模拟出的一大堆数据集之后做出的分布，右面是用bootstrap方法求出的数据分布，可以看到整体差异不是特别明显。</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E9%87%8D%E9%87%87%E6%A0%B7%20a285d3be415644f782578a1b415f6e75/image%209.png" alt="image.png">
+
+</p>
+<p>
+  <img src="%E7%BB%9F%E8%AE%A1-%E9%87%8D%E9%87%87%E6%A0%B7%20a285d3be415644f782578a1b415f6e75/image%2010.png" alt="image.png">
+
+</p>
 
 
                 
@@ -380,15 +383,10 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/HITcryptomath/" data-toggle="tooltip" data-placement="top" title="密码学中数论知识的总结">&larr;
+                        <a href="/fmtperspective/" data-toggle="tooltip" data-placement="top" title="格式化字符串漏洞由浅入深">&larr;
                             Previous Post</a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/blindfmt/" data-toggle="tooltip" data-placement="top" title="pwn·blindfmt学习记录">Next
-                            Post &rarr;</a>
-                    </li>
                     
                 </ul>
                 
