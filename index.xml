@@ -6,8 +6,15 @@
     <description>Recent content on #3</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 02 Aug 2024 12:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 18 Aug 2024 12:00:00 +0000</lastBuildDate>
     <atom:link href="https://zephyr369.online/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>pwn·针对glibc中topchunk的攻击</title>
+      <link>https://zephyr369.online/topchunkattack/</link>
+      <pubDate>Sun, 18 Aug 2024 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/topchunkattack/</guid>
+      <description>针对topChunk的攻击 House Of Orange 适用条件 题目中不存在 free 函数或其他释放堆块的函数 堆溢出写 能够修改到 top_chunk 的 size 位 可以得到一个 unsortedbin glibc ≤ 2.23 原理 当前堆的 top chunk</description>
+    </item>
     <item>
       <title>统计学习2：重采样</title>
       <link>https://zephyr369.online/islchapter5/</link>
@@ -168,13 +175,6 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://zephyr369.online/course/</guid>
       <description>hello</description>
-    </item>
-    <item>
-      <title>pwn·针对glibc中topchunk的攻击</title>
-      <link>https://zephyr369.online/topchunkattack/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://zephyr369.online/topchunkattack/</guid>
-      <description>针对topChunk的攻击 House Of Orange 适用条件 题目中不存在 free 函数或其他释放堆块的函数 堆溢出写 能够修改到 top_chunk 的 size 位 可以得到一个 unsortedbin glibc ≤ 2.23 原理 当前堆的 top chunk</description>
     </item>
   </channel>
 </rss>
