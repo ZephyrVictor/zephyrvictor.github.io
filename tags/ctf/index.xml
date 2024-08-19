@@ -9,6 +9,13 @@
     <lastBuildDate>Sun, 18 Aug 2024 12:00:00 +0000</lastBuildDate>
     <atom:link href="https://zephyr369.online/tags/ctf/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>pwn·glibc堆基础</title>
+      <link>https://zephyr369.online/heapbasic/</link>
+      <pubDate>Sun, 18 Aug 2024 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/heapbasic/</guid>
+      <description>堆基础知识 在linux内存管理中，栈从高地址向低地址生长，而堆是从低地址向高地址生长。学过csapp的人知道，系统调用是一个 trap 类型的 中断 如果</description>
+    </item>
+    <item>
       <title>pwn·针对glibc中topchunk的攻击</title>
       <link>https://zephyr369.online/topchunkattack/</link>
       <pubDate>Sun, 18 Aug 2024 12:00:00 +0000</pubDate>
