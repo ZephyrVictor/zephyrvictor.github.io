@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="#3">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="img/cover.jpg">
+    <meta property="twitter:image" content="img/cover.jpg" />
+    
+
+    
+    <meta name="title" content="轻松改造你的寝室网络环境" />
+    <meta property="og:title" content="轻松改造你的寝室网络环境" />
+    <meta property="twitter:title" content="轻松改造你的寝室网络环境" />
+    
+
+    
+    <meta name="description" content="将WR30U刷成openwrt，利用多播提升网络速度，同时个性化你的网络">
+    <meta property="og:description" content="将WR30U刷成openwrt，利用多播提升网络速度，同时个性化你的网络" />
+    <meta property="twitter:description" content="将WR30U刷成openwrt，利用多播提升网络速度，同时个性化你的网络" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="Zephyr, Zephyr, Zephyr, , Zephyr的网络日志, Zephyr的博客, Zephyr Blog, 博客, 个人网站, 互联网, Web, CTF,">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>轻松改造你的寝室网络环境 | Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
+
+    <link rel="canonical" href="/wifi/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+ 
+ <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+        displayMath: [
+          ["$$", "$$"],
+          ["\\[", "\\]"],
+        ],
+        processEscapes: true,
+        processEnvironments: true,
+      },
+      options: {
+        skipHtmlTags: ["script", "noscript", "style", "textarea", "pre"],
+      },
+    };
+  
+    window.addEventListener("load", (event) => {
+      document.querySelectorAll("mjx-container").forEach(function (x) {
+        x.parentElement.classList += "has-jax";
+      });
+    });
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    type="text/javascript"
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+</head>
+<style>
+    code.has-jax {
+      -webkit-font-smoothing: antialiased;
+      background: inherit !important;
+      border: none !important;
+      font-size: 100%;
+    }
+    </style>
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">#3</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+                        <li><a href="/life//">LIFE</a></li>
+                    
+                        <li><a href="/course//">HISTORY</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/cover.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/life" title="life">
+                            life
+                        </a>
+                        
+                        <a class="tag" href="/tags/network" title="network">
+                            network
+                        </a>
+                        
+                    </div>
+                    <h1>轻松改造你的寝室网络环境</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Zephyr
+                             
+                            on 
+                            Wednesday, September 25, 2024
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <blockquote>
+<p>寝室的校园网一直差强人意——只有100Mbps的下行，20左右的上行，同时还有神秘的VLAN隔离，没有办法和舍友愉快的局域网联机。我不怎么打游戏，但是最近下载需求疯涨，而且连b站打开都卡，我实在忍无可忍，确实有必要动起手来简单改造一下网络环境。</p>
+</blockquote>
+<h1 id="需求及环境">需求及环境</h1>
+<p>寝室四人间，上床下桌，每个人桌下都有RJ45网口，只需要一根六类线，即可轻松接入校园网。于是我激情下单WR30U并准备好基本固件，恰好笔者有一块废旧硬盘，将曾经的电视盒子刷成轻nas也可接入局域网中供舍友使用。</p>
+<p>
+  <img src="Snipaste_2024-09-26_16-22-46.png" alt="alt text">
+
+</p>
+<p>准备如下固件:</p>
+<ul>
+<li><a href="https://share.qust.me/%E8%B7%AF%E7%94%B1%E5%99%A8/WR30U">ssh解锁及uboot</a></li>
+<li><a href="https://openwrt.mpdn.fun:8443/?dir=lede/mtk/2024-09-25__07-51-34--xiaomi_mi-wr30u.mini-daily">openwrt，我使用的是bleachwrt</a></li>
+</ul>
+<p>按照说明选择对应固件。WR30U是mtk芯片，自然应该进入<code>mtk</code>目录下寻求
+
+  <img src="image.png" alt="alt text">
+
+</p>
+<h1 id="刷入openwrt">刷入OpenWrt</h1>
+<h2 id="解锁ssh">解锁ssh</h2>
+<p>首先给WR30U上电，电脑接入路由器后访问<code>192.168.31.1</code>，在后台界面进入到上网设置，将上网方式设置为<code>DHCP</code>，<code>DNS</code>设置为<code>自动</code>,并开启<code>与智能网关的无线同步</code>，最后固定一个<code>wan</code>口。
+
+  <img src="568961f6d2911b10d6447fea16dae12.jpg" alt="alt text">
+
+</p>
+<p>然后用网线将路由器和电脑连接，此时电脑接入互联网（可以用wifi，也可以手机usb热点直连），然后在网络和共享中心中，选择接入互联网的适配器（比如wifi），右键-属性，选择<code>共享</code>，勾选<code>允许其他网络用户通过此计算机的Internet连接来连接</code>选项，然后选择接入路由网线接入的网卡，本文中是<code>以太网6</code>。
+
+  <img src="image-1.png" alt="alt text">
+
+
+<strong>要将网线接入到事先固定的wan口中，此时电脑作为一个网关，会将路由器分配一个ip地址，此时您应该已经无法访问您的路由器管理界面</strong></p>
+<p>共享网络后，路由器将走我们的电脑接入互联网，此时路由器应该亮起两个蓝色指示灯。
+然后准备好一个<code>python</code>环境，如果没有<code>crypto</code>库，需要执行<code>pip install pycryptodome</code>安装，然后运行<code>server_emulator.py</code>脚本。
+
+  <img src="image-2.png" alt="alt text">
+
+
+期间需要按任意键才能继续，出现<code>finish</code>即完成，可以退出。</p>
+<blockquote>
+<p>插曲一:我电脑为一轻薄本，只能使用绿联扩展坞接入rj45，在这个过程中发现无论如何都无法将笔记本作为网关让路由器接入互联网，恰巧舍友有一y9000p。将舍友驱赶至床上让其玩金铲铲，再次尝试，发现问题迅速得到解决（后续这个拓展坞也没办法拨号，错误代码是651，因此有条件最好用笔记本自带的网口来做）</p>
+</blockquote>
+<p><strong>路由器不要断电</strong>，将电脑接入路由器(lan口或wifi接入)，然后输入<code>ssh root@192.168.31.1</code>。
+
+  <img src="e741ae46c0b90820cb9b3a75f7fc32f.png" alt="alt text">
+
+</p>
+<h2 id="刷入uboot">刷入uboot</h2>
+<p>拿到shell之后，可以<code>cat /proc/mtd</code> 查看<code>mtd</code>分配情况，如果需要备份，可以<code>dd if=/dev/mtdX of=/path/to/backup/file.img bs=512</code>进行备份。</p>
+<p>例如，备份<code>mtd0</code>到<code>/root/mtd0_backup.img</code>，则可以输入<code>dd if=/dev/mtd0 of=/root/mtd0_backup.img bs=512</code>。</p>
+<p>恢复时只需要<code>dd if=/path/to/backup/file.img of=/dev/mtdX bs=512</code>即可。</p>
+<p>然后用scp将uboot固件传到路由器的<code>/tmp</code>路径下。</p>
+<p>然后执行 <code>mtd write &lt;your image name&gt; /dev/mtd5</code> 即可</p>
+<h2 id="刷入openwrt-1">刷入openwrt</h2>
+<p>将路由器断电，按住<code>reset</code>不放，接入电源，等待黄色灯闪烁后松开进入uboot，电脑使用网线和<code>wr30u</code>实现准备好的wan口连接，设置以太网为静态，IP地址为<code>192.168.1.2</code>，子网掩码为<code>255.255.255.0</code>，网关为<code>192.168.1.1</code>，首选DNS为<code>192.168.1.1</code>，保存。</p>
+<p>然后上传准备好的<code>bleachwrt</code>固件即可。
+
+  <img src="Snipaste_2024-09-25_22-38-41-1.png" alt="alt text">
+
+</p>
+<h1 id="配置openwrt">配置openwrt</h1>
+<p><code>bleachwrt</code>的账号是<code>admin</code>密码是<code>password</code>，默认网关是<code>192.168.1.1</code>，默认ssid是<code>bleachwrt</code>。进入管理界面后选择<code>网络-&gt;接口</code>。
+
+  <img src="72a8d4c33ed2f4d5735e8bcb41c3840.png" alt="alt text">
+
+
+openwrt将虚拟化若干虚拟接口，绑定到物理接口上，wan口绑定在wan口上（有的路由器是<code>eth0</code>），其余通过<code>br-lan</code>网桥连在统一的lan口上。</p>
+<p>我本次使用双线多播，因此<code>wan</code>和<code>wan6</code>已经够了，如果需要更多<code>wan</code>口，可以进到<code>br-lan</code>中解绑需要的<code>lan</code>口。</p>
+<p>然后修改两个wan口，协议都使用pppOe(因为校园网支持pppoe认证)，输入账号密码即可接入校园网，此外，将<code>wan</code>口的防火墙协议配置在<code>wan</code>口对应规则下，方便后续管理。</p>
+<blockquote>
+<p>有的寝室没有网口，可以直接无线扩展，但需要进入认证界面，可以使用github上对应的锐捷脚本进行认证。<a href="https://github.com/RavenLiao/Srun_Openwrt_Lua">深澜认证脚本</a></p>
+</blockquote>
+<p>确认能够上网后，选择<code>多线多拨</code>。可以按照需求进行配置(虚拟WAN口数=拨号数量)。比如我们用了两个账号登录，然后每个<code>虚拟WAN口数</code>为<code>5</code>，那么最后每个人在校园网终端都会有五台设备接入。如果勾选了<code>使用旧的macvlan</code>创建方式，可以自动配置好负载均衡。</p>
+<p>也可以手动配置负载均衡。</p>
+<p>进入到<code>负载均衡</code>中，需要依次配置<code>接口``成员``配置``规则</code>。跟踪的<code>ip</code>可以选dns服务器地址，或者简单粗暴<code>www.baidu.com</code>。</p>
+<p>至此，利用多播上网，可以叠加带宽。
+
+  <img src="image-5.png" alt="alt text">
+
+</p>
+<p>
+  <img src="c6704474221c8e9498139752635c2c9.png" alt="alt text">
+
+</p>
+<p>此外，<code>bleachwrt</code>有<code>PassWall</code>可以配置，可以随便配置配置来启动你的盾构机让全寝出国（</p>
+<p>也可以安装<code>Turbo ACC 网络加速</code>来做流量分载和<code>BBR拥塞控制</code></p>
+<h1 id="后记">后记</h1>
+<p>多播之后没办法访问学校内部网站了，比如教务处，图书馆都无法访问，http报文是<code>DNS_PROBE_FINISHED_NXDOMAIN</code>，于是便连接回校园网<code>nslookup jwts.hit.edu.cn</code> 发现有且仅有<code>ipv6</code>地址，初步考虑手动配置dns服务器，然而没找到配置选项。解决方法是进入到<code>网络-&gt;DHCP/DNS</code>下，将<code>重绑定保护</code>去除勾选即可。因为学校的<code>dns服务器</code>和内部网站都是<code>10</code>段内网，这玩意貌似用<code>dnsmasq</code>过滤掉内网解析。</p>
+<blockquote>
+<p>插曲二：当你做的都对但事情仍无进展时，少内耗，多骂骂外面的环境，心态才会正常。</p>
+</blockquote>
+<p>第二次遇到问题是在拨号上，最初仍然考虑用锐捷脚本来绕认证，然后被告知直接pppoe就行，结果拨号从来不成功，郁闷至极趁舍友都睡下之际开始用电脑尝试拨号，结果<code>651</code>发现根本拨不通！考虑到又是拓展坞的问题，用<code>y9000p</code>尝试拨号，也<code>651</code>，锤醒隔壁寝室发现正常上网，于是第二天后勤报修，后勤响应巨快无比，得知先辈层抱怨信号不好，学校特意在我寝安装一便携ap。
+
+  <img src="fec9d292532921f206f89cece6e84d7.jpg" alt="alt text">
+
+</p>
+<p>结果检修后发现只有左侧两lan口能使用。颇为滑稽。</p>
+<blockquote>
+<p>世界上解决问题最有效的办法就是解决制造问题的人——约瑟夫·斯大林</p>
+</blockquote>
+
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/heapbasic/" data-toggle="tooltip" data-placement="top" title="pwn·glibc堆基础">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+                
+
+                
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/course" title="course">
+                            course
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/crypto" title="crypto">
+                            crypto
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ctf" title="ctf">
+                            ctf
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/notebook" title="notebook">
+                            notebook
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/pwn" title="pwn">
+                            pwn
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/writeup" title="writeup">
+                            writeup
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0" title="统计学习">
+                            统计学习
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:empire258700@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/ZephyrVictor">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="#3" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; #3 2024
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>
