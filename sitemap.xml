@@ -3,30 +3,39 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://zephyr369.online/</loc>
-    <lastmod>2024-09-25T12:00:00+00:00</lastmod>
+    <lastmod>2024-12-13T12:00:00+00:00</lastmod>
   </url><url>
     <loc>https://zephyr369.online/categories/</loc>
-    <lastmod>2024-09-25T12:00:00+00:00</lastmod>
+    <lastmod>2024-12-13T12:00:00+00:00</lastmod>
   </url><url>
     <loc>https://zephyr369.online/tags/ctf/</loc>
-    <lastmod>2024-09-25T12:00:00+00:00</lastmod>
+    <lastmod>2024-12-13T12:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://zephyr369.online/post/</loc>
+    <lastmod>2024-12-13T12:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://zephyr369.online/tags/pwn/</loc>
+    <lastmod>2024-12-13T12:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://zephyr369.online/largebinattack/</loc>
+    <lastmod>2024-12-13T12:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://zephyr369.online/tags/</loc>
+    <lastmod>2024-12-13T12:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://zephyr369.online/categories/tech/</loc>
+    <lastmod>2024-12-13T12:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://zephyr369.online/goalcent/</loc>
+    <lastmod>2024-12-07T12:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://zephyr369.online/tags/writeup/</loc>
+    <lastmod>2024-12-07T12:00:00+00:00</lastmod>
   </url><url>
     <loc>https://zephyr369.online/tags/life/</loc>
     <lastmod>2024-09-25T12:00:00+00:00</lastmod>
   </url><url>
     <loc>https://zephyr369.online/tags/network/</loc>
-    <lastmod>2024-09-25T12:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://zephyr369.online/post/</loc>
-    <lastmod>2024-09-25T12:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://zephyr369.online/tags/pwn/</loc>
-    <lastmod>2024-09-25T12:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://zephyr369.online/tags/</loc>
-    <lastmod>2024-09-25T12:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://zephyr369.online/categories/tech/</loc>
     <lastmod>2024-09-25T12:00:00+00:00</lastmod>
   </url><url>
     <loc>https://zephyr369.online/houseofwater/</loc>
@@ -72,9 +81,6 @@
     <lastmod>2024-07-14T12:00:00+00:00</lastmod>
   </url><url>
     <loc>https://zephyr369.online/2024ichunqiu/</loc>
-    <lastmod>2024-07-05T12:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://zephyr369.online/tags/writeup/</loc>
     <lastmod>2024-07-05T12:00:00+00:00</lastmod>
   </url><url>
     <loc>https://zephyr369.online/marxisttheory/</loc>

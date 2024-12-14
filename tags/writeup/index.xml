@@ -6,8 +6,15 @@
     <description>Recent content in WriteUp on #3</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 05 Jul 2024 12:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 07 Dec 2024 12:00:00 +0000</lastBuildDate>
     <atom:link href="https://zephyr369.online/tags/writeup/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2024国城杯线上初赛</title>
+      <link>https://zephyr369.online/goalcent/</link>
+      <pubDate>Sat, 07 Dec 2024 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/goalcent/</guid>
+      <description>reverse 大部分reverse是Lily White round jadx分析没有原生层，可以直接静态分析 主函数在com.example.demo.MainActivit</description>
+    </item>
     <item>
       <title>2024春秋杯夏季赛WriteUp</title>
       <link>https://zephyr369.online/2024ichunqiu/</link>

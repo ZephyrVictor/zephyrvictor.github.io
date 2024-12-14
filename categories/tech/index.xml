@@ -6,8 +6,22 @@
     <description>Recent content in Tech on #3</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 25 Sep 2024 12:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 13 Dec 2024 12:00:00 +0000</lastBuildDate>
     <atom:link href="https://zephyr369.online/categories/tech/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>pwn·largebinattack-IOFILE一条龙服务</title>
+      <link>https://zephyr369.online/largebinattack/</link>
+      <pubDate>Fri, 13 Dec 2024 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/largebinattack/</guid>
+      <description>高版本libc堆题最后往往都要用到 largebinattack和IO_FILE的一些利用手法，总结一个超级模板的题目。 Largebin_attack largebin最后</description>
+    </item>
+    <item>
+      <title>2024国城杯线上初赛</title>
+      <link>https://zephyr369.online/goalcent/</link>
+      <pubDate>Sat, 07 Dec 2024 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/goalcent/</guid>
+      <description>reverse 大部分reverse是Lily White round jadx分析没有原生层，可以直接静态分析 主函数在com.example.demo.MainActivit</description>
+    </item>
     <item>
       <title>无show函数前提下的heap exploit</title>
       <link>https://zephyr369.online/houseofwater/</link>
