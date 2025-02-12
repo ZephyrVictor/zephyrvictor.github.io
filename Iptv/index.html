@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="#3">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="img/cover.jpg">
+    <meta property="twitter:image" content="img/cover.jpg" />
+    
+
+    
+    <meta name="title" content="老旧IPTV改造计划总结" />
+    <meta property="og:title" content="老旧IPTV改造计划总结" />
+    <meta property="twitter:title" content="老旧IPTV改造计划总结" />
+    
+
+    
+    <meta name="description" content="寒假与家中实在闲来无事，由于广电政策，先前的运营商机顶盒根本无法继续使用，只能购买相关电视服务，于是对家中不同的型号的机顶盒进行了简单研究并总结。">
+    <meta property="og:description" content="寒假与家中实在闲来无事，由于广电政策，先前的运营商机顶盒根本无法继续使用，只能购买相关电视服务，于是对家中不同的型号的机顶盒进行了简单研究并总结。" />
+    <meta property="twitter:description" content="寒假与家中实在闲来无事，由于广电政策，先前的运营商机顶盒根本无法继续使用，只能购买相关电视服务，于是对家中不同的型号的机顶盒进行了简单研究并总结。" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="Zephyr, Zephyr, Zephyr, , Zephyr的网络日志, Zephyr的博客, Zephyr Blog, 博客, 个人网站, 互联网, Web, CTF,">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>老旧IPTV改造计划总结 | Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
+
+    <link rel="canonical" href="/Iptv/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+ 
+ <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+        displayMath: [
+          ["$$", "$$"],
+          ["\\[", "\\]"],
+        ],
+        processEscapes: true,
+        processEnvironments: true,
+      },
+      options: {
+        skipHtmlTags: ["script", "noscript", "style", "textarea", "pre"],
+      },
+    };
+  
+    window.addEventListener("load", (event) => {
+      document.querySelectorAll("mjx-container").forEach(function (x) {
+        x.parentElement.classList += "has-jax";
+      });
+    });
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    type="text/javascript"
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+</head>
+<style>
+    code.has-jax {
+      -webkit-font-smoothing: antialiased;
+      background: inherit !important;
+      border: none !important;
+      font-size: 100%;
+    }
+    </style>
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">#3</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/life/">life</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+                        <li><a href="/life//">LIFE</a></li>
+                    
+                        <li><a href="/course//">HISTORY</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/cover.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/life" title="Life">
+                            Life
+                        </a>
+                        
+                        <a class="tag" href="/tags/iptv" title="Iptv">
+                            Iptv
+                        </a>
+                        
+                    </div>
+                    <h1>老旧IPTV改造计划总结</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Zephyr
+                             
+                            on 
+                            Monday, February 10, 2025
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <p>黑龙江地区中，<code>中国电信</code>的 <code>华为悦盒ec6108v9c</code> 型号最为常见，其芯片为 <code>hi3798mv100</code>。而 <code>中国联通</code>的<code>创维e900</code>家族电视盒子最为常见，主要芯片为<code>晶晨S905</code>家族。</p>
+<p>这些盒子性能都相对较弱，同时网口也仅有百兆，甚至连USB都是极为先进的2.0，但聊胜于无，笔者终究还是踏上了这一条不归路。</p>
+<p>在这过程中也尝试到了大量的固件，感谢万能的互联网，同时感谢<a href="https://www.znds.com/">智能电视网</a>等热衷于折腾的大牛们的固件分享，奉上网上最常见的整合资源链接。资源中还存在比较齐全的刷机工具，如海思芯片的<code>HiTool</code>，以及晶晨的线刷工具等。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>通过网盘分享的文件：刷机固件ROM大全
+</span></span><span style="display:flex;"><span>链接: https://pan.baidu.com/s/16Ph_l9K5znRZM7IUDeyL_g?pwd<span style="color:#ff79c6">=</span><span style="color:#bd93f9">1234</span> 提取码: <span style="color:#bd93f9">1234</span> 
+</span></span><span style="display:flex;"><span>--来自百度网盘超级会员v4的分享
+</span></span></code></pre></div><h1 id="华为悦盒">华为悦盒</h1>
+<p>笔者最初接触到的便是<code>中国电信</code>的华为悦盒，便一心想刷成<a href="https://www.ecoo.top/">海纳斯</a>系统当成一个轻nas设备安静的放在家中给家人提供影片存储。</p>
+<h2 id="破解">破解</h2>
+<p>这一步比较简单，只需前往<a href="https://www.znds.com/">智能电视网</a>下载对应固件即可。</p>
+<p>这里值得一提的是，笔者从未碰见未加锁的芯片，也就是笔者手中所有的盒子都是俗称的<code>高安版</code>，只能刷写特定的固件才能变成普通的电视盒子。 <a href="https://www.znds.com/tv-1123117-1-1.html">可以尝试这个固件</a></p>
+<blockquote>
+<p>高安版中，密钥烧入soc。启动时，bootrom即会检查fastboot签名，若签名无法匹配fastboot内容，则拒绝启动。例如，使用十六进制编辑器，找到fastboot中的mv100字样，改为mv200后写回，开机在显示完reg信息后试图启动fastboot即会卡死，ttl再无输出。若没有对应soc密钥的私钥，将无法自行签名fastboot。因此，高安版机器只能使用运营商提供（或通过其他渠道流出）的已签名fastboot。Hi3798可以通过短接J16强制进入U盘恢复模式，U盘中至少需要三个文件：fastboot.bin、bootargs.bin、recovery.img。但事实上，高安版同样具有此功能，只需要将fastboot.bin替换成对应高安版可用的fastboot</p>
+</blockquote>
+<p><strong>最好使用比较古老的USB2.0 U盘，同时建议容量不要超过32GB，且不要使用做过PE的U盘，因为可能会挂载上隐藏分区。</strong></p>
+<p>短接点:
+
+  <img src="image.png" alt="alt text">
+
+</p>
+<p>当然也可以直接短接芯片针脚
+
+  <img src="image-1.png" alt="alt text">
+
+</p>
+<h2 id="曲折与放弃">曲折与放弃</h2>
+<p>在TTL和破解这两步碰壁后，笔者仍不死心，决定使用ADB进行远程烧写，思路是先将盒子刷入androidTV底包，开启adb，并直接将制作好的镜像写入emmc，可惜执行<code>ls -al /dev/block/</code>时，看到闪存为<code>mtdblk</code>，只得放弃。<strong>刷了会成砖，只能用TTL刷回去</strong></p>
+<h1 id="创维e900-s">创维E900-S</h1>
+<p>创维<code>E900-S</code>拆机后仍然是华为<code>mv100</code>芯片，因此刷机过程与华为悦盒类似。短接点将主板翻至背面如下：</p>
+<p>
+  <img src="image-2.png" alt="alt text">
+
+</p>
+<p>注意拆机时应注意不要扯坏信号接收装置。</p>
+<h1 id="创维e900v21d">创维E900V21D</h1>
+<p>笔者拿到的该款电视盒子芯片有<code>S905L3</code>、<code>S905L3-B</code>两款，且主板有两种不同版本。</p>
+<p>晶晨固件都需要准备一根<code>双公头USB</code>线。</p>
+<p>对于<code>S905L3</code>芯片，短接点位于背面</p>
+<p>
+  <img src="image-3.png" alt="alt text">
+
+</p>
+<p>对于<code>S905L3-B</code>芯片，版号<code>5800-2AHPH4R</code>，短接点位于存储左边从上往下第五到第六针脚</p>
+<p>
+  <img src="image-4.png" alt="alt text">
+
+</p>
+<h2 id="尝试刷入armbian">尝试刷入<code>armbian</code></h2>
+<p>最好的仓库是<a href="https://github.com/ophub/amlogic-s9xxx-armbian">ophub</a></p>
+<p>对于上述两款芯片，hdmi驱动均有问题，因此刷入后将无法屏显，(仓库中的dts大多都尝试过，均无用)</p>
+<p>且对于<code>S905L3</code>芯片刷入4.4.2底包后无法识别网卡，因此无法通过远程进一步刷机，只能从<code>U盘</code>启动armbian，刷入9.0底包则会无限重启甚至卡1-2屏循环。折腾一天，放弃。</p>
+<h3 id="天选的s905l3b">天选的<code>S905L3B</code></h3>
+<p><code>5800-2AHPH4R</code>版内存有锁，请不要尝试，使用晶晨线刷工具刷入时会直接失败。但<code>5800-2AMBA02</code>主板可行。</p>
+<p>首先刷入一个<a href="https://www.znds.com/tv-1247230-1-1.html">安卓9.0原生底包</a></p>
+<p>然后开启远程调试，并查看设备ip地址，笔者是<code>192.168.1.18</code> 使用的固件是<code>amlogic_s905l3b-e900v22e_jammy</code>系列。同时要将U盘格式化为FAT32,并用<code>RUFUS</code>将引导文件<code>armbian</code>的镜像写入进去。</p>
+<p>然后下载<code>adb</code>，输入<code>adb connect 192.168.1.18</code> 并<code>adb shell</code>可以拿到shell。输入<code>adb shell reboot update</code>从U盘启动。然后进网关设备界面看设备ip，用ssh连，账号<code>root</code>,密码<code>1234</code>.</p>
+<p>最后输入<code>armbian-install -m yes</code>等待即可。</p>
+<p>这个设备也没什么折腾的价值，重点是折腾的快乐。结论就是除非可以碰到最后一种的<code>S905L3B</code>，否则剩下的绝大多数都很难刷入，笔者技术有限，没有尝试成功。</p>
+
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/largebinattack/" data-toggle="tooltip" data-placement="top" title="pwn·largebinattack-IOFILE一条龙服务">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+                
+
+                
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/course" title="course">
+                            course
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/crypto" title="crypto">
+                            crypto
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ctf" title="ctf">
+                            ctf
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/life" title="life">
+                            life
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/notebook" title="notebook">
+                            notebook
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/pwn" title="pwn">
+                            pwn
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/writeup" title="writeup">
+                            writeup
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0" title="统计学习">
+                            统计学习
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:empire258700@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/ZephyrVictor">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="#3" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; #3 2025
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>
