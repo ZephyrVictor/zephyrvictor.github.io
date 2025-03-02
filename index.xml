@@ -9,10 +9,17 @@
     <lastBuildDate>Mon, 10 Feb 2025 12:00:00 +0000</lastBuildDate>
     <atom:link href="https://zephyr369.online/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>腾讯wxg后端实习面试经历</title>
-      <link>https://zephyr369.online/Iptv/</link>
+      <title>SatOver阅读笔记</title>
+      <link>https://zephyr369.online/satover/</link>
       <pubDate>Mon, 10 Feb 2025 12:00:00 +0000</pubDate>
-      <guid>https://zephyr369.online/Iptv/</guid>
+      <guid>https://zephyr369.online/satover/</guid>
+      <description>论文标题:The Dark Side of Scale: Insecurity of Direct-to-Cell Satellite Mega-Constellations 笔者重点研究实验过程。 后续防御建议请参考论文 SatOver攻击 现在有很多低轨道卫星: LEO 这个要比传统的同步轨</description>
+    </item>
+    <item>
+      <title>腾讯wxg后端实习面试经历</title>
+      <link>https://zephyr369.online/tencentinter/</link>
+      <pubDate>Mon, 10 Feb 2025 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/tencentinter/</guid>
       <description>大三了，虽然我的意向是准备保研，但突然发现学校最近疯狂推送有关于实习的消息，这令我很开心，因为以前学校从未推送过任何我熟知大厂来招聘的消息，</description>
     </item>
     <item>

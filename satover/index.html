@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="#3">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="img/cover.jpg">
+    <meta property="twitter:image" content="img/cover.jpg" />
+    
+
+    
+    <meta name="title" content="SatOver阅读笔记" />
+    <meta property="og:title" content="SatOver阅读笔记" />
+    <meta property="twitter:title" content="SatOver阅读笔记" />
+    
+
+    
+    <meta name="description" content="最近在做一些关于卫星通信安全的调研，阅读了此篇论文">
+    <meta property="og:description" content="最近在做一些关于卫星通信安全的调研，阅读了此篇论文" />
+    <meta property="twitter:description" content="最近在做一些关于卫星通信安全的调研，阅读了此篇论文" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="Zephyr, Zephyr, Zephyr, , Zephyr的网络日志, Zephyr的博客, Zephyr Blog, 博客, 个人网站, 互联网, Web, CTF,">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>SatOver阅读笔记 | Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
+
+    <link rel="canonical" href="/satover/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+ 
+ <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+        displayMath: [
+          ["$$", "$$"],
+          ["\\[", "\\]"],
+        ],
+        processEscapes: true,
+        processEnvironments: true,
+      },
+      options: {
+        skipHtmlTags: ["script", "noscript", "style", "textarea", "pre"],
+      },
+    };
+  
+    window.addEventListener("load", (event) => {
+      document.querySelectorAll("mjx-container").forEach(function (x) {
+        x.parentElement.classList += "has-jax";
+      });
+    });
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    type="text/javascript"
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+</head>
+<style>
+    code.has-jax {
+      -webkit-font-smoothing: antialiased;
+      background: inherit !important;
+      border: none !important;
+      font-size: 100%;
+    }
+    </style>
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">#3</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/life/">life</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+                        <li><a href="/life//">LIFE</a></li>
+                    
+                        <li><a href="/course//">HISTORY</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/cover.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/notebook" title="Notebook">
+                            Notebook
+                        </a>
+                        
+                        <a class="tag" href="/tags/paper" title="Paper">
+                            Paper
+                        </a>
+                        
+                        <a class="tag" href="/tags/satellite" title="Satellite">
+                            Satellite
+                        </a>
+                        
+                    </div>
+                    <h1>SatOver阅读笔记</h1>
+                    <h2 class="subheading">The Dark Side of Scale: Insecurity of Direct-to-Cell Satellite Mega-Constellations</h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Zephyr
+                             
+                            on 
+                            Monday, February 10, 2025
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <p>论文标题:<a href="https://ieeexplore.ieee.org/document/10646850/">The Dark Side of Scale: Insecurity of Direct-to-Cell Satellite Mega-Constellations</a>
+笔者重点研究实验过程。 后续防御建议请参考论文</p>
+<h1 id="satover攻击">SatOver攻击</h1>
+<p>现在有很多低轨道卫星: LEO</p>
+<p>这个要比传统的同步轨道卫星更难攻击L:</p>
+<ul>
+<li><strong>更强的抗干扰性</strong>：
+<ul>
+<li>LEO卫星距离用户10-100倍更近，信号更强。</li>
+<li>采用<strong>相控阵天线</strong>（如Starlink 6-8个波束、Iridium 20-46个波束），支持<strong>频率跳变</strong>以对抗干扰。</li>
+</ul>
+</li>
+<li><strong>备份卫星多</strong>：
+<ul>
+<li>每个地区通常由<strong>8-49颗LEO卫星</strong>覆盖，若一颗卫星受干扰，用户可切换到另一颗。</li>
+<li>攻击者若想完全屏蔽LEO服务，需同时干扰<strong>48-294个射频信道</strong>，几乎不可行。</li>
+</ul>
+</li>
+<li><strong>攻击范围有限</strong>：传统控制面攻击只能影响一个逻辑服务区，而不是整个LEO星座。</li>
+<li><strong>目标快速变化</strong>：LEO卫星移动速度约<strong>7km/s</strong>，每隔<strong>10秒</strong>设备就可能连接到新的卫星，攻击者需频繁调整同步，增加攻击难度。</li>
+<li><strong>容易检测和修复</strong>：
+<ul>
+<li>由于LEO卫星的移动性，假基站在<strong>射频（RF）特征</strong>上难以伪装，容易被检测。</li>
+<li>设备可通过检测重复的注册拒绝消息，屏蔽假基站的ID。</li>
+</ul>
+</li>
+</ul>
+<p>文章指出了传统方法的攻击性:</p>
+<ul>
+<li><strong>数据面攻击（Data-plane attacks）</strong>：
+<ul>
+<li>通过操纵LTE/5G链路层协议干扰设备连接或降低吞吐量。</li>
+<li>但每次只能影响一个设备，受害者可切换至另一颗LEO卫星，无法大规模影响整个星座。</li>
+</ul>
+</li>
+<li><strong>控制面攻击（Control-plane attacks）</strong>：
+<ul>
+<li>伪造<strong>虚假基站（FBS）或信号覆盖攻击（Overshadowing）</strong>，拒绝用户注册。</li>
+<li>但LEO星座中，每个地理区域通常有多个逻辑服务区域（如GEO卫星的多个波束）。</li>
+<li>现有攻击只能拒绝设备在<strong>一个逻辑服务区域</strong>注册，用户仍可切换到另一颗卫星，无法彻底封锁服务。</li>
+</ul>
+</li>
+</ul>
+<h1 id="条件">条件</h1>
+<p>整个过程不需要固件</p>
+<p>SatOver <strong>依赖</strong> <strong>以下几类公开数据</strong> 来伪造攻击环境：</p>
+<ol>
+<li><strong>卫星轨道数据（TLEs）</strong>
+<ul>
+<li>来自 <strong>NASA / Space-Track</strong>，用于计算 LEO 卫星的位置、速度、Doppler 频移等，以便伪造真实的卫星特征。</li>
+</ul>
+</li>
+<li><strong>卫星通信信令（SIBs/NAS）</strong>
+<ul>
+<li>通过 <strong>监听真实卫星的 LTE/5G 广播信令</strong>（SIB19, SIB31-NB）来复制卫星的身份信息，使伪造基站看起来“合法”。</li>
+<li>这些信令是 <strong>明文传输的，不需要破解加密</strong>。</li>
+</ul>
+</li>
+<li><strong>LTE/5G 地面基站数据</strong>
+<ul>
+<li>从FCC（美国）和工信部（中国）获取基站位置数据，以模拟大规模攻击的影响。</li>
+</ul>
+</li>
+</ol>
+<h1 id="satover攻击过程">SatOver攻击过程</h1>
+<p>LEO卫星系统为了兼容现有的<strong>商用手机（COTS）和物联网设备（IoT）</strong>，继承了<strong>地面LTE/5G协议</strong>的漏洞（如明文信令）。
+<strong>SatOver 是一种控制面跨层攻击</strong>，专门针对<strong>直连手机（direct-to-cell）LEO卫星星座</strong>。</p>
+<h2 id="核心机制">核心机制</h2>
+<h3 id="攻击放大">攻击放大</h3>
+<ul>
+<li>LEO卫星使用<strong>集中式地面站</strong>处理全球用户的信令，容易发生<strong>控制面拥塞</strong>。</li>
+<li>SatOver 利用 <strong>伪造的LTE/5G信令</strong> 模拟拥塞，使受害设备无法成功注册，而不是简单的拒绝接入请求。</li>
+<li>由于信令拥塞影响的是整个<strong>逻辑服务区域</strong>，会<strong>间接阻断整个LEO卫星星座</strong>。</li>
+</ul>
+<h3 id="攻击混淆obfuscation">攻击混淆（Obfuscation）</h3>
+<ul>
+<li>LEO卫星是<strong>高速移动</strong>的，每颗卫星在短时间内可见性有限。</li>
+<li>SatOver <strong>伪装成多个快速变化的假卫星</strong>，动态调整攻击参数，使受害者难以检测和屏蔽攻击来源。</li>
+<li>这一技术类似于<strong>IP欺骗（IP Spoofing）</strong>，让攻击行为难以追踪。</li>
+</ul>
+<h2 id="步骤">步骤</h2>
+<p>
+  <img src="image.png" alt="image.png">
+
+</p>
+<p><strong>(1) 劫持商用手机/IoT 设备（Hijacking Phones/IoTs）</strong></p>
+<ul>
+<li>攻击者使用<strong>地面LTE/5G基站</strong>或软件无线电（SDR）模拟“假卫星”。</li>
+<li>通过广播<strong>伪造的小区信息（SIBs）</strong>，让手机/IoT 设备优先选择攻击者的基站，而不是LEO卫星。
+<ul>
+<li>设备尝试建立RRC连接，并向假卫星发送 NAS 附着（Attach）/注册（Registration）请求。</li>
+</ul>
+</li>
+</ul>
+<p><strong>(2) 阻断整个LEO星座（Blocking the Mega-Constellation）</strong></p>
+<ul>
+<li>攻击者利用<strong>LTE/5G标准中的信令拥塞控制机制</strong>，拒绝设备的注册请求，返回 <strong>#22 拒绝代码（拥塞）</strong>。</li>
+<li>设备在 <strong>15~30 分钟（T3346计时器）</strong> 内无法再尝试注册，导致长时间无法访问卫星网络。</li>
+<li>由于LEO卫星依赖<strong>统一的地面站处理控制信令</strong>，这一攻击能<strong>间接影响所有LEO卫星的接入</strong>。</li>
+</ul>
+<p><strong>(3) 逃避检测和防御（Evading Defenses）</strong></p>
+<ul>
+<li>SatOver 通过<strong>快速改变假卫星的身份信息</strong>（如TLEs和信令配置）来躲避检测。</li>
+<li>设备因快速变化的攻击源无法识别并屏蔽攻击，使SatOver攻击持续生效。</li>
+</ul>
+<blockquote>
+<p>细胞选择流程</p>
+<p>当设备开机或关闭飞行模式时，会执行细胞选择来寻找合适的 LTE/5G 基站进行注册。
+细胞选择的基本流程（如图9所示）：
+扫描存储的历史频段（如有）。
+遍历所有可用的 LTE/5G 频段，按能量大小排序。
+在每个频段中，选择信号最强的基站。
+同步（DL Sync），接收 SIB（系统信息块）广播。
+检查基站的PLMN（公共陆地移动网络号）是否允许接入。
+若通过，设备会向该基站发送注册请求。</p>
+</blockquote>
+<p>因为攻击者的无线电比卫星离得更近，用比较小的功率就能吸引受害者设备连接伪基站，所以可以直接利用强度优势来劫持。（这个过程极快 1s)</p>
+<h2 id="混淆以规避检测">混淆以规避检测</h2>
+<h3 id="现有攻击的弱点"><strong>现有攻击的弱点</strong></h3>
+<ul>
+<li><strong>虽然 SatOver 能成功阻断 LEO 星座服务，但仍可能被受害者检测并规避</strong>。</li>
+<li>受害者可以采取两种防御方式：
+<ol>
+<li><strong>射频（RF）/几何特征检测</strong>：
+<ul>
+<li>由于 LEO 卫星高速移动，其<strong>RF 信号强度、传播路径时延和多普勒频移</strong>会不断波动。</li>
+<li>受害者可检测异常 RF 特征来识别假卫星，并将其加入<strong>黑名单</strong>。</li>
+</ul>
+</li>
+<li><strong>协议层检测</strong>：
+<ul>
+<li>如果同一个“卫星”反复拒绝服务（如 &ldquo;#22 拒绝码&rdquo;），受害者可以识别攻击，并切换到其他卫星。</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<p>为了避免被检测并绕过防御，SatOver <strong>利用 LEO 星座的极端移动性</strong> 来动态伪装自己，确保持续攻击：</p>
+<ul>
+<li><strong>伪造短暂存在的“假卫星”</strong>，在 RF 和信令协议层面上模仿真实 LEO 卫星，使受害者难以区分。</li>
+<li><strong>快速重新配置身份（ID）、信号特征和协议参数</strong>，制造“假卫星”不断变换的假象，让受害者无法屏蔽攻击。</li>
+</ul>
+<p>SatOver利用时延-多普勒信道模拟真实 LEO 卫星,频繁更改信号特征和小区 ID，使黑名单防御无效,同时始终保持信号最强。</p>
+<h2 id="其他设备">其他设备</h2>
+<table>
+<thead>
+<tr>
+<th><strong>设备类型</strong></th>
+<th><strong>攻击手法</strong></th>
+<th><strong>是否需要 RF/几何伪造</strong></th>
+<th><strong>关键漏洞</strong></th>
+<th><strong>防御难度</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>COTS（普通手机）</strong></td>
+<td>伪造 NAS 注册拒绝（#22 拒绝码）</td>
+<td><strong>不需要</strong></td>
+<td>继承传统 LTE/5G 漏洞</td>
+<td><strong>难以防御</strong></td>
+</tr>
+<tr>
+<td><strong>NR-NTN（5G 卫星）</strong></td>
+<td>伪造 SIB19 + RF 信号</td>
+<td><strong>需要</strong></td>
+<td>&ldquo;forbidden tracking area list&rdquo; 允许阻断多个服务区域</td>
+<td><strong>可检测，但仍有效</strong></td>
+</tr>
+<tr>
+<td><strong>IoT-NTN（低功耗物联网）</strong></td>
+<td>伪造 SIB31/32 + #78 拒绝码</td>
+<td><strong>需要</strong></td>
+<td>#78 拒绝码可直接屏蔽所有卫星</td>
+<td><strong>更容易修复</strong></td>
+</tr>
+</tbody>
+</table>
+<h1 id="satover实验">SatOver实验</h1>
+<h2 id="真实卫星测试">真实卫星测试</h2>
+<p>目标是验证 SatOver 是否能影响真实卫星通信。</p>
+<ul>
+<li><strong>与一家卫星运营商和设备厂商合作</strong>（匿名，基于 NDA 协议）。</li>
+<li>测试卫星：<strong>GEO 轨道卫星</strong>，使用<strong>Bent-Pipe 模式</strong>，LTE/5G 频段 65（1920–1980 MHz 上行，2110–2170 MHz 下行）。</li>
+<li><strong>为何测试 GEO 而非 LEO？</strong>
+<ul>
+<li>GEO 卫星使用<strong>与 LEO 相同的 3GPP NTN 信令协议</strong>，因此可用于测试 <strong>SatOver 对 NTN 设备的攻击</strong>。</li>
+<li>由于 GEO 轨道稳定，无法测试 SatOver 在 LEO 轨道上的<strong>攻击放大和混淆能力</strong>。</li>
+</ul>
+</li>
+<li><strong>受害设备</strong>：
+<ul>
+<li><strong>IoT-NTN 设备</strong>（支持 NTN 标准，可直连卫星，提供短消息、语音、低速数据）。</li>
+<li><strong>三款卫星电话</strong>：
+<ul>
+<li><strong>合作方的卫星手机</strong>（匿名）。</li>
+<li><strong>Thuraya X5-touch</strong>（支持标准化 LTE/5G 协议）。</li>
+<li><strong>iPhone 15</strong>（使用 Globalstar 专有卫星协议）。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="iot-ntn-设备"><strong>IoT-NTN 设备</strong></h3>
+<p>
+  <img src="image%201.png" alt="image.png">
+
+</p>
+<p><strong>攻击过程（上图a日志）</strong>：</p>
+<ol>
+<li><strong>受害设备选择了 SatOver 伪造的基站</strong>，因其信号最强（日志第 1–2 行）。</li>
+<li><strong>尝试建立 RRC 连接</strong>，但初次连接失败（无线信号质量差）。</li>
+<li><strong>再次尝试后成功连接</strong>（第 10–12 行）。</li>
+<li><strong>发送 NAS 注册请求</strong>，但收到 <strong>&quot;#22 拒绝码（拥塞）&quot;</strong>（第 13–14 行）。</li>
+<li><strong>设备启动 T3346 计时器</strong>，<strong>等待 15–30 分钟（本次设为 22 分钟）</strong>（第 16 行）。</li>
+<li><strong>由于 SatOver 伪造的&quot;黑名单小区列表&quot;，受害设备无法重选其他真实卫星</strong>（第 3–16 行）。</li>
+<li><strong>T3346 计时器到期后，设备再次尝试注册，但仍被拒绝</strong>（第 16–21 行）。</li>
+<li><strong>无限循环，设备彻底无法接入 LEO 星座</strong>。</li>
+</ol>
+<p>此外，文章还额外发现了IOT-NTN设备的一个特点:</p>
+<ul>
+<li>由于 IoT-NTN 设备<strong>天线较弱，窄带通信协议导致扫描时间较长（通常需几分钟）</strong>，因此更容易受到 SatOver 攻击的影响。</li>
+<li><strong>SatOver 伪造基站距离更近，IoT-NTN 设备几乎不可避免地会选择攻击节点</strong>。</li>
+</ul>
+<h3 id="开放标准gmr卫星电话"><strong>开放标准（GMR）卫星电话</strong></h3>
+<ul>
+<li>
+<p><strong>受害设备</strong>：</p>
+<ul>
+<li><strong>合作方卫星电话</strong>。</li>
+<li><strong>Thuraya X5-touch</strong>（使用 GEO-Mobile Radio Interface，GMR 标准）。</li>
+</ul>
+</li>
+<li>
+<p><strong>攻击原理</strong>：</p>
+<ul>
+<li>GMR <strong>基于 3GPP GSM</strong>，使用 <strong>3G NAS 层协议（GMM）</strong> 进行移动管理。</li>
+<li><strong>与 LTE/5G 相同，该协议仍然使用 #22 拒绝码（拥塞）信令</strong>，因此仍然易受 SatOver 攻击。</li>
+</ul>
+</li>
+<li>
+<p><strong>测试日志</strong>：</p>
+<ul>
+<li>合作方卫星电话</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#bd93f9">11</span><span style="color:#ff79c6">:</span><span style="color:#bd93f9">12</span><span style="color:#ff79c6">:</span><span style="color:#bd93f9">47</span> <span style="color:#ff79c6">--</span><span style="color:#8be9fd;font-style:italic">L1</span>: CELL_RESELECTION_START_FN<span style="color:#ff79c6">=</span><span style="color:#bd93f9">91513</span>
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">11</span><span style="color:#ff79c6">:</span><span style="color:#bd93f9">12</span><span style="color:#ff79c6">:</span><span style="color:#bd93f9">50</span> MM receive prim is P_SRRC_MM_EST_CNF
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">11</span><span style="color:#ff79c6">:</span><span style="color:#bd93f9">12</span><span style="color:#ff79c6">:</span><span style="color:#bd93f9">57</span> SRRC[CSEL]<span style="color:#ff79c6">:</span> Camp on cell <span style="color:#8be9fd;font-style:italic">arfcn</span>:<span style="color:#bd93f9">201</span>
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">11</span><span style="color:#ff79c6">:</span><span style="color:#bd93f9">13</span><span style="color:#ff79c6">:</span><span style="color:#bd93f9">52</span> GMM current state is S_GMM_REG_S_NORMAL_SERV
+</span></span></code></pre></div><ul>
+<li>Thuraya X5-touch</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#bd93f9">17</span><span style="color:#ff79c6">:</span><span style="color:#bd93f9">12</span><span style="color:#ff79c6">:</span><span style="color:#bd93f9">42</span> CELL_REQUEST_SCAN
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">17</span><span style="color:#ff79c6">:</span><span style="color:#bd93f9">18</span><span style="color:#ff79c6">:</span><span style="color:#bd93f9">03</span> CELL_SCAN_RESULTS [<span style="color:#8be9fd;font-style:italic">mcc</span>: <span style="color:#bd93f9">901</span> <span style="color:#8be9fd;font-style:italic">mnc</span>: <span style="color:#bd93f9">05</span> lac...]
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">17</span><span style="color:#ff79c6">:</span><span style="color:#bd93f9">20</span><span style="color:#ff79c6">:</span><span style="color:#bd93f9">00</span> GMR<span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span><span style="color:#ff79c6">/</span>GmPRS at cell <span style="color:#bd93f9">61455</span>
+</span></span></code></pre></div><ul>
+<li><strong>日志分析</strong>：
+<ul>
+<li><strong>设备完成小区重选（CELL_RESELECTION）</strong>，最终选择了伪造的 SatOver 基站。</li>
+<li><strong>NAS 层 GMM 进入&quot;正常服务&quot;状态</strong>，但无法连接真实卫星。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="专有协议globalstar卫星电话">专有协议（Globalstar）卫星电话</h3>
+<ul>
+<li>
+<p><strong>受害设备</strong>：</p>
+<ul>
+<li><strong>iPhone 15</strong>（使用 Globalstar LEO 卫星网络）。</li>
+</ul>
+</li>
+<li>
+<p><strong>攻击原理</strong>：</p>
+<ul>
+<li>Globalstar 使用<strong>专有卫星通信协议</strong>（不同于 3GPP 标准）。</li>
+<li>但 SatOver <strong>仍然可以触发网络拥塞状态</strong>，使 iPhone 15 <strong>无法使用卫星通信</strong>。</li>
+</ul>
+</li>
+<li>
+<p><strong>测试日志</strong>：</p>
+<pre tabindex="0"><code>13:23:35 SOSBuddy.StewieState(
+status: on, isSuspended: false, transport: satellite,
+allowedServices: [emergencyTryOut],
+congestedServices: [],
+cellularDataAvailable: false, voiceCallAvailable: false)
+</code></pre><ul>
+<li><strong>日志分析</strong>：
+<ul>
+<li><strong>&ldquo;congestedServices: []&rdquo;</strong> 表示 iPhone 15 识别到了<strong>卫星网络的拥塞</strong>，无法提供语音/数据服务。</li>
+<li><strong>&ldquo;cellularDataAvailable: false, voiceCallAvailable: false&rdquo;</strong> 进一步确认 iPhone 15 <strong>完全无法通过卫星通信</strong>。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="结论">结论</h3>
+<ul>
+<li><strong>IoT-NTN 设备易受攻击</strong>，因为：
+<ul>
+<li>设备扫描时间长，攻击节点近，几乎总是被 SatOver 劫持。</li>
+<li>受害设备进入<strong>无限循环，彻底丧失卫星连接能力</strong>。</li>
+</ul>
+</li>
+<li><strong>GMR 卫星电话（Thuraya X5-touch）同样易受攻击</strong>：
+<ul>
+<li>由于该协议 <strong>复用 3G NAS 层 GMM（#22 拒绝码）</strong>，与 LTE/5G 具有相同的漏洞。</li>
+</ul>
+</li>
+<li><strong>iPhone 15 也会受到 SatOver 影响</strong>：
+<ul>
+<li>即使使用 <strong>Globalstar 专有协议</strong>，SatOver 仍可触发**&ldquo;网络拥塞&quot;状态**，使其无法使用卫星通信。</li>
+</ul>
+</li>
+</ul>
+<p>必须修复 #22 拒绝码漏洞，并增强卫星通信认证机制，以防止 SatOver 级别的攻击！</p>
+<h2 id="poc实验">POC实验</h2>
+<p>主要目的是：</p>
+<ol>
+<li><strong>验证 SatOver 能否成功劫持和阻断不同类型的设备</strong>（COTS、NR-NTN、IoT-NTN）。</li>
+<li><strong>评估攻击节点的范围和信号影响</strong>（图 17）。</li>
+<li><strong>分析不同攻击方式的影响和攻击稳定性</strong>。</li>
+</ol>
+<h3 id="1-真实设备上的-satover-攻击"><strong>(1) 真实设备上的 SatOver 攻击</strong></h3>
+<ul>
+<li><strong>设备</strong>：使用 <strong>Amarisoft Callbox NR-4-U Ultimate</strong> 作为攻击节点。
+<ul>
+<li>该设备实现<strong>3GPP-R17 IoT/NR-NTN 协议栈</strong>，可以模拟真实 LEO 卫星信道。</li>
+</ul>
+</li>
+<li><strong>测试方法</strong>：
+<ul>
+<li><strong>使用 USRP B210 SDR</strong>（软件无线电）模拟 SatOver 攻击，搭配 Lenovo i7-8550U 笔记本运行攻击代码。</li>
+<li><strong>真实卫星测试</strong>：
+<ul>
+<li>SatOver 伪造 NAS 拒绝信令，使 IoT-NTN 设备 <strong>持续接收 #22 拒绝码</strong>，导致设备<strong>无法注册卫星网络</strong>。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-实验室模拟"><strong>(2) 实验室模拟</strong></h3>
+<ul>
+<li><strong>使用 Amarisoft 和 Sonica LTE/5G 开源协议栈</strong> 进行实验：
+<ul>
+<li><strong>Amarisoft 设备</strong> 用于模拟 <strong>COTS/NR-NTN/IoT-NTN 受害者设备</strong>。</li>
+<li><strong>Sonica LTE/5G 栈</strong>（开源）扩展 NTN 功能，用于 <strong>伪造 SatOver 攻击信号</strong>。</li>
+</ul>
+</li>
+<li><strong>攻击设置</strong>：
+<ul>
+<li>运行在 <strong>USRP B210 SDR</strong> 上，模拟 <strong>LEO 卫星信道</strong>。</li>
+<li>受害者设备会尝试注册，但会持续<strong>收到 #22 拒绝码，无法接入网络</strong>。</li>
+</ul>
+</li>
+</ul>
+<p>所以下面会在实验室中模拟LEO卫星信道进行测试</p>
+<p>
+  <img src="image%202.png" alt="image.png">
+
+</p>
+<ul>
+<li>
+<p><strong>实验验证</strong>（图 16，日志分析）：</p>
+<ol>
+<li><strong>COTS、IoT-NTN 和 NR-NTN 设备都按“信号强度优先”进行小区选择</strong>（符合图 9a）。</li>
+<li><strong>设备始终选择 SatOver 伪造的基站</strong>，因为其信号最强。</li>
+<li><strong>伪造的 NAS 注册请求被拒绝（#22 拒绝码，拥塞）</strong>，导致设备<strong>进入 T3346 计时器状态（15~30 分钟）</strong>。</li>
+<li><strong>T3346 到期后，设备重新尝试注册，但持续被拒绝，形成“无限循环”</strong>，彻底丧失卫星连接能力。</li>
+</ol>
+</li>
+<li>
+<p><strong>高通开源 LTE/5G 基带代码验证了这一机制</strong>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">typedef</span> <span style="color:#ff79c6">struct</span>{
+</span></span><span style="display:flex;"><span>  sys_sband_lte_e_type band; <span style="color:#6272a4">// 系统频段
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  uint16 num_candidates;
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// 按信号强度排序的候选小区列表
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  candidates[LTE_CPHY_BANDSCAN_NUM_CANDIDATES];
+</span></span><span style="display:flex;"><span>} lte_cphy_band_scan_result_s;
+</span></span></code></pre></div><ul>
+<li>该代码表明 <strong>LTE/5G 设备确实按信号强度排序并优先选择最强小区</strong>，SatOver 便利用此机制进行劫持。</li>
+</ul>
+</li>
+<li>
+<p><strong>攻击范围测算（图 17）：</strong></p>
+<ul>
+<li><strong>每个 SatOver 节点的攻击范围为 877m</strong>（基于 5dBW 传输功率）。</li>
+<li><strong>由于天线方向性，天线正下方可能存在信号盲区，但仍比最强卫星信号更强，确保攻击有效</strong>。</li>
+</ul>
+</li>
+</ul>
+<p>
+  <img src="image%203.png" alt="image.png">
+
+</p>
+<h3 id="3-阻断整个-leo-星座"><strong>(3) 阻断整个 LEO 星座</strong></h3>
+<ul>
+<li><strong>攻击机制：</strong>
+<ul>
+<li>SatOver <strong>利用 NAS 拒绝信令（#22 拒绝码）</strong>，伪造<strong>拥塞控制机制</strong>，导致设备停止注册请求，进而<strong>全面断开 LEO 星座连接</strong>。</li>
+</ul>
+</li>
+<li><strong>与现有方法对比（表 4）：</strong>
+<ul>
+<li><strong>传统方法</strong>（如 [31]、[33]、[34]）仅能<strong>阻断一个逻辑服务区</strong>。</li>
+<li><strong>SatOver 可以影响整个 LEO 星座</strong>，使所有受害设备陷入“无限等待”状态。</li>
+</ul>
+</li>
+<li><strong>为何禁用 #22 拒绝码不是好办法？</strong>
+<ul>
+<li>
+<p><strong>Magma NAS 核心（Meta 开源项目）</strong> 的代码显示：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span> (mme_congestion_control_enabled <span style="color:#ff79c6">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>    (mme_app_last_msg_latency <span style="color:#ff79c6">+</span> pre_mme_task_msg_latency <span style="color:#ff79c6">&gt;</span>
+</span></span><span style="display:flex;"><span>     MME_APP_ZMQ_LATENCY_CONGEST_TH)) { <span style="color:#6272a4">// 默认 0.2 秒
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#50fa7b">OAILOG_WARNING</span>(
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;EMMAS-SAP - Sending Attach Reject for ue_id = (%08x),</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;emm_cause = (EMM_CAUSE_CONGESTION)&#34;</span>,ue_id,
+</span></span><span style="display:flex;"><span>      rc <span style="color:#ff79c6">=</span> <span style="color:#50fa7b">emm_proc_attach_reject</span>(ue_id,
+</span></span><span style="display:flex;"><span>      EMM_CAUSE_CONGESTION);...}
+</span></span></code></pre></div></li>
+<li>
+<p>这意味着：</p>
+<ol>
+<li><strong>地面站是瓶颈</strong>，其延迟超过 0.2 秒时，就会触发 #22 拒绝码（图 18a）。</li>
+<li><strong>未来 IoT-NTN 设备数量激增，NAS 拒绝信令会成为更大的问题（图 18b）</strong>。</li>
+<li><strong>禁用 #22 只会导致 NAS 信令风暴，使卫星运营商的网络崩溃</strong>。</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-伪装攻击以躲避检测"><strong>(4) 伪装攻击以躲避检测</strong></h3>
+<ul>
+<li><strong>SatOver 如何伪装真实卫星？</strong>
+<ul>
+<li><strong>射频（RF）和几何（几何位置、延迟、Doppler）伪装</strong>
+<ul>
+<li>真实卫星的信号具有 <strong>时延和 Doppler 频移</strong>，设备可通过此特征检测假信号。</li>
+<li><strong>SatOver 使用卫星轨道数据（NASA TLEs）模拟这些参数</strong>，欺骗受害设备（图 12）。</li>
+</ul>
+</li>
+<li><strong>实验结果（图 19）</strong>
+<ul>
+<li>SatOver <strong>可以几乎完美匹配真实卫星的路径时延和 Doppler 频移</strong>：
+<ul>
+<li><strong>Starlink 误差 ≤2.30 ns，Iridium 误差 ≤1.62 ns</strong>。</li>
+<li><strong>Doppler 频移差≈0 Hz</strong>，受害设备无法察觉区别。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>SatOver 如何利用 LEO 轨道特性进行伪装？</strong>
+<ul>
+<li><strong>LEO 轨道卫星不断变换可见区域，受害设备需持续切换连接目标</strong>。</li>
+<li><strong>SatOver 伪造不断变化的卫星身份（每 34.97s 切换一次 Starlink，303.0s 切换一次 Iridium）</strong>（图 19）。</li>
+<li><strong>快速身份重配置使受害设备难以黑名单屏蔽攻击节点</strong>（图 20）。</li>
+</ul>
+</li>
+</ul>
+<h1 id="大规模攻击效果评估">大规模攻击效果评估</h1>
+<p>
+  <img src="image%204.png" alt="image.png">
+
+</p>
+<h3 id="1-目标"><strong>1. 目标</strong></h3>
+<ul>
+<li><strong>模拟</strong> 如果 <strong>一个拥有大量基站的 LTE/5G 运营商</strong> 采用 <strong>SatOver</strong> 进行大规模攻击，是否可以有效<strong>阻断整个 LEO 星座</strong>（以 Starlink 为例）。</li>
+<li><strong>评估 SatOver 的攻击成功率</strong>，即<strong>被阻断卫星服务的用户比例</strong>。</li>
+<li><strong>对比 SatOver 和现有攻击方法的成本</strong>（所需基站数量）。</li>
+</ul>
+<h3 id="2-方法"><strong>2. 方法</strong></h3>
+<h3 id="1-选择攻击目标"><strong>(1) 选择攻击目标</strong></h3>
+<ul>
+<li><strong>目标网络：Starlink LEO 星座</strong>
+<ul>
+<li>Starlink 与 <strong>T-Mobile 合作</strong>，通过 <strong>PCS G 频段（1990-1995 MHz）</strong> 提供直连卫星 LTE/5G 服务。</li>
+<li>每颗卫星的 <strong>天线功率 20 dBW，峰值增益 29 dBi</strong>（参考 FCC 备案数据）。</li>
+<li>采用 <strong>公开的卫星轨道数据（TLEs）</strong> 来模拟卫星在不同时间的位置。</li>
+</ul>
+</li>
+<li><strong>目标用户</strong>
+<ul>
+<li><strong>美国</strong>：用户分布数据来自 [77]。</li>
+<li><strong>中国</strong>：用户分布数据来自 [78]。</li>
+</ul>
+</li>
+<li><strong>攻击节点（基站）</strong>
+<ul>
+<li><strong>美国</strong>：模拟 <strong>4.8M（480 万）个基站</strong>，数据来自 [79]。</li>
+<li><strong>中国</strong>：模拟 <strong>5.0M（500 万）个基站</strong>，数据来自 [80]。</li>
+<li>每个基站的 <strong>发射功率 5 dBW</strong>（参考 [75]）。</li>
+<li>使用 <strong>标准信道模型</strong> [81], [82] 计算卫星和基站的信号强度。</li>
+</ul>
+</li>
+<li><strong>攻击成功率定义</strong>：
+<ul>
+<li>被 SatOver 阻止<strong>无法连接卫星服务的用户比例</strong>。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-主要实验结果"><strong>3. 主要实验结果</strong></h3>
+<h3 id="1-satover-在大规模攻击中的高成功率"><strong>(1) SatOver 在大规模攻击中的高成功率</strong></h3>
+<ul>
+<li><strong>攻击可阻断 79%-99% 的用户卫星服务</strong>
+<ul>
+<li>当 <strong>基站密度达到 5 个基站/km²</strong> 时，可让<strong>绝大部分用户无法使用卫星通信</strong>。</li>
+</ul>
+</li>
+<li><strong>攻击成功率随基站密度增加</strong>
+<ul>
+<li><strong>城市地区（如纽约、北京）</strong>，基站密度较高，攻击成功率 <strong>远高于</strong> 偏远地区（如拉萨、Topeka）。</li>
+<li>在偏远地区，<strong>地面网络和卫星网络更具互补性</strong>，因此 SatOver 攻击的影响相对较低。</li>
+</ul>
+</li>
+<li><strong>攻击所需基站数量较少</strong>
+<ul>
+<li><strong>仅需 0.9 - 1.9 个基站/km²</strong> 即可在大部分城市（如北京、洛杉矶）<strong>实现 ≥90% 的攻击成功率</strong>。</li>
+<li><strong>对合法 LTE/5G 业务的影响极小</strong>（因为大部分基站仍可正常提供地面 LTE/5G 服务）。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-satover-vs-现有攻击方法"><strong>(2) SatOver vs. 现有攻击方法</strong></h3>
+<ul>
+<li><strong>SatOver 所需基站数量远少于传统方法</strong>
+<ul>
+<li><strong>在洛杉矶达到 ≥90% 的攻击成功率</strong>：
+<ul>
+<li><strong>SatOver 需要的基站数量比现有攻击方法少 1×-57.5×（最佳情况）或 46.5×-82.5×（最差情况）</strong>。</li>
+</ul>
+</li>
+<li>传统攻击方法（FBS、数据平面攻击、Overshadow）：
+<ul>
+<li><strong>在部分地区（如洛杉矶）无法达到 90% 攻击成功率</strong>，因为<strong>所需基站数量超过了实际可用基站数</strong>。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>SatOver 低成本高效</strong>
+<ul>
+<li><strong>传统方法</strong> 需要<strong>大量基站</strong> 才能影响用户连接。</li>
+<li><strong>SatOver 依赖“NAS 拒绝码 #22”导致的拥塞攻击</strong>（§4.2），可以用<strong>较少基站</strong> 阻断大规模用户的卫星通信。</li>
+</ul>
+</li>
+</ul>
+
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/tencentinter/" data-toggle="tooltip" data-placement="top" title="腾讯wxg后端实习面试经历">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+                
+
+                
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/course" title="course">
+                            course
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/crypto" title="crypto">
+                            crypto
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ctf" title="ctf">
+                            ctf
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/life" title="life">
+                            life
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/notebook" title="notebook">
+                            notebook
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/pwn" title="pwn">
+                            pwn
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/writeup" title="writeup">
+                            writeup
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0" title="统计学习">
+                            统计学习
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:empire258700@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/ZephyrVictor">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="#3" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; #3 2025
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>

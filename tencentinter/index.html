@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="#3">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="img/cover.jpg">
+    <meta property="twitter:image" content="img/cover.jpg" />
+    
+
+    
+    <meta name="title" content="腾讯wxg后端实习面试经历" />
+    <meta property="og:title" content="腾讯wxg后端实习面试经历" />
+    <meta property="twitter:title" content="腾讯wxg后端实习面试经历" />
+    
+
+    
+    <meta name="description" content="Zephyr&#39;s blog">
+    <meta property="og:description" content="Zephyr&#39;s blog" />
+    <meta property="twitter:description" content="Zephyr&#39;s blog" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="Zephyr, Zephyr, Zephyr, , Zephyr的网络日志, Zephyr的博客, Zephyr Blog, 博客, 个人网站, 互联网, Web, CTF,">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>腾讯wxg后端实习面试经历 | Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
+
+    <link rel="canonical" href="/tencentinter/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+ 
+ <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+        displayMath: [
+          ["$$", "$$"],
+          ["\\[", "\\]"],
+        ],
+        processEscapes: true,
+        processEnvironments: true,
+      },
+      options: {
+        skipHtmlTags: ["script", "noscript", "style", "textarea", "pre"],
+      },
+    };
+  
+    window.addEventListener("load", (event) => {
+      document.querySelectorAll("mjx-container").forEach(function (x) {
+        x.parentElement.classList += "has-jax";
+      });
+    });
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    type="text/javascript"
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+</head>
+<style>
+    code.has-jax {
+      -webkit-font-smoothing: antialiased;
+      background: inherit !important;
+      border: none !important;
+      font-size: 100%;
+    }
+    </style>
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">#3</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/life/">life</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+                        <li><a href="/life//">LIFE</a></li>
+                    
+                        <li><a href="/course//">HISTORY</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/cover.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/life" title="Life">
+                            Life
+                        </a>
+                        
+                        <a class="tag" href="/tags/internship" title="internship">
+                            internship
+                        </a>
+                        
+                    </div>
+                    <h1>腾讯wxg后端实习面试经历</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Zephyr
+                             
+                            on 
+                            Monday, February 10, 2025
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <blockquote>
+<p>大三了，虽然我的意向是准备保研，但突然发现学校最近疯狂推送有关于实习的消息，这令我很开心，因为以前学校从未推送过任何我熟知大厂来招聘的消息，这不禁让我对学校的实力产生了一些质疑（笑）。同时我从来没尝试过投递实习，因为我一直觉得我很菜:(，利用这次机会来看一看大厂的面试过程。</p>
+</blockquote>
+<h1 id="背景">背景</h1>
+<p>笔者当时准备补考，简历也是投着玩，当时笔者并不知道进入wxg部门的难度以及最起码的投递简历的原则（笔者只投了腾讯一家，且打算避开今年暑期推免时间，于是将<code>预期入职时间</code>选择在2026年1月。</p>
+<p>
+  <img src="image.png" alt="alt text">
+
+</p>
+<p>2-27.19:30</p>
+<h1 id="经历">经历</h1>
+<p>19.20接入会议，面试官提前约五分钟进入，上来便甩出五到算法题，其中最后一题要求写思路，剩下四道写具体代码，在腾讯自家的 <code>面呗</code> 网站中嵌入了一个 <code>vscode</code> 。面试官没打开摄像头，直接打字 :</p>
+<blockquote>
+<p>先做一下这五道题，我约的是20:30的会议室，到时候我们再语音聊。</p>
+</blockquote>
+<p>感觉最起码互相应该开开摄像头？？ 这不跟正常上机考试一样了。</p>
+<p>于是开始慢慢做题。期间聊天框打断我要求不要用python写，用c++来写。</p>
+<h2 id="最大异或对">最大异或对</h2>
+<p>在给定N个整数中，选择两个进行异或运算，输出最大结果。正常暴力是 $O(n^2)$可以用用tire树来做。O(n)即可。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;iostream&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;vector&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">using</span> <span style="color:#ff79c6">namespace</span> std;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">Trie</span> {
+</span></span><span style="display:flex;"><span>    Trie<span style="color:#ff79c6">*</span> next[<span style="color:#bd93f9">2</span>]; <span style="color:#6272a4">// means 0 or 1 
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>    Trie() {
+</span></span><span style="display:flex;"><span>        next[<span style="color:#bd93f9">0</span>] <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">nullptr</span>;
+</span></span><span style="display:flex;"><span>        next[<span style="color:#bd93f9">1</span>] <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">nullptr</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">class</span> <span style="color:#50fa7b">Solution</span> {
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">private</span><span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>    Trie<span style="color:#ff79c6">*</span> root;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">public</span><span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>    Solution() {
+</span></span><span style="display:flex;"><span>        root <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> Trie();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">~</span>Solution() {
+</span></span><span style="display:flex;"><span>        deleteTrie(root);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">deleteTrie</span>(Trie<span style="color:#ff79c6">*</span> node) {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>node) <span style="color:#ff79c6">return</span>;
+</span></span><span style="display:flex;"><span>        deleteTrie(node<span style="color:#ff79c6">-&gt;</span>next[<span style="color:#bd93f9">0</span>]);
+</span></span><span style="display:flex;"><span>        deleteTrie(node<span style="color:#ff79c6">-&gt;</span>next[<span style="color:#bd93f9">1</span>]);
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">delete</span> node;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">insert</span>(<span style="color:#8be9fd">int</span> x) {
+</span></span><span style="display:flex;"><span>        Trie<span style="color:#ff79c6">*</span> p <span style="color:#ff79c6">=</span> root;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">31</span>; i <span style="color:#ff79c6">&gt;=</span> <span style="color:#bd93f9">0</span>; i<span style="color:#ff79c6">--</span>) {  
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd">int</span> v <span style="color:#ff79c6">=</span> (x <span style="color:#ff79c6">&gt;&gt;</span> i) <span style="color:#ff79c6">&amp;</span> <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>p<span style="color:#ff79c6">-&gt;</span>next[v]) {
+</span></span><span style="display:flex;"><span>                p<span style="color:#ff79c6">-&gt;</span>next[v] <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> Trie();
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            p <span style="color:#ff79c6">=</span> p<span style="color:#ff79c6">-&gt;</span>next[v];
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">int</span> <span style="color:#50fa7b">query</span>(<span style="color:#8be9fd">int</span> x) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd">int</span> res <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>        Trie<span style="color:#ff79c6">*</span> p <span style="color:#ff79c6">=</span> root;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">31</span>; i <span style="color:#ff79c6">&gt;=</span> <span style="color:#bd93f9">0</span>; i<span style="color:#ff79c6">--</span>) {  
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd">int</span> u <span style="color:#ff79c6">=</span> (x <span style="color:#ff79c6">&gt;&gt;</span> i) <span style="color:#ff79c6">&amp;</span> <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">if</span> (p<span style="color:#ff79c6">-&gt;</span>next[<span style="color:#bd93f9">1</span> <span style="color:#ff79c6">-</span> u]) {  <span style="color:#6272a4">// 选择异或更大的方向
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>                res <span style="color:#ff79c6">|=</span> (<span style="color:#bd93f9">1</span> <span style="color:#ff79c6">&lt;&lt;</span> i);
+</span></span><span style="display:flex;"><span>                p <span style="color:#ff79c6">=</span> p<span style="color:#ff79c6">-&gt;</span>next[<span style="color:#bd93f9">1</span> <span style="color:#ff79c6">-</span> u];
+</span></span><span style="display:flex;"><span>            } <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>                p <span style="color:#ff79c6">=</span> p<span style="color:#ff79c6">-&gt;</span>next[u];
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> res;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">int</span> <span style="color:#50fa7b">findMaximumXOR</span>(vector<span style="color:#ff79c6">&lt;</span><span style="color:#8be9fd">int</span><span style="color:#ff79c6">&gt;&amp;</span> nums) {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> <span style="color:#8be9fd;font-style:italic">num</span> : nums) {
+</span></span><span style="display:flex;"><span>            insert(num);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd">int</span> res <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> <span style="color:#8be9fd;font-style:italic">num</span> : nums) {
+</span></span><span style="display:flex;"><span>            res <span style="color:#ff79c6">=</span> max(res, query(num));
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> res;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>    vector<span style="color:#ff79c6">&lt;</span><span style="color:#8be9fd">int</span><span style="color:#ff79c6">&gt;</span> nums <span style="color:#ff79c6">=</span> {<span style="color:#bd93f9">3</span>, <span style="color:#bd93f9">10</span>, <span style="color:#bd93f9">5</span>, <span style="color:#bd93f9">25</span>, <span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">8</span>};
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// 这里我放了一些英文
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    Solution solution;
+</span></span><span style="display:flex;"><span>    cout <span style="color:#ff79c6">&lt;&lt;</span> solution.findMaximumXOR(nums) <span style="color:#ff79c6">&lt;&lt;</span> endl;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="荷兰国旗问题">荷兰国旗问题</h2>
+<p>将一个包含三种颜色的元素（通常用0、1、2表示）的数组，就地排序成0、1、2三个区域，类似荷兰国旗的红白蓝三色排列 输出 [000111222]这种</p>
+<p>思路也很简单，维持 l mid r 三个指针，mid从0→n 遇到0 和 l处交换 遇到2 和r处交换 当mid到达r的时候 表示1右边全是2。O(n)复杂度</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;iostream&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;vector&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">using</span> <span style="color:#ff79c6">namespace</span> std;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> <span style="color:#50fa7b">sortColors</span>(vector<span style="color:#ff79c6">&lt;</span><span style="color:#8be9fd">int</span><span style="color:#ff79c6">&gt;&amp;</span> nums) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">int</span> low <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>, mid <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>, high <span style="color:#ff79c6">=</span> nums.size() <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">while</span> (mid <span style="color:#ff79c6">&lt;=</span> high) {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> (nums[mid] <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">0</span>) {
+</span></span><span style="display:flex;"><span>            swap(nums[low], nums[mid]);
+</span></span><span style="display:flex;"><span>            low<span style="color:#ff79c6">++</span>;
+</span></span><span style="display:flex;"><span>            mid<span style="color:#ff79c6">++</span>;
+</span></span><span style="display:flex;"><span>        } <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> (nums[mid] <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">1</span>) {
+</span></span><span style="display:flex;"><span>            mid<span style="color:#ff79c6">++</span>;
+</span></span><span style="display:flex;"><span>        } <span style="color:#ff79c6">else</span> { <span style="color:#6272a4">// nums[mid] == 2
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>            swap(nums[mid], nums[high]);
+</span></span><span style="display:flex;"><span>            high<span style="color:#ff79c6">--</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>    vector<span style="color:#ff79c6">&lt;</span><span style="color:#8be9fd">int</span><span style="color:#ff79c6">&gt;</span> nums <span style="color:#ff79c6">=</span> {<span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">0</span>};
+</span></span><span style="display:flex;"><span>    sortColors(nums);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> <span style="color:#8be9fd;font-style:italic">num</span> : nums) {
+</span></span><span style="display:flex;"><span>        cout <span style="color:#ff79c6">&lt;&lt;</span> num <span style="color:#ff79c6">&lt;&lt;</span> <span style="color:#f1fa8c">&#34; &#34;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    cout <span style="color:#ff79c6">&lt;&lt;</span> endl;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="真随机洗牌算法">真随机洗牌算法</h2>
+<p>要求用C++实现，假定C++库中的random是真随机。</p>
+<p>实现的方法也很简单。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;iostream&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;cstdlib&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;ctime&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> <span style="color:#50fa7b">ShuffleArray</span>(<span style="color:#8be9fd">char</span><span style="color:#ff79c6">*</span> arr, <span style="color:#8be9fd">int</span> len) {
+</span></span><span style="display:flex;"><span>    std<span style="color:#ff79c6">::</span>srand(<span style="color:#ff79c6">static_cast</span><span style="color:#ff79c6">&lt;</span><span style="color:#8be9fd">unsigned</span> <span style="color:#8be9fd">int</span><span style="color:#ff79c6">&gt;</span>(std<span style="color:#ff79c6">::</span>time(<span style="color:#bd93f9">0</span>)));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> len <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">1</span>; i <span style="color:#ff79c6">&gt;</span> <span style="color:#bd93f9">0</span>; <span style="color:#ff79c6">--</span>i) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd">int</span> j <span style="color:#ff79c6">=</span> std<span style="color:#ff79c6">::</span>rand() <span style="color:#ff79c6">%</span> (i <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">1</span>);
+</span></span><span style="display:flex;"><span>        std<span style="color:#ff79c6">::</span>swap(arr[i], arr[j]);
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><h2 id="一个超大量数据请求的输出最多前十10请求的ip的思路题">一个超大量数据请求的输出最多前十10请求的IP的思路题</h2>
+<p>滑动窗口1h，并发请求10w条/s，单核机子，无分布式存储（限定了服务器内存很有吸纳</p>
+<p>只要求写思路，维护一个大根堆，一个队列存ip和对应时间戳，一个hashmap来存IP请求数。</p>
+<h2 id="后续">后续</h2>
+<p>HIT校园网很抽象，疯狂掉线，导致vscode疯狂重新加载界面，我的第一题的代码都快写完了，结果全没了。。。。大约20:20我就写完了，进入发呆状态。大约在我写第二道题的时候，面试官于聊天框中要求我打开摄像头，我才发现设备根本就没连接上，重新刷新界面终于找到摄像头设备，面试官可以远程打开我的摄像头，并在我做第四道题的时候瞧瞧的打开了我的mic。</p>
+<p>正式交流时他的摄像头依然关闭，让我以此讲解这四道题的代码。</p>
+<p>第一题讲解后问我为什么 i 要取 31</p>
+<p>答曰题目要求是int类型，4Byte共32位。</p>
+<p>然后又问我写第一问用多长时间</p>
+<p>答曰10分钟，并说网络环境可能有些问题，代码保存有点Bug（）耽搁了很久</p>
+<p>第三题讲解时拷打我为什么从大往小遍历，这题因为在ctf中见过，因此直接这么写的。简单思考后回答，如果从小往大遍历，则当i = 0 时 随机数是mod 1 也就是j一定是 0 或者 1 也就是要么不交换 要么只和1交换。</p>
+<p>可能我的表达稍微模糊些，他没有get到（其实我也没get到他就是让我证明真随机性）答曰 当从后往前遍历是，几率恒 $\frac{1}{n}$ 。放我过了。</p>
+<p>第四题当我说完后，提问如果存储存不下如何，其实最初并没有get到面试官的问题，下来后复盘分析了一下:</p>
+<ul>
+<li>存储这个hashmap要 $O(n)$</li>
+<li>存储这个queue要 $O(n)$</li>
+<li>存储这个堆 $O(10)$</li>
+</ul>
+<p>我暗示其给点提示，回复让我多想想，思考大约一个半分钟，对面只是静静地等着，答曰可以将queue完全丢掉，转而维护60个bukket，一个bukket一分钟，按照分钟进行统计ip，就可以将空间复杂度降到常数，至于hashmap等，我直接答上redis。如果我没听错，对面应该不止面试官笑了，我意识到可能不止一个人在听（不过可能我感觉错了。。。。）</p>
+<p>然后又给我发了一个智力题目:</p>
+<blockquote>
+<p>25匹马赛跑，5个跑道，每个赛道一匹马每轮最多5匹马同时跑。请问，最少需要跑几轮才能决出前3名？</p>
+</blockquote>
+<p>申请拿草纸算，算了大约3分钟，回答是7。 期间想复杂了，后来想起来这个其实就是个五路归并。</p>
+<p><a href="https://blog.csdn.net/realYuzhou/article/details/109024970#:~:text=A1%E4%B9%9F%E6%98%AF25%E5%8C%B9%E9%A9%AC%E4%B8%AD%E7%9A%84%E7%AC%AC%E4%B8%80%EF%BC%8C%E6%8E%A5%E4%B8%8B%E6%9D%A5%E9%9C%80%E8%A6%81%E9%80%89%E5%87%BA%E7%AC%AC%E4%BA%8C%E5%90%8D%E5%92%8C%E7%AC%AC%E4%B8%89%E5%90%8D%E3%80%82%20%E7%94%B1%E4%BA%8EA1%E6%98%AF%E5%86%A0%E5%86%9B%EF%BC%8C%E6%AF%94A1%E9%80%9F%E5%BA%A6%E7%A8%8D%E6%85%A2%E7%9A%84%E6%98%AFA2%E5%92%8CB1%EF%BC%8C%E4%BA%9A%E5%86%9B%E5%8F%AA%E5%8F%AF%E8%83%BD%E5%9C%A8%E4%BB%96%E4%BB%AC%E4%B8%A4%E4%B8%AA%E4%B9%8B%E4%B8%AD%E4%BA%A7%E7%94%9F%E3%80%82%20%E5%81%87%E8%AE%BEA2%E6%98%AF%E4%BA%9A%E5%86%9B%EF%BC%8C%E9%82%A3%E4%B9%88%E5%AD%A3%E5%86%9B%E9%9C%80%E8%A6%81%E5%9C%A8A3%E3%80%81B1%E4%B8%AD%E9%80%89%E6%8B%A9%E3%80%82,%E5%81%87%E8%AE%BEB1%E6%98%AF%E4%BA%9A%E5%86%9B%EF%BC%8C%E9%82%A3%E4%B9%88%E5%AD%A3%E5%86%9B%E9%9C%80%E8%A6%81%E5%9C%A8A2%E3%80%81B2%E3%80%81C1%E4%B8%AD%E9%80%89%E6%8B%A9%E3%80%82%20%E7%BB%BC%E4%B8%8A%EF%BC%8C%E5%8F%AA%E9%9C%80%E8%A6%81A2%E3%80%81A3%E3%80%81B1%E3%80%81B2%E3%80%81C1%E5%86%8D%E6%AF%94%E8%B5%9B%E4%B8%80%E5%9C%BA%E5%8D%B3%E5%8F%AF%E3%80%82%20%E6%89%80%E4%BB%A5%EF%BC%8C%E4%B8%80%E5%85%B1%E8%87%B3%E5%B0%91%E9%9C%80%E8%A6%817%E5%9C%BA%E6%AF%94%E8%B5%9B%26%5D%EF%BC%8C%E6%89%8D%E8%83%BD%E9%80%89%E5%87%BA25%E5%8C%B9%E9%A9%AC%E4%B8%AD%E7%9A%84%E5%89%8D%E4%B8%89%E5%90%8D%E3%80%82">思维题：25匹马，5个赛道，求选出速度最快的3匹马最少需要多少次比赛？-CSDN博客</a></p>
+<p>自然是让我进行讲解，讲解大约五分钟，面试官问我后面两轮怎么做，说的很含糊（其实当时我想的也不是太好，说着说着发现自己想错了）然后只好在给他讲的过程中重新捋顺思路。打开网站里的白板画给他，最后他不知道是听明白了还是不想听我讲，反正是结束了。</p>
+<p>并问我有什么想问的没，感觉对面很是疲劳（后面我才知道wxg是腾讯加班最严重，强度最大的一个部门，号称腾讯里面的pdd）。反问实习时间是否可以变动，回答很笼统。</p>
+<p>整体感觉并不是很尊重人，像是进行了一次leetcode中等难度题目的上机训练。。并没有问任何有关开发相关的基础知识和网络协议等，与上面招聘要求完全不符。</p>
+<p>我去面试，代表hit，我想如果腾讯面我，面试官应该也许代表的也是我对腾讯的第一印象。但不管如何，第一次面试就在这么我认为理想与现实巨大落差，甚至是有点荒唐中结束了。（都不如再吃一块披萨）</p>
+<hr>
+<p>感觉相同 没过</p>
+<p>由于也不是很着急找实习，因此后续也没有继续投递简历。</p>
+<p>
+  <img src="image-1.png" alt="alt text">
+
+</p>
+<h1 id="后期复盘">后期复盘</h1>
+<ol>
+<li>当真正需要找工作时，投递简历应该是一个多对多的过程，不能耗在一家上。</li>
+<li>可能是前期hr已经找到了合适的人选，导致现在刷kpi。</li>
+</ol>
+
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/largebinattack/" data-toggle="tooltip" data-placement="top" title="pwn·largebinattack-IOFILE一条龙服务">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/satover/" data-toggle="tooltip" data-placement="top" title="SatOver阅读笔记">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+
+                
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/course" title="course">
+                            course
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/crypto" title="crypto">
+                            crypto
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ctf" title="ctf">
+                            ctf
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/life" title="life">
+                            life
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/notebook" title="notebook">
+                            notebook
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/pwn" title="pwn">
+                            pwn
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/writeup" title="writeup">
+                            writeup
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0" title="统计学习">
+                            统计学习
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:empire258700@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/ZephyrVictor">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="#3" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; #3 2025
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>
