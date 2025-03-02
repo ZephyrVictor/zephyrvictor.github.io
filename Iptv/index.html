@@ -15,15 +15,15 @@
     
 
     
-    <meta name="title" content="老旧IPTV改造计划总结" />
-    <meta property="og:title" content="老旧IPTV改造计划总结" />
-    <meta property="twitter:title" content="老旧IPTV改造计划总结" />
+    <meta name="title" content="腾讯wxg后端实习面试经历" />
+    <meta property="og:title" content="腾讯wxg后端实习面试经历" />
+    <meta property="twitter:title" content="腾讯wxg后端实习面试经历" />
     
 
     
-    <meta name="description" content="寒假与家中实在闲来无事，由于广电政策，先前的运营商机顶盒根本无法继续使用，只能购买相关电视服务，于是对家中不同的型号的机顶盒进行了简单研究并总结。">
-    <meta property="og:description" content="寒假与家中实在闲来无事，由于广电政策，先前的运营商机顶盒根本无法继续使用，只能购买相关电视服务，于是对家中不同的型号的机顶盒进行了简单研究并总结。" />
-    <meta property="twitter:description" content="寒假与家中实在闲来无事，由于广电政策，先前的运营商机顶盒根本无法继续使用，只能购买相关电视服务，于是对家中不同的型号的机顶盒进行了简单研究并总结。" />
+    <meta name="description" content="Zephyr&#39;s blog">
+    <meta property="og:description" content="Zephyr&#39;s blog" />
+    <meta property="twitter:description" content="Zephyr&#39;s blog" />
     
 
     
@@ -34,7 +34,7 @@
     <meta name="keyword"  content="Zephyr, Zephyr, Zephyr, , Zephyr的网络日志, Zephyr的博客, Zephyr Blog, 博客, 个人网站, 互联网, Web, CTF,">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>老旧IPTV改造计划总结 | Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
+    <title>腾讯wxg后端实习面试经历 | Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
 
     <link rel="canonical" href="/Iptv/">
 
@@ -217,12 +217,12 @@
                             Life
                         </a>
                         
-                        <a class="tag" href="/tags/iptv" title="Iptv">
-                            Iptv
+                        <a class="tag" href="/tags/internship" title="internship">
+                            internship
                         </a>
                         
                     </div>
-                    <h1>老旧IPTV改造计划总结</h1>
+                    <h1>腾讯wxg后端实习面试经历</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         
@@ -257,64 +257,195 @@
                 post-container">
 
                 
-                <p>黑龙江地区中，<code>中国电信</code>的 <code>华为悦盒ec6108v9c</code> 型号最为常见，其芯片为 <code>hi3798mv100</code>。而 <code>中国联通</code>的<code>创维e900</code>家族电视盒子最为常见，主要芯片为<code>晶晨S905</code>家族。</p>
-<p>这些盒子性能都相对较弱，同时网口也仅有百兆，甚至连USB都是极为先进的2.0，但聊胜于无，笔者终究还是踏上了这一条不归路。</p>
-<p>在这过程中也尝试到了大量的固件，感谢万能的互联网，同时感谢<a href="https://www.znds.com/">智能电视网</a>等热衷于折腾的大牛们的固件分享，奉上网上最常见的整合资源链接。资源中还存在比较齐全的刷机工具，如海思芯片的<code>HiTool</code>，以及晶晨的线刷工具等。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>通过网盘分享的文件：刷机固件ROM大全
-</span></span><span style="display:flex;"><span>链接: https://pan.baidu.com/s/16Ph_l9K5znRZM7IUDeyL_g?pwd<span style="color:#ff79c6">=</span><span style="color:#bd93f9">1234</span> 提取码: <span style="color:#bd93f9">1234</span> 
-</span></span><span style="display:flex;"><span>--来自百度网盘超级会员v4的分享
-</span></span></code></pre></div><h1 id="华为悦盒">华为悦盒</h1>
-<p>笔者最初接触到的便是<code>中国电信</code>的华为悦盒，便一心想刷成<a href="https://www.ecoo.top/">海纳斯</a>系统当成一个轻nas设备安静的放在家中给家人提供影片存储。</p>
-<h2 id="破解">破解</h2>
-<p>这一步比较简单，只需前往<a href="https://www.znds.com/">智能电视网</a>下载对应固件即可。</p>
-<p>这里值得一提的是，笔者从未碰见未加锁的芯片，也就是笔者手中所有的盒子都是俗称的<code>高安版</code>，只能刷写特定的固件才能变成普通的电视盒子。 <a href="https://www.znds.com/tv-1123117-1-1.html">可以尝试这个固件</a></p>
-<blockquote>
-<p>高安版中，密钥烧入soc。启动时，bootrom即会检查fastboot签名，若签名无法匹配fastboot内容，则拒绝启动。例如，使用十六进制编辑器，找到fastboot中的mv100字样，改为mv200后写回，开机在显示完reg信息后试图启动fastboot即会卡死，ttl再无输出。若没有对应soc密钥的私钥，将无法自行签名fastboot。因此，高安版机器只能使用运营商提供（或通过其他渠道流出）的已签名fastboot。Hi3798可以通过短接J16强制进入U盘恢复模式，U盘中至少需要三个文件：fastboot.bin、bootargs.bin、recovery.img。但事实上，高安版同样具有此功能，只需要将fastboot.bin替换成对应高安版可用的fastboot</p>
+                <blockquote>
+<p>大三了，虽然我的意向是准备保研，但突然发现学校最近疯狂推送有关于实习的消息，这令我很开心，因为以前学校从未推送过任何我熟知大厂来招聘的消息，这不禁让我对学校的实力产生了一些质疑（笑）。同时我从来没尝试过投递实习，因为我一直觉得我很菜:(，利用这次机会来看一看大厂的面试过程。</p>
 </blockquote>
-<p><strong>最好使用比较古老的USB2.0 U盘，同时建议容量不要超过32GB，且不要使用做过PE的U盘，因为可能会挂载上隐藏分区。</strong></p>
-<p>短接点:
-
+<h1 id="背景">背景</h1>
+<p>笔者当时准备补考，简历也是投着玩，当时笔者并不知道进入wxg部门的难度以及最起码的投递简历的原则（笔者只投了腾讯一家，且打算避开今年暑期推免时间，于是将<code>预期入职时间</code>选择在2026年1月。</p>
+<p>
   <img src="image.png" alt="alt text">
 
 </p>
-<p>当然也可以直接短接芯片针脚
-
+<p>2-27.19:30</p>
+<h1 id="经历">经历</h1>
+<p>19.20接入会议，面试官提前约五分钟进入，上来便甩出五到算法题，其中最后一题要求写思路，剩下四道写具体代码，在腾讯自家的 <code>面呗</code> 网站中嵌入了一个 <code>vscode</code> 。面试官没打开摄像头，直接打字 :</p>
+<blockquote>
+<p>先做一下这五道题，我约的是20:30的会议室，到时候我们再语音聊。</p>
+</blockquote>
+<p>感觉最起码互相应该开开摄像头？？ 这不跟正常上机考试一样了。</p>
+<p>于是开始慢慢做题。期间聊天框打断我要求不要用python写，用c++来写。</p>
+<h2 id="最大异或对">最大异或对</h2>
+<p>在给定N个整数中，选择两个进行异或运算，输出最大结果。正常暴力是 $O(n^2)$可以用用tire树来做。O(n)即可。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;iostream&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;vector&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">using</span> <span style="color:#ff79c6">namespace</span> std;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">Trie</span> {
+</span></span><span style="display:flex;"><span>    Trie<span style="color:#ff79c6">*</span> next[<span style="color:#bd93f9">2</span>]; <span style="color:#6272a4">// means 0 or 1 
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>    Trie() {
+</span></span><span style="display:flex;"><span>        next[<span style="color:#bd93f9">0</span>] <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">nullptr</span>;
+</span></span><span style="display:flex;"><span>        next[<span style="color:#bd93f9">1</span>] <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">nullptr</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">class</span> <span style="color:#50fa7b">Solution</span> {
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">private</span><span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>    Trie<span style="color:#ff79c6">*</span> root;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">public</span><span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>    Solution() {
+</span></span><span style="display:flex;"><span>        root <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> Trie();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">~</span>Solution() {
+</span></span><span style="display:flex;"><span>        deleteTrie(root);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">deleteTrie</span>(Trie<span style="color:#ff79c6">*</span> node) {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>node) <span style="color:#ff79c6">return</span>;
+</span></span><span style="display:flex;"><span>        deleteTrie(node<span style="color:#ff79c6">-&gt;</span>next[<span style="color:#bd93f9">0</span>]);
+</span></span><span style="display:flex;"><span>        deleteTrie(node<span style="color:#ff79c6">-&gt;</span>next[<span style="color:#bd93f9">1</span>]);
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">delete</span> node;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">insert</span>(<span style="color:#8be9fd">int</span> x) {
+</span></span><span style="display:flex;"><span>        Trie<span style="color:#ff79c6">*</span> p <span style="color:#ff79c6">=</span> root;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">31</span>; i <span style="color:#ff79c6">&gt;=</span> <span style="color:#bd93f9">0</span>; i<span style="color:#ff79c6">--</span>) {  
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd">int</span> v <span style="color:#ff79c6">=</span> (x <span style="color:#ff79c6">&gt;&gt;</span> i) <span style="color:#ff79c6">&amp;</span> <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>p<span style="color:#ff79c6">-&gt;</span>next[v]) {
+</span></span><span style="display:flex;"><span>                p<span style="color:#ff79c6">-&gt;</span>next[v] <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> Trie();
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            p <span style="color:#ff79c6">=</span> p<span style="color:#ff79c6">-&gt;</span>next[v];
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">int</span> <span style="color:#50fa7b">query</span>(<span style="color:#8be9fd">int</span> x) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd">int</span> res <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>        Trie<span style="color:#ff79c6">*</span> p <span style="color:#ff79c6">=</span> root;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">31</span>; i <span style="color:#ff79c6">&gt;=</span> <span style="color:#bd93f9">0</span>; i<span style="color:#ff79c6">--</span>) {  
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd">int</span> u <span style="color:#ff79c6">=</span> (x <span style="color:#ff79c6">&gt;&gt;</span> i) <span style="color:#ff79c6">&amp;</span> <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">if</span> (p<span style="color:#ff79c6">-&gt;</span>next[<span style="color:#bd93f9">1</span> <span style="color:#ff79c6">-</span> u]) {  <span style="color:#6272a4">// 选择异或更大的方向
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>                res <span style="color:#ff79c6">|=</span> (<span style="color:#bd93f9">1</span> <span style="color:#ff79c6">&lt;&lt;</span> i);
+</span></span><span style="display:flex;"><span>                p <span style="color:#ff79c6">=</span> p<span style="color:#ff79c6">-&gt;</span>next[<span style="color:#bd93f9">1</span> <span style="color:#ff79c6">-</span> u];
+</span></span><span style="display:flex;"><span>            } <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>                p <span style="color:#ff79c6">=</span> p<span style="color:#ff79c6">-&gt;</span>next[u];
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> res;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">int</span> <span style="color:#50fa7b">findMaximumXOR</span>(vector<span style="color:#ff79c6">&lt;</span><span style="color:#8be9fd">int</span><span style="color:#ff79c6">&gt;&amp;</span> nums) {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> <span style="color:#8be9fd;font-style:italic">num</span> : nums) {
+</span></span><span style="display:flex;"><span>            insert(num);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd">int</span> res <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> <span style="color:#8be9fd;font-style:italic">num</span> : nums) {
+</span></span><span style="display:flex;"><span>            res <span style="color:#ff79c6">=</span> max(res, query(num));
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> res;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>    vector<span style="color:#ff79c6">&lt;</span><span style="color:#8be9fd">int</span><span style="color:#ff79c6">&gt;</span> nums <span style="color:#ff79c6">=</span> {<span style="color:#bd93f9">3</span>, <span style="color:#bd93f9">10</span>, <span style="color:#bd93f9">5</span>, <span style="color:#bd93f9">25</span>, <span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">8</span>};
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// 这里我放了一些英文
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    Solution solution;
+</span></span><span style="display:flex;"><span>    cout <span style="color:#ff79c6">&lt;&lt;</span> solution.findMaximumXOR(nums) <span style="color:#ff79c6">&lt;&lt;</span> endl;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="荷兰国旗问题">荷兰国旗问题</h2>
+<p>将一个包含三种颜色的元素（通常用0、1、2表示）的数组，就地排序成0、1、2三个区域，类似荷兰国旗的红白蓝三色排列 输出 [000111222]这种</p>
+<p>思路也很简单，维持 l mid r 三个指针，mid从0→n 遇到0 和 l处交换 遇到2 和r处交换 当mid到达r的时候 表示1右边全是2。O(n)复杂度</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;iostream&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;vector&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">using</span> <span style="color:#ff79c6">namespace</span> std;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> <span style="color:#50fa7b">sortColors</span>(vector<span style="color:#ff79c6">&lt;</span><span style="color:#8be9fd">int</span><span style="color:#ff79c6">&gt;&amp;</span> nums) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">int</span> low <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>, mid <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>, high <span style="color:#ff79c6">=</span> nums.size() <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">while</span> (mid <span style="color:#ff79c6">&lt;=</span> high) {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> (nums[mid] <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">0</span>) {
+</span></span><span style="display:flex;"><span>            swap(nums[low], nums[mid]);
+</span></span><span style="display:flex;"><span>            low<span style="color:#ff79c6">++</span>;
+</span></span><span style="display:flex;"><span>            mid<span style="color:#ff79c6">++</span>;
+</span></span><span style="display:flex;"><span>        } <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> (nums[mid] <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">1</span>) {
+</span></span><span style="display:flex;"><span>            mid<span style="color:#ff79c6">++</span>;
+</span></span><span style="display:flex;"><span>        } <span style="color:#ff79c6">else</span> { <span style="color:#6272a4">// nums[mid] == 2
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>            swap(nums[mid], nums[high]);
+</span></span><span style="display:flex;"><span>            high<span style="color:#ff79c6">--</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>    vector<span style="color:#ff79c6">&lt;</span><span style="color:#8be9fd">int</span><span style="color:#ff79c6">&gt;</span> nums <span style="color:#ff79c6">=</span> {<span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">0</span>};
+</span></span><span style="display:flex;"><span>    sortColors(nums);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> <span style="color:#8be9fd;font-style:italic">num</span> : nums) {
+</span></span><span style="display:flex;"><span>        cout <span style="color:#ff79c6">&lt;&lt;</span> num <span style="color:#ff79c6">&lt;&lt;</span> <span style="color:#f1fa8c">&#34; &#34;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    cout <span style="color:#ff79c6">&lt;&lt;</span> endl;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="真随机洗牌算法">真随机洗牌算法</h2>
+<p>要求用C++实现，假定C++库中的random是真随机。</p>
+<p>实现的方法也很简单。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;iostream&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;cstdlib&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;ctime&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> <span style="color:#50fa7b">ShuffleArray</span>(<span style="color:#8be9fd">char</span><span style="color:#ff79c6">*</span> arr, <span style="color:#8be9fd">int</span> len) {
+</span></span><span style="display:flex;"><span>    std<span style="color:#ff79c6">::</span>srand(<span style="color:#ff79c6">static_cast</span><span style="color:#ff79c6">&lt;</span><span style="color:#8be9fd">unsigned</span> <span style="color:#8be9fd">int</span><span style="color:#ff79c6">&gt;</span>(std<span style="color:#ff79c6">::</span>time(<span style="color:#bd93f9">0</span>)));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> len <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">1</span>; i <span style="color:#ff79c6">&gt;</span> <span style="color:#bd93f9">0</span>; <span style="color:#ff79c6">--</span>i) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd">int</span> j <span style="color:#ff79c6">=</span> std<span style="color:#ff79c6">::</span>rand() <span style="color:#ff79c6">%</span> (i <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">1</span>);
+</span></span><span style="display:flex;"><span>        std<span style="color:#ff79c6">::</span>swap(arr[i], arr[j]);
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><h2 id="一个超大量数据请求的输出最多前十10请求的ip的思路题">一个超大量数据请求的输出最多前十10请求的IP的思路题</h2>
+<p>滑动窗口1h，并发请求10w条/s，单核机子，无分布式存储（限定了服务器内存很有吸纳</p>
+<p>只要求写思路，维护一个大根堆，一个队列存ip和对应时间戳，一个hashmap来存IP请求数。</p>
+<h2 id="后续">后续</h2>
+<p>HIT校园网很抽象，疯狂掉线，导致vscode疯狂重新加载界面，我的第一题的代码都快写完了，结果全没了。。。。大约20:20我就写完了，进入发呆状态。大约在我写第二道题的时候，面试官于聊天框中要求我打开摄像头，我才发现设备根本就没连接上，重新刷新界面终于找到摄像头设备，面试官可以远程打开我的摄像头，并在我做第四道题的时候瞧瞧的打开了我的mic。</p>
+<p>正式交流时他的摄像头依然关闭，让我以此讲解这四道题的代码。</p>
+<p>第一题讲解后问我为什么 i 要取 31</p>
+<p>答曰题目要求是int类型，4Byte共32位。</p>
+<p>然后又问我写第一问用多长时间</p>
+<p>答曰10分钟，并说网络环境可能有些问题，代码保存有点Bug（）耽搁了很久</p>
+<p>第三题讲解时拷打我为什么从大往小遍历，这题因为在ctf中见过，因此直接这么写的。简单思考后回答，如果从小往大遍历，则当i = 0 时 随机数是mod 1 也就是j一定是 0 或者 1 也就是要么不交换 要么只和1交换。</p>
+<p>可能我的表达稍微模糊些，他没有get到（其实我也没get到他就是让我证明真随机性）答曰 当从后往前遍历是，几率恒 $\frac{1}{n}$ 。放我过了。</p>
+<p>第四题当我说完后，提问如果存储存不下如何，其实最初并没有get到面试官的问题，下来后复盘分析了一下:</p>
+<ul>
+<li>存储这个hashmap要 $O(n)$</li>
+<li>存储这个queue要 $O(n)$</li>
+<li>存储这个堆 $O(10)$</li>
+</ul>
+<p>我暗示其给点提示，回复让我多想想，思考大约一个半分钟，对面只是静静地等着，答曰可以将queue完全丢掉，转而维护60个bukket，一个bukket一分钟，按照分钟进行统计ip，就可以将空间复杂度降到常数，至于hashmap等，我直接答上redis。如果我没听错，对面应该不止面试官笑了，我意识到可能不止一个人在听（不过可能我感觉错了。。。。）</p>
+<p>然后又给我发了一个智力题目:</p>
+<blockquote>
+<p>25匹马赛跑，5个跑道，每个赛道一匹马每轮最多5匹马同时跑。请问，最少需要跑几轮才能决出前3名？</p>
+</blockquote>
+<p>申请拿草纸算，算了大约3分钟，回答是7。 期间想复杂了，后来想起来这个其实就是个五路归并。</p>
+<p><a href="https://blog.csdn.net/realYuzhou/article/details/109024970#:~:text=A1%E4%B9%9F%E6%98%AF25%E5%8C%B9%E9%A9%AC%E4%B8%AD%E7%9A%84%E7%AC%AC%E4%B8%80%EF%BC%8C%E6%8E%A5%E4%B8%8B%E6%9D%A5%E9%9C%80%E8%A6%81%E9%80%89%E5%87%BA%E7%AC%AC%E4%BA%8C%E5%90%8D%E5%92%8C%E7%AC%AC%E4%B8%89%E5%90%8D%E3%80%82%20%E7%94%B1%E4%BA%8EA1%E6%98%AF%E5%86%A0%E5%86%9B%EF%BC%8C%E6%AF%94A1%E9%80%9F%E5%BA%A6%E7%A8%8D%E6%85%A2%E7%9A%84%E6%98%AFA2%E5%92%8CB1%EF%BC%8C%E4%BA%9A%E5%86%9B%E5%8F%AA%E5%8F%AF%E8%83%BD%E5%9C%A8%E4%BB%96%E4%BB%AC%E4%B8%A4%E4%B8%AA%E4%B9%8B%E4%B8%AD%E4%BA%A7%E7%94%9F%E3%80%82%20%E5%81%87%E8%AE%BEA2%E6%98%AF%E4%BA%9A%E5%86%9B%EF%BC%8C%E9%82%A3%E4%B9%88%E5%AD%A3%E5%86%9B%E9%9C%80%E8%A6%81%E5%9C%A8A3%E3%80%81B1%E4%B8%AD%E9%80%89%E6%8B%A9%E3%80%82,%E5%81%87%E8%AE%BEB1%E6%98%AF%E4%BA%9A%E5%86%9B%EF%BC%8C%E9%82%A3%E4%B9%88%E5%AD%A3%E5%86%9B%E9%9C%80%E8%A6%81%E5%9C%A8A2%E3%80%81B2%E3%80%81C1%E4%B8%AD%E9%80%89%E6%8B%A9%E3%80%82%20%E7%BB%BC%E4%B8%8A%EF%BC%8C%E5%8F%AA%E9%9C%80%E8%A6%81A2%E3%80%81A3%E3%80%81B1%E3%80%81B2%E3%80%81C1%E5%86%8D%E6%AF%94%E8%B5%9B%E4%B8%80%E5%9C%BA%E5%8D%B3%E5%8F%AF%E3%80%82%20%E6%89%80%E4%BB%A5%EF%BC%8C%E4%B8%80%E5%85%B1%E8%87%B3%E5%B0%91%E9%9C%80%E8%A6%817%E5%9C%BA%E6%AF%94%E8%B5%9B%26%5D%EF%BC%8C%E6%89%8D%E8%83%BD%E9%80%89%E5%87%BA25%E5%8C%B9%E9%A9%AC%E4%B8%AD%E7%9A%84%E5%89%8D%E4%B8%89%E5%90%8D%E3%80%82">思维题：25匹马，5个赛道，求选出速度最快的3匹马最少需要多少次比赛？-CSDN博客</a></p>
+<p>自然是让我进行讲解，讲解大约五分钟，面试官问我后面两轮怎么做，说的很含糊（其实当时我想的也不是太好，说着说着发现自己想错了）然后只好在给他讲的过程中重新捋顺思路。打开网站里的白板画给他，最后他不知道是听明白了还是不想听我讲，反正是结束了。</p>
+<p>并问我有什么想问的没，感觉对面很是疲劳（后面我才知道wxg是腾讯加班最严重，强度最大的一个部门，号称腾讯里面的pdd）。反问实习时间是否可以变动，回答很笼统。</p>
+<p>整体感觉并不是很尊重人，像是进行了一次leetcode中等难度题目的上机训练。。并没有问任何有关开发相关的基础知识和网络协议等，与上面招聘要求完全不符。</p>
+<p>我去面试，代表hit，我想如果腾讯面我，面试官应该也许代表的也是我对腾讯的第一印象。但不管如何，第一次面试就在这么我认为理想与现实巨大落差，甚至是有点荒唐中结束了。（都不如再吃一块披萨）</p>
+<hr>
+<p>感觉相同 没过</p>
+<p>由于也不是很着急找实习，因此后续也没有继续投递简历。</p>
+<p>
   <img src="image-1.png" alt="alt text">
 
 </p>
-<h2 id="曲折与放弃">曲折与放弃</h2>
-<p>在TTL和破解这两步碰壁后，笔者仍不死心，决定使用ADB进行远程烧写，思路是先将盒子刷入androidTV底包，开启adb，并直接将制作好的镜像写入emmc，可惜执行<code>ls -al /dev/block/</code>时，看到闪存为<code>mtdblk</code>，只得放弃。<strong>刷了会成砖，只能用TTL刷回去</strong></p>
-<h1 id="创维e900-s">创维E900-S</h1>
-<p>创维<code>E900-S</code>拆机后仍然是华为<code>mv100</code>芯片，因此刷机过程与华为悦盒类似。短接点将主板翻至背面如下：</p>
-<p>
-  <img src="image-2.png" alt="alt text">
-
-</p>
-<p>注意拆机时应注意不要扯坏信号接收装置。</p>
-<h1 id="创维e900v21d">创维E900V21D</h1>
-<p>笔者拿到的该款电视盒子芯片有<code>S905L3</code>、<code>S905L3-B</code>两款，且主板有两种不同版本。</p>
-<p>晶晨固件都需要准备一根<code>双公头USB</code>线。</p>
-<p>对于<code>S905L3</code>芯片，短接点位于背面</p>
-<p>
-  <img src="image-3.png" alt="alt text">
-
-</p>
-<p>对于<code>S905L3-B</code>芯片，版号<code>5800-2AHPH4R</code>，短接点位于存储左边从上往下第五到第六针脚</p>
-<p>
-  <img src="image-4.png" alt="alt text">
-
-</p>
-<h2 id="尝试刷入armbian">尝试刷入<code>armbian</code></h2>
-<p>最好的仓库是<a href="https://github.com/ophub/amlogic-s9xxx-armbian">ophub</a></p>
-<p>对于上述两款芯片，hdmi驱动均有问题，因此刷入后将无法屏显，(仓库中的dts大多都尝试过，均无用)</p>
-<p>且对于<code>S905L3</code>芯片刷入4.4.2底包后无法识别网卡，因此无法通过远程进一步刷机，只能从<code>U盘</code>启动armbian，刷入9.0底包则会无限重启甚至卡1-2屏循环。折腾一天，放弃。</p>
-<h3 id="天选的s905l3b">天选的<code>S905L3B</code></h3>
-<p><code>5800-2AHPH4R</code>版内存有锁，请不要尝试，使用晶晨线刷工具刷入时会直接失败。但<code>5800-2AMBA02</code>主板可行。</p>
-<p>首先刷入一个<a href="https://www.znds.com/tv-1247230-1-1.html">安卓9.0原生底包</a></p>
-<p>然后开启远程调试，并查看设备ip地址，笔者是<code>192.168.1.18</code> 使用的固件是<code>amlogic_s905l3b-e900v22e_jammy</code>系列。同时要将U盘格式化为FAT32,并用<code>RUFUS</code>将引导文件<code>armbian</code>的镜像写入进去。</p>
-<p>然后下载<code>adb</code>，输入<code>adb connect 192.168.1.18</code> 并<code>adb shell</code>可以拿到shell。输入<code>adb shell reboot update</code>从U盘启动。然后进网关设备界面看设备ip，用ssh连，账号<code>root</code>,密码<code>1234</code>.</p>
-<p>最后输入<code>armbian-install -m yes</code>等待即可。</p>
-<p>这个设备也没什么折腾的价值，重点是折腾的快乐。结论就是除非可以碰到最后一种的<code>S905L3B</code>，否则剩下的绝大多数都很难刷入，笔者技术有限，没有尝试成功。</p>
+<h1 id="后期复盘">后期复盘</h1>
+<ol>
+<li>当真正需要找工作时，投递简历应该是一个多对多的过程，不能耗在一家上。</li>
+<li>可能是前期hr已经找到了合适的人选，导致现在刷kpi。</li>
+</ol>
 
 
                 
