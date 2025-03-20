@@ -9,6 +9,13 @@
     <lastBuildDate>Sat, 01 Mar 2025 12:00:00 +0000</lastBuildDate>
     <atom:link href="https://zephyr369.online/post/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>2025长城杯&amp;CISCN半决赛复盘</title>
+      <link>https://zephyr369.online/ciscn2025/</link>
+      <pubDate>Sat, 01 Mar 2025 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/ciscn2025/</guid>
+      <description>这把Pwn出了三个菜单，还有一个php_master是web-pwn,全程没管。比赛中最幽默的是post_quantum，一直缺库，然后&amp;r</description>
+    </item>
+    <item>
       <title>SatOver阅读笔记</title>
       <link>https://zephyr369.online/satover/</link>
       <pubDate>Sat, 01 Mar 2025 12:00:00 +0000</pubDate>
