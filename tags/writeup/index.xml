@@ -6,8 +6,15 @@
     <description>Recent content in WriteUp on #3</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 07 Dec 2024 12:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 01 Mar 2025 12:00:00 +0000</lastBuildDate>
     <atom:link href="https://zephyr369.online/tags/writeup/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2025软创安全赛东北分区赛WP</title>
+      <link>https://zephyr369.online/software2025/</link>
+      <pubDate>Sat, 01 Mar 2025 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/software2025/</guid>
+      <description>MISC 流量 | 赛后解出 sb了，原先没用wireshark解密过tls文件。 首先追踪中间的tcp流，可以看到这一条消息 然后按照这种格式写到一个文件里</description>
+    </item>
     <item>
       <title>2024国城杯线上初赛</title>
       <link>https://zephyr369.online/goalcent/</link>

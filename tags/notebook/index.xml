@@ -9,6 +9,13 @@
     <lastBuildDate>Sat, 01 Mar 2025 12:00:00 +0000</lastBuildDate>
     <atom:link href="https://zephyr369.online/tags/notebook/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>2025软创安全赛东北分区赛WP</title>
+      <link>https://zephyr369.online/software2025/</link>
+      <pubDate>Sat, 01 Mar 2025 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/software2025/</guid>
+      <description>MISC 流量 | 赛后解出 sb了，原先没用wireshark解密过tls文件。 首先追踪中间的tcp流，可以看到这一条消息 然后按照这种格式写到一个文件里</description>
+    </item>
+    <item>
       <title>2025长城杯&amp;CISCN半决赛复盘</title>
       <link>https://zephyr369.online/ciscn2025/</link>
       <pubDate>Sat, 01 Mar 2025 12:00:00 +0000</pubDate>
