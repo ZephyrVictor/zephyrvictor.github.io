@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="#3">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="img/cover.jpg">
+    <meta property="twitter:image" content="img/cover.jpg" />
+    
+
+    
+    <meta name="title" content="AI安全一，逻辑回归的参数泄露" />
+    <meta property="og:title" content="AI安全一，逻辑回归的参数泄露" />
+    <meta property="twitter:title" content="AI安全一，逻辑回归的参数泄露" />
+    
+
+    
+    <meta name="description" content="Zephyr&#39;s blog">
+    <meta property="og:description" content="Zephyr&#39;s blog" />
+    <meta property="twitter:description" content="Zephyr&#39;s blog" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="Zephyr, Zephyr, Zephyr, , Zephyr的网络日志, Zephyr的博客, Zephyr Blog, 博客, 个人网站, 互联网, Web, CTF,">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>AI安全一，逻辑回归的参数泄露 | Zephyr的博客 | Zephyr Blog | Zephyr#3 | #3 |</title>
+
+    <link rel="canonical" href="/ai1/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+ 
+ <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+        displayMath: [
+          ["$$", "$$"],
+          ["\\[", "\\]"],
+        ],
+        processEscapes: true,
+        processEnvironments: true,
+      },
+      options: {
+        skipHtmlTags: ["script", "noscript", "style", "textarea", "pre"],
+      },
+    };
+  
+    window.addEventListener("load", (event) => {
+      document.querySelectorAll("mjx-container").forEach(function (x) {
+        x.parentElement.classList += "has-jax";
+      });
+    });
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    type="text/javascript"
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+</head>
+<style>
+    code.has-jax {
+      -webkit-font-smoothing: antialiased;
+      background: inherit !important;
+      border: none !important;
+      font-size: 100%;
+    }
+    </style>
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">#3</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/life/">life</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+                        <li><a href="/life//">LIFE</a></li>
+                    
+                        <li><a href="/course//">HISTORY</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/cover.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/ctf" title="CTF">
+                            CTF
+                        </a>
+                        
+                        <a class="tag" href="/tags/notebook" title="Notebook">
+                            Notebook
+                        </a>
+                        
+                        <a class="tag" href="/tags/writeup" title="WriteUp">
+                            WriteUp
+                        </a>
+                        
+                        <a class="tag" href="/tags/ai" title="AI">
+                            AI
+                        </a>
+                        
+                    </div>
+                    <h1>AI安全一，逻辑回归的参数泄露</h1>
+                    <h2 class="subheading">从最基本的AI基础知识出发，以2025数字中国数据安全决赛的一道题目作为例子，来讲解什么是逻辑回归，以及如何泄露权重</h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Zephyr
+                             
+                            on 
+                            Saturday, March 1, 2025
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h1 id="传统ai安全">传统AI安全</h1>
+<h1 id="算法分类">算法分类</h1>
+<p>需要明确的是， <code>机器学习</code>这一范围是最大的，他包括了 <code>机器学习</code> 和 <code>深度学习</code> ，以及后续衍生而出的更多参数的大模型算法。</p>
+<p>我们可以从三个常见角度对机器学习算法进行分类：</p>
+<h3 id="按照参数数量划分">按照参数数量划分</h3>
+<ul>
+<li>
+<p>机器学习：这类算法往往使用很少量的参数，模型结构简单，训练速度很快，在 <code>python</code> 语言中最常见的库就是 <code>scikit-learn</code> ，这里封装了 <code>线性回归</code> 、 <code>决策树</code> 、 <code>k-近邻算法</code> 以及 <code>支持向量机</code>算法。</p>
+</li>
+<li>
+<p>深度学习: 这类算法发展的很早，甚至有的比机器学习算法还要早，但当时碍于计算机算力不发达，只停留在论文阶段，直到2010年后才逐渐广泛应用。</p>
+<p>深度学习算法几乎都是基于神经网络的，参数数量一般远大于传统机器学习算法，能够接受更复杂的特征。耳熟能详的有卷积神经网络体系，循环神经网络体系。这两大体系 中间水了相当大的论文，前者最有名的是 <code>resnet</code> ，后者最有名的是 <code>LSTM</code> 。</p>
+</li>
+</ul>
+<h3 id="按照训练条件划分">按照训练条件划分</h3>
+<ul>
+<li>有监督学习： 训练数据带有明确标签，模型通过学习输入到标签的映射关系。常常用于分类问题和预测问题。</li>
+<li>无监督学习： 训练数据不带标签，我们需要模型从数据中发现结构、模式或者分布特点。常常用于聚类分析、异常检测（检测离群点）、PCA(主成分分析，常常用来降维)。</li>
+<li>还有半监督学习、自监督学习这种过渡的形式。</li>
+</ul>
+<h3 id="按照学习目标划分">按照学习目标划分</h3>
+<ul>
+<li>分类问题：用户在训练时，输入数据和该数据对应的标签，训练模型参数；使用模型时（推理），用户仅仅输入数据，需要模型给出对应的标签以完成分类。标签是离散的。
+<ul>
+<li>识别垃圾邮件，对图片进行分类。</li>
+</ul>
+</li>
+<li>回归问题：模型的输出是连续数值，目标是预测具体数值大小
+<ul>
+<li>预测房价、股票走势</li>
+</ul>
+</li>
+<li>生成问题：模型根据输入生成新的数据样本：
+<ul>
+<li>图像生成、文本续写</li>
+</ul>
+</li>
+</ul>
+<h1 id="常见的机器学习术语">常见的机器学习术语</h1>
+<ul>
+<li>
+<p>训练：使用已知样本，调整模型参数，一般会定义损失函数（回归问题是均方误差，分类问题是交叉熵损失），然后就会将问题转化成一个优化问题→将损失函数尽可能最小化，此时模型就会在已知样本上表现更好。</p>
+</li>
+<li>
+<p>推理：将新数据输入给训练好的模型</p>
+</li>
+<li>
+<p>泛化：模型不仅在训练数据上表现好，还能在<strong>未见过的新数据上也表现良好</strong>，这就是泛化能力。</p>
+<ul>
+<li><strong>理想状态</strong>：低训练误差 + 低测试误差 → 模型具有良好泛化能力。这个经过论证是不现实的</li>
+</ul>
+</li>
+<li>
+<p>过拟合：模型在训练数据上表现非常好，但在新数据上效果很差。</p>
+</li>
+<li>
+<p>欠拟合：模型过于简单，无法捕捉数据中的规律，训练误差和测试误差都很大。</p>
+</li>
+<li>
+<p>准确率：预测正确的样本数占总样本数的比例。</p>
+<p>$$
+准确率 = \frac{预测正确的数量}{总预测数量}
+$$</p>
+<ul>
+<li><strong>适用场景</strong>：分类任务中，正负样本数量大致平衡时。</li>
+</ul>
+</li>
+<li>
+<p>召回率: 在所有“真实为正”的样本中，被模型正确预测为正的比例。</p>
+<p>$$
+召回率 = \frac{真正(TP)}{真正(TP) + 假负(FN)}
+$$</p>
+<ul>
+<li><strong>适用场景</strong>：我们更关注<strong>找到所有相关项</strong>，如疾病筛查、垃圾邮件检测。</li>
+</ul>
+</li>
+<li>
+<p>精确率：在所有被预测为正的样本中，实际真正为正的比例。</p>
+<p>$$
+精确率 = \frac{真正(TP)}{真正(TP) + 假正(FP)}
+$$</p>
+</li>
+<li>
+<p><strong>训练集</strong>：用于训练模型的数据。</p>
+</li>
+<li>
+<p><strong>验证集</strong>：用于模型调参，检测是否过拟合。</p>
+</li>
+<li>
+<p><strong>测试集</strong>：用于最终评估模型在新数据上的表现，不能参与训练或调参。</p>
+</li>
+</ul>
+<p>没有一个万能的模型，需要根据实际情况来选择合适的模型。</p>
+<ul>
+<li>模型参数越多，越复杂，拟合能力会越好，也更容易过拟合，可解释性也越差，需要的样本也越多。如果我们使用少量的数据集，而恰好这些数据集分布很集中，并且没有覆盖真正的分布空间，那模型就很容易过拟合，泛化能力特别弱。</li>
+<li>根据输入选择模型也是一个很好的思考点。对于图像类问题，我们常常选择 <code>CNN</code> 系的模型，比如残差神经网络。将图片按照RGB通道形成二维矩阵，然后作为模型的输入。常常用来解决分类问题。带有时间序列的信号，例如一段波形、自然语言等这样具有前后关联的，我们往往使用循环神经网络系的模型，比如LSTM等进行处理。（不过现在有了仅用注意力机制的transformer之后，就可以大力出奇迹了）</li>
+</ul>
+<blockquote>
+<p>AI世界中有符号主义和连结主义，前者认为所有的模型都必须经过数学符号的精巧定义，才是一个好模型，机器学习模型大多这样，由于有数学公式定义，他们的可解释性一目了然。连结主义强调神经元之间相互组成网络的共同作用，往往都是深度学习模型，这类模型的可解释性一般很差。</p>
+</blockquote>
+<h2 id="tf-idf">TF-IDF</h2>
+<p>在机器学习中，我们无法直接将“文字”作为模型的输入，而是需要将文本转化成数值向量。</p>
+<p><strong>TF-IDF（Term Frequency – Inverse Document Frequency）<strong>就是一种常用的</strong>文本特征表示方法</strong>，用于将文本转化为向量，用于模型训练或分析。</p>
+<ul>
+<li>
+<p>核心思想：</p>
+<ul>
+<li>如果一个词 <strong>在一篇文档中出现频率很高</strong>（TF 高），说明这个词对这篇文档很重要；</li>
+<li>但如果这个词 <strong>在所有文档中都频繁出现</strong>，它的重要性就应该降低（IDF 低）。</li>
+</ul>
+</li>
+<li>
+<p>计算方式：</p>
+<ul>
+<li>
+<p>TF：词频，衡量某个词在当前文本中出现的频率：</p>
+<p>$TF(t,d) = \frac{词t在文档d中出现的次数}{文档d的总词数}$</p>
+</li>
+<li>
+<p>IDF: 逆文档频率，衡量某个词在所有文档中有多常见或多罕见</p>
+<p>$$
+IDF(t) = log(\frac{总文档数}{包含词t的文档数+1})
+$$</p>
+<p>$$
+TFIDF(t,d) = TF(t,d) \times IDF(t)
+$$</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://zh.wikipedia.org/wiki/Tf-idf">tf-idf - 维基百科，自由的百科全书</a></p>
+<h1 id="ai模型的主要威胁">AI模型的主要威胁</h1>
+<p>这些威胁比赛中也常考，我们忽视掉那些断网还出论文题的迫害野鸡比赛，常见的威胁可以分为如下几类：</p>
+<ul>
+<li>样本对抗攻击：攻击者对输入数据加入<strong>几乎不可察觉的扰动</strong>（如改变几个像素点），导致模型做出错误判断。
+<ul>
+<li>两大常见领域，图片识别和NLP分类问题，您可以使用 <code>pip install torchattack</code>  纵享常见攻击算法，例如FGSM、PGD、C&amp;W 攻击</li>
+</ul>
+</li>
+<li>后门攻击： 攻击者在模型训练过程中<strong>偷偷植入触发条件</strong>（如特殊图案、水印），一旦测试时出现这个触发器，就强行输出攻击者设定的标签。
+<ul>
+<li>需要模型正常输入下行为良好，被触发后表现异常，隐蔽性好。</li>
+</ul>
+</li>
+<li>模型权重窃取： 攻击者通过查询 API 或访问模型接口，<strong>重建或拟合目标模型的参数</strong>，甚至完整克隆出功能一致的模型。
+<ul>
+<li>这种一般假定服务有漏洞能让我们不间断地获取模型的一些信息，例如在逻辑回归中，可以拿到模型的bias。</li>
+</ul>
+</li>
+<li>成员推断攻击： 攻击者尝试判断<strong>某个特定样本是否出现在模型的训练集中。</strong>
+<ul>
+<li>攻击者上传一张人脸到模型，如果输出置信度很高，就推断该样本是训练过的，否则不是。比赛场景往往会设置成用户的人脸信息、手机号、身份证号等开盒数据。</li>
+</ul>
+</li>
+<li>模型反演攻击：攻击者尝试<strong>还原模型训练样本中的敏感属性或特征</strong>，甚至重构出完整的图像或数据样本。
+<ul>
+<li>针对一个面部识别模型，攻击者通过大量查询和优化，反推出某个“张三”的面部特征图像。</li>
+<li>常见的算法有SMI这些，现在还有针对RAG的数据还原，在nlp中，通过embedding model将语言文本嵌入到sRAG数据库中，逆向是很困难的，但是 <a href="https://github.com/vec2text/vec2text">https://github.com/vec2text/vec2text</a> 项目给了可能，输入是嵌入词文件，可以输出对应的嵌入文本，在32token下表现很好，See 2025L3HCTF.</li>
+</ul>
+</li>
+</ul>
+<h1 id="常见库memo">常见库memo</h1>
+<p>我们需要pandas，numpy，以及scikitlearn</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span>pip install numpy pandas joblib scikit<span style="color:#ff79c6">-</span>learn jieba scipy matplotlib
+</span></span></code></pre></div><p>只放一些最常见的，离线比赛最好clone一下文档，线上比赛就拷打gpt。。有的时候ai题就是让你训练模型，没有什么特别多的攻防知识。</p>
+<h2 id="numpy">numpy</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">import</span> numpy <span style="color:#ff79c6">as</span> np
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 创建向量</span>
+</span></span><span style="display:flex;"><span>a <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>array([<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">3</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 向量加法</span>
+</span></span><span style="display:flex;"><span>b <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>array([<span style="color:#bd93f9">0.1</span>, <span style="color:#ff79c6">-</span><span style="color:#bd93f9">0.2</span>, <span style="color:#bd93f9">0.05</span>])
+</span></span><span style="display:flex;"><span>c <span style="color:#ff79c6">=</span> a <span style="color:#ff79c6">+</span> b
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 计算 L2 范数（用于限制扰动）</span>
+</span></span><span style="display:flex;"><span>norm <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>linalg<span style="color:#ff79c6">.</span>norm(c)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># softmax 计算（模型输出概率）</span>
+</span></span><span style="display:flex;"><span>logits <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>array([<span style="color:#bd93f9">2.0</span>, <span style="color:#bd93f9">1.0</span>, <span style="color:#bd93f9">0.1</span>])
+</span></span><span style="display:flex;"><span>softmax <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>exp(logits) <span style="color:#ff79c6">/</span> np<span style="color:#ff79c6">.</span>sum(np<span style="color:#ff79c6">.</span>exp(logits))
+</span></span></code></pre></div><h2 id="pandas">pandas</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">import</span> pandas <span style="color:#ff79c6">as</span> pd
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 读取原始样本</span>
+</span></span><span style="display:flex;"><span>df <span style="color:#ff79c6">=</span> pd<span style="color:#ff79c6">.</span>read_csv(<span style="color:#f1fa8c">&#39;data.csv&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 遍历每行样本</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">for</span> _, row <span style="color:#ff79c6">in</span> df<span style="color:#ff79c6">.</span>iterrows():
+</span></span><span style="display:flex;"><span>    sample <span style="color:#ff79c6">=</span> row[<span style="color:#f1fa8c">&#39;text&#39;</span>]
+</span></span><span style="display:flex;"><span>    label <span style="color:#ff79c6">=</span> row[<span style="color:#f1fa8c">&#39;label&#39;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 添加预测结果并保存</span>
+</span></span><span style="display:flex;"><span>df[<span style="color:#f1fa8c">&#39;pred&#39;</span>] <span style="color:#ff79c6">=</span> model<span style="color:#ff79c6">.</span>predict(df[<span style="color:#f1fa8c">&#39;text&#39;</span>])
+</span></span><span style="display:flex;"><span>df<span style="color:#ff79c6">.</span>to_csv(<span style="color:#f1fa8c">&#39;submit.csv&#39;</span>, index<span style="color:#ff79c6">=</span><span style="color:#ff79c6">False</span>)
+</span></span></code></pre></div><h2 id="scikit-learn">scikit-learn</h2>
+<ul>
+<li>
+<p>保存和加载模型用 <code>joblib</code></p>
+</li>
+<li>
+<p>nlp相关一般要搭配tokenizer食用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">from</span> sklearn.feature_extraction.text <span style="color:#ff79c6">import</span> TfidfVectorizer
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>vectorizer <span style="color:#ff79c6">=</span> TfidfVectorizer(tokenizer<span style="color:#ff79c6">=</span><span style="color:#8be9fd;font-style:italic">str</span><span style="color:#ff79c6">.</span>split, max_features<span style="color:#ff79c6">=</span><span style="color:#bd93f9">5000</span>)
+</span></span><span style="display:flex;"><span>X_train <span style="color:#ff79c6">=</span> vectorizer<span style="color:#ff79c6">.</span>fit_transform(texts)
+</span></span></code></pre></div></li>
+<li>
+<p>训练模型</p>
+<p>训练的统一范式</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#6272a4"># 统一范式</span>
+</span></span><span style="display:flex;"><span>model <span style="color:#ff79c6">=</span> 模型类(参数)
+</span></span><span style="display:flex;"><span>model<span style="color:#ff79c6">.</span>fit(X_train, y_train)
+</span></span><span style="display:flex;"><span>y_pred <span style="color:#ff79c6">=</span> model<span style="color:#ff79c6">.</span>predict(X_test)
+</span></span><span style="display:flex;"><span>model<span style="color:#ff79c6">.</span>predict_proba(X_test)  <span style="color:#6272a4"># 如果支持概率输出</span>
+</span></span></code></pre></div><ul>
+<li>
+<p>逻辑回归训练</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">from</span> sklearn.linear_model <span style="color:#ff79c6">import</span> LogisticRegression
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model <span style="color:#ff79c6">=</span> LogisticRegression()
+</span></span><span style="display:flex;"><span>model<span style="color:#ff79c6">.</span>fit(X_train, y_train)
+</span></span><span style="display:flex;"><span>y_pred <span style="color:#ff79c6">=</span> model<span style="color:#ff79c6">.</span>predict(X_test)
+</span></span><span style="display:flex;"><span>y_prob <span style="color:#ff79c6">=</span> model<span style="color:#ff79c6">.</span>predict_proba(X_test)
+</span></span></code></pre></div></li>
+<li>
+<p>决策树</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">from</span> sklearn.tree <span style="color:#ff79c6">import</span> DecisionTreeClassifier
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model <span style="color:#ff79c6">=</span> DecisionTreeClassifier(max_depth<span style="color:#ff79c6">=</span><span style="color:#bd93f9">5</span>)
+</span></span><span style="display:flex;"><span>model<span style="color:#ff79c6">.</span>fit(X_train, y_train)
+</span></span></code></pre></div></li>
+<li>
+<p>随机森林</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">from</span> sklearn.ensemble <span style="color:#ff79c6">import</span> RandomForestClassifier
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model <span style="color:#ff79c6">=</span> RandomForestClassifier(n_estimators<span style="color:#ff79c6">=</span><span style="color:#bd93f9">100</span>)
+</span></span><span style="display:flex;"><span>model<span style="color:#ff79c6">.</span>fit(X_train, y_train)
+</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>模型评估，用来评估精确度等模型表现的常见函数</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">from</span> sklearn.metrics <span style="color:#ff79c6">import</span> accuracy_score, classification_report, confusion_matrix
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">print</span>(accuracy_score(y_true, y_pred))           <span style="color:#6272a4"># 准确率</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">print</span>(confusion_matrix(y_true, y_pred))         <span style="color:#6272a4"># 混淆矩阵</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">print</span>(classification_report(y_true, y_pred))    <span style="color:#6272a4"># 各类精确率、召回率、F1</span>
+</span></span></code></pre></div></li>
+</ul>
+<h2 id="joblib">joblib</h2>
+<p>保存和加载 <code>.pkl</code>模型</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">import</span> joblib
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 保存模型</span>
+</span></span><span style="display:flex;"><span>joblib<span style="color:#ff79c6">.</span>dump(model, <span style="color:#f1fa8c">&#39;clf.pkl&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 加载模型</span>
+</span></span><span style="display:flex;"><span>model <span style="color:#ff79c6">=</span> joblib<span style="color:#ff79c6">.</span>load(<span style="color:#f1fa8c">&#39;clf.pkl&#39;</span>)
+</span></span></code></pre></div><h2 id="jieba">jieba</h2>
+<p>这个用于中文分词，便于进行 <code>TF-IDF</code> 特征提取IDF</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">import</span> jieba
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>text <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;这是一部非常棒的手机&#34;</span>
+</span></span><span style="display:flex;"><span>tokens <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">list</span>(jieba<span style="color:#ff79c6">.</span>cut(text))
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">print</span>(tokens)  <span style="color:#6272a4"># [&#39;这&#39;, &#39;是&#39;, &#39;一部&#39;, &#39;非常&#39;, &#39;棒&#39;, &#39;的&#39;, &#39;手机&#39;]</span>
+</span></span></code></pre></div><h1 id="例题模型权重窃取攻击">例题——模型权重窃取攻击</h1>
+<p>这种模型权重窃取攻击常见于线性的模型，比如逻辑回归，但是对于随机森林这样的非线性模型，没有对应的参数权重，因此我们只能尽可能造一个自己的模型去拟合题目的模型，也就是模型是黑盒的，我们构造若干[输入，输出]对来训练自己的模型。</p>
+<p>来源2025年数字中国数据安全决赛，由于没有公开的环境，根据题目的意思自己写了个数据集然后出了一道题。</p>
+<p>模型是逻辑回归。
+逻辑回归（Logistic Regression）是一种<strong>用于二分类问题的线性模型</strong>，其目标是预测输入数据属于某一类别的概率。</p>
+<ul>
+<li>
+<p>基本公式</p>
+<ul>
+<li>
+<p>设输入特征向量为 $\mathbf{x}=(x_1,x_2,&hellip;,x_n)$, 模型预测的概率就是</p>
+<p>$$
+\hat{y}=\sigma(\mathbf{w}^\top\mathbf{x}+b)=\frac{1}{1+e^{-(\mathbf{w}^\top\mathbf{x}+b)}}
+$$</p>
+<ul>
+<li>w:是模型权重向量：训练过程便是调整这些权重，题目中我们需要推导这些权重</li>
+<li>$b$是偏置，如果我们能有办法泄露 $b$，那么我们就有办法恢复参数</li>
+<li>$\sigma(\cdot)$:是Sigmoid函数，在机器学习中经常遇到，目的是将输出映射到 $[0,1]$</li>
+</ul>
+</li>
+<li>
+<p>对于模型输出，若 $\hat{y}&gt;0.5$ 就为负面评价，否则为正面评价。</p>
+</li>
+</ul>
+</li>
+<li>
+<p>TF-IDF 将一个文本转为一个高维稀疏向量，向量中每一维代表一个词在文本中的重要性（而不仅仅是频数），用于给模型进行学习和预测。向量维度 = 词表大小，每个词都有一个固定位置。</p>
+</li>
+</ul>
+<p>
+  <img src="image.png" alt="image.png">
+
+</p>
+<h2 id="还原步骤">还原步骤</h2>
+<p>题目中开放了 <code>/predict</code> 接口，只要我们输入任意文本，就能拿到模型输出概率 $\hat{y}$
+而我们知道</p>
+<p>$$
+\hat{y}=\sigma(\mathbf{w}^\top\mathbf{x}+b)=\frac{1}{1+e^{-(\mathbf{w}^\top\mathbf{x}+b)}}
+$$</p>
+<p>而偏置b可以获取，因此我们可以构造特定的x，然后反推出w</p>
+<p>由于TF-IDF是稀疏的，每一个词都会有一个对应的位置，如果我们知道词表，或者知道分词方式和一部分数据集，我们是可以泄露出词表对应的参数的（因为训练的时候就是将词表放入模型，即使我们不知道原始词表，我们找一个类似场景的去窃取得到的模型效果也不错:)</p>
+<p>因此我们有</p>
+<p>$$
+\sigma(\hat{y})^{-1} = ln(\frac{\hat{y}}{1-\hat{y}})=w_i\cdot tfidf_i + b
+$$</p>
+<p>$$
+w_i = \frac{ln(\frac{\hat{y}}{1-\hat{y}})-b}{tfidf_i}
+$$</p>
+<p>这样就可以一个词一个词地构造文本，通过模型输出计算出每个词的权重。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">import</span> pandas <span style="color:#ff79c6">as</span> pd
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> joblib
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> numpy <span style="color:#ff79c6">as</span> np
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> requests
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> math
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>API_URL <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;http://127.0.0.1:19001&#34;</span>  
+</span></span><span style="display:flex;"><span>TFIDF_PATH <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;./output/TF-IDF词向量器.pkl&#34;</span>
+</span></span><span style="display:flex;"><span>VOCAB_PATH <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;./output/词表.csv&#34;</span>
+</span></span><span style="display:flex;"><span>SUBMIT_PATH <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;./submit.csv&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>vectorizer <span style="color:#ff79c6">=</span> joblib<span style="color:#ff79c6">.</span>load(TFIDF_PATH)
+</span></span><span style="display:flex;"><span>vocab_df <span style="color:#ff79c6">=</span> pd<span style="color:#ff79c6">.</span>read_csv(VOCAB_PATH)
+</span></span><span style="display:flex;"><span>word_list <span style="color:#ff79c6">=</span> vocab_df[<span style="color:#f1fa8c">&#39;word&#39;</span>]<span style="color:#ff79c6">.</span>tolist()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>bias <span style="color:#ff79c6">=</span> requests<span style="color:#ff79c6">.</span>get(<span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">{</span>API_URL<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">/vuln&#34;</span>)<span style="color:#ff79c6">.</span>json()[<span style="color:#f1fa8c">&#39;bias&#39;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">inv_sigmoid</span>(p):
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> math<span style="color:#ff79c6">.</span>log(p <span style="color:#ff79c6">/</span> (<span style="color:#bd93f9">1</span> <span style="color:#ff79c6">-</span> p))
+</span></span><span style="display:flex;"><span>results <span style="color:#ff79c6">=</span> []
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">for</span> idx, word <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">enumerate</span>(word_list, start<span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>):
+</span></span><span style="display:flex;"><span>    text <span style="color:#ff79c6">=</span> word
+</span></span><span style="display:flex;"><span>    resp <span style="color:#ff79c6">=</span> requests<span style="color:#ff79c6">.</span>post(<span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">{</span>API_URL<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">/predict&#34;</span>, json<span style="color:#ff79c6">=</span>{<span style="color:#f1fa8c">&#34;text&#34;</span>: text})
+</span></span><span style="display:flex;"><span>    prob <span style="color:#ff79c6">=</span> resp<span style="color:#ff79c6">.</span>json()[<span style="color:#f1fa8c">&#39;probability&#39;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    z <span style="color:#ff79c6">=</span> inv_sigmoid(prob)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    x <span style="color:#ff79c6">=</span> vectorizer<span style="color:#ff79c6">.</span>transform([text])
+</span></span><span style="display:flex;"><span>    feature_names <span style="color:#ff79c6">=</span> vectorizer<span style="color:#ff79c6">.</span>get_feature_names_out()
+</span></span><span style="display:flex;"><span>    word_to_index <span style="color:#ff79c6">=</span> vectorizer<span style="color:#ff79c6">.</span>vocabulary_
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> word <span style="color:#ff79c6">not</span> <span style="color:#ff79c6">in</span> word_to_index:
+</span></span><span style="display:flex;"><span>        weight <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0.0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">else</span>:
+</span></span><span style="display:flex;"><span>        i <span style="color:#ff79c6">=</span> word_to_index[word]
+</span></span><span style="display:flex;"><span>        xi <span style="color:#ff79c6">=</span> x[<span style="color:#bd93f9">0</span>, i]
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> xi <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">0</span>:
+</span></span><span style="display:flex;"><span>            weight <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0.0</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">else</span>:
+</span></span><span style="display:flex;"><span>            weight <span style="color:#ff79c6">=</span> (z <span style="color:#ff79c6">-</span> bias) <span style="color:#ff79c6">/</span> xi
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    results<span style="color:#ff79c6">.</span>append((idx, weight))
+</span></span><span style="display:flex;"><span>submit_df <span style="color:#ff79c6">=</span> pd<span style="color:#ff79c6">.</span>DataFrame(results, columns<span style="color:#ff79c6">=</span>[<span style="color:#f1fa8c">&#34;id&#34;</span>, <span style="color:#f1fa8c">&#34;weight&#34;</span>])
+</span></span><span style="display:flex;"><span>submit_df<span style="color:#ff79c6">.</span>to_csv(SUBMIT_PATH, index<span style="color:#ff79c6">=</span><span style="color:#ff79c6">False</span>, encoding<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;utf-8&#39;</span>)
+</span></span></code></pre></div><h2 id="从出题角度看">从出题角度看</h2>
+<p>我们拿到了如下的数据集：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>text,label
+</span></span><span style="display:flex;"><span>这个商品质量非常不错，用起来感觉很好，推荐大家购买。,<span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>物流非常快，包装完好，使用后体验也很棒，非常满意。,<span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>这是一次非常愉快的购物，客服态度特别好，点赞。,<span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>.....
+</span></span><span style="display:flex;"><span>这次购物非常失败，质量差得出乎意料。,<span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span>刚用两天就出现问题，联系客服也不处理。,<span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span>东西完全和描述不符，有种被欺骗的感觉。,<span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span>外包装很破，里面的物品也有损坏。,<span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span>客服态度很差，完全不解决实际问题。,<span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span>快递慢得离谱，还不送上楼，太气人了。,<span style="color:#bd93f9">1</span>
+</span></span></code></pre></div><p>使用如下的分词策略,切中 <code>max_features = 100</code> 表明我们分词之后，词表长度是 <code>100</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>import re
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>def <span style="color:#50fa7b">custom_tokenizer</span>(text)<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>    words <span style="color:#ff79c6">=</span> jieba.<span style="color:#50fa7b">lcut</span>(text)
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6"># 过滤掉标点符号和单字符标点
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>    filtered_words <span style="color:#ff79c6">=</span> [word <span style="color:#ff79c6">for</span> word in words <span style="color:#ff79c6">if</span> re.<span style="color:#50fa7b">match</span>(r&#39;<span style="color:#ff79c6">^</span>[\u4e00<span style="color:#ff79c6">-</span>\u9fa5a<span style="color:#ff79c6">-</span>zA<span style="color:#ff79c6">-</span>Z0<span style="color:#ff79c6">-</span><span style="color:#bd93f9">9</span>]<span style="color:#ff79c6">+</span>$&#39;, word) and <span style="color:#50fa7b">len</span>(word) <span style="color:#ff79c6">&gt;</span> <span style="color:#bd93f9">1</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> filtered_words
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>vectorizer <span style="color:#ff79c6">=</span> <span style="color:#50fa7b">TfidfVectorizer</span>(tokenizer<span style="color:#ff79c6">=</span>custom_tokenizer, max_features<span style="color:#ff79c6">=</span><span style="color:#bd93f9">100</span>)
+</span></span><span style="display:flex;"><span>X <span style="color:#ff79c6">=</span> vectorizer.<span style="color:#50fa7b">fit_transform</span>(texts)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>vocab <span style="color:#ff79c6">=</span> vectorizer.vocabulary_
+</span></span><span style="display:flex;"><span>vocab
+</span></span></code></pre></div><ul>
+<li>
+<p>词表</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>id,word
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">1</span>,一下
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">2</span>,一个
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">3</span>,一样
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">4</span>,一次
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">5</span>,一直
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">6</span>,一股
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">7</span>,上楼
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">8</span>,下单
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">9</span>,不了
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">10</span>,不会
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">11</span>,不符
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">12</span>,不错
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">13</span>,东西
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">14</span>,买来
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">15</span>,产品
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">16</span>,价格
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">17</span>,任何
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">18</span>,体验
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">19</span>,使用
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">20</span>,值得
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">21</span>,几次
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">22</span>,出现
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">23</span>,刺鼻
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">24</span>,功能
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">25</span>,包装
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">26</span>,卡顿
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">27</span>,发现
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">28</span>,发货
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">29</span>,可以
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">30</span>,合理
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">31</span>,售后
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">32</span>,商品
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">33</span>,喜欢
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">34</span>,图片
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">35</span>,垃圾
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">36</span>,处理
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">37</span>,外观
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">38</span>,大家
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">39</span>,失望
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">40</span>,安装
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">41</span>,完全
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">42</span>,实际
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">43</span>,客服
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">44</span>,宣传
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">45</span>,尺寸
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">46</span>,很多
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">47</span>,很差
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">48</span>,快递
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">49</span>,怀疑
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">50</span>,态度
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">51</span>,性价比
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">52</span>,感觉
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">53</span>,打开
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">54</span>,损坏
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">55</span>,推荐
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">56</span>,描述
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">57</span>,操作
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">58</span>,收到
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">59</span>,放心
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">60</span>,效果
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">61</span>,方便
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">62</span>,明显
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">63</span>,朋友
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">64</span>,服务到位
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">65</span>,材质
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">66</span>,极差
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">67</span>,根本
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">68</span>,没人
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">69</span>,没有
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">70</span>,清晰
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">71</span>,满意
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">72</span>,物流
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">73</span>,特别
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">74</span>,真的
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">75</span>,确实
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">76</span>,穿着
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">77</span>,简单
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">78</span>,精致
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">79</span>,经常
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">80</span>,结果
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">81</span>,续航
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">82</span>,联系
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">83</span>,舒服
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">84</span>,虚假
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">85</span>,衣服
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">86</span>,试用
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">87</span>,说明书
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">88</span>,质量
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">89</span>,购买
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">90</span>,购物
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">91</span>,起来
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">92</span>,边缘
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">93</span>,这个
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">94</span>,这次
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">95</span>,速度
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">96</span>,问题
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">97</span>,非常
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">98</span>,顺手
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">99</span>,颜色
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">100</span>,麻烦
+</span></span></code></pre></div></li>
+</ul>
+<p>训练过程</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>id_to_word <span style="color:#ff79c6">=</span> <span style="color:#50fa7b">sorted</span>([(idx, word) <span style="color:#ff79c6">for</span> word, idx in vocab.<span style="color:#50fa7b">items</span>()], key<span style="color:#ff79c6">=</span>lambda <span style="color:#8be9fd;font-style:italic">x</span>: x[<span style="color:#bd93f9">0</span>])
+</span></span><span style="display:flex;"><span>vocab_df <span style="color:#ff79c6">=</span> pd.<span style="color:#50fa7b">DataFrame</span>({
+</span></span><span style="display:flex;"><span>    &#39;id&#39;<span style="color:#ff79c6">:</span> <span style="color:#50fa7b">list</span>(<span style="color:#50fa7b">range</span>(<span style="color:#bd93f9">1</span>, <span style="color:#50fa7b">len</span>(id_to_word)<span style="color:#ff79c6">+</span><span style="color:#bd93f9">1</span>)),
+</span></span><span style="display:flex;"><span>    &#39;word&#39;<span style="color:#ff79c6">:</span> [word <span style="color:#ff79c6">for</span> _, word in id_to_word]
+</span></span><span style="display:flex;"><span>})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>os.<span style="color:#50fa7b">makedirs</span>(<span style="color:#f1fa8c">&#34;output&#34;</span>, exist_ok<span style="color:#ff79c6">=</span>True)
+</span></span><span style="display:flex;"><span>vocab_df.<span style="color:#50fa7b">to_csv</span>(<span style="color:#f1fa8c">&#34;output/词表.csv&#34;</span>, index<span style="color:#ff79c6">=</span>False, encoding<span style="color:#ff79c6">=</span>&#39;utf<span style="color:#ff79c6">-</span><span style="color:#bd93f9">8</span>&#39;)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6"># 训练逻辑回归模型
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>clf <span style="color:#ff79c6">=</span> <span style="color:#50fa7b">LogisticRegression</span>()
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">print</span>(X)
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">print</span>(<span style="color:#f1fa8c">&#34;------&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">print</span>(labels)
+</span></span><span style="display:flex;"><span>clf.<span style="color:#50fa7b">fit</span>(X, labels)
+</span></span></code></pre></div><ul>
+<li>
+<p>X的内容</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#ff79c6">&lt;</span>Compressed Sparse Row sparse matrix of dtype &#39;float64&#39;
+</span></span><span style="display:flex;"><span>	with <span style="color:#bd93f9">346</span> stored elements and <span style="color:#50fa7b">shape</span> (<span style="color:#bd93f9">99</span>, <span style="color:#bd93f9">100</span>)<span style="color:#ff79c6">&gt;</span>
+</span></span><span style="display:flex;"><span>  Coords	<span style="color:#50fa7b">Values</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">92</span>)	<span style="color:#bd93f9">0.3772039423143494</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">96</span>)	<span style="color:#bd93f9">0.25628160235927194</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">11</span>)	<span style="color:#bd93f9">0.3772039423143494</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">90</span>)	<span style="color:#bd93f9">0.34544038924227116</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">51</span>)	<span style="color:#bd93f9">0.34544038924227116</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">54</span>)	<span style="color:#bd93f9">0.3328347980083282</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">37</span>)	<span style="color:#bd93f9">0.4254267525348988</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">88</span>)	<span style="color:#bd93f9">0.34544038924227116</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">96</span>)	<span style="color:#bd93f9">0.5417711346388588</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">71</span>)	<span style="color:#bd93f9">0.4496692940592943</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">24</span>)	<span style="color:#bd93f9">0.3805063074821244</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">18</span>)	<span style="color:#bd93f9">0.3200254116175408</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">17</span>)	<span style="color:#bd93f9">0.3518010744904796</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">70</span>)	<span style="color:#bd93f9">0.3651249834303673</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">96</span>)	<span style="color:#bd93f9">0.288986009651585</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">3</span>)	<span style="color:#bd93f9">0.3895224578769012</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">89</span>)	<span style="color:#bd93f9">0.42533939662769077</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">42</span>)	<span style="color:#bd93f9">0.35155497280508996</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">49</span>)	<span style="color:#bd93f9">0.47971597837032504</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">72</span>)	<span style="color:#bd93f9">0.47971597837032504</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">3</span>, <span style="color:#bd93f9">88</span>)	<span style="color:#bd93f9">0.41908698636164454</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">3</span>, <span style="color:#bd93f9">14</span>)	<span style="color:#bd93f9">0.43674152394639487</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">3</span>, <span style="color:#bd93f9">55</span>)	<span style="color:#bd93f9">0.4576224099764536</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">3</span>, <span style="color:#bd93f9">50</span>)	<span style="color:#bd93f9">0.48317854905988794</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">3</span>, <span style="color:#bd93f9">19</span>)	<span style="color:#bd93f9">0.43674152394639487</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">:</span>	<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">89</span>, <span style="color:#bd93f9">66</span>)	<span style="color:#bd93f9">0.5187388836466542</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">89</span>, <span style="color:#bd93f9">9</span>)	<span style="color:#bd93f9">0.620721319313378</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">90</span>, <span style="color:#bd93f9">12</span>)	<span style="color:#bd93f9">0.531189572933283</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">90</span>, <span style="color:#bd93f9">10</span>)	<span style="color:#bd93f9">0.5990983381745256</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">90</span>, <span style="color:#bd93f9">33</span>)	<span style="color:#bd93f9">0.5990983381745256</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">91</span>, <span style="color:#bd93f9">95</span>)	<span style="color:#bd93f9">0.471545284647643</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">91</span>, <span style="color:#bd93f9">99</span>)	<span style="color:#bd93f9">0.623556350511553</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">91</span>, <span style="color:#bd93f9">20</span>)	<span style="color:#bd93f9">0.623556350511553</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">92</span>, <span style="color:#bd93f9">92</span>)	<span style="color:#bd93f9">0.5433788378048092</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">92</span>, <span style="color:#bd93f9">38</span>)	<span style="color:#bd93f9">0.6128459128638686</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">92</span>, <span style="color:#bd93f9">9</span>)	<span style="color:#bd93f9">0.5737240850024916</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">93</span>, <span style="color:#bd93f9">66</span>)	<span style="color:#bd93f9">0.6161843968948716</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">93</span>, <span style="color:#bd93f9">91</span>)	<span style="color:#bd93f9">0.7876019229428681</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">94</span>, <span style="color:#bd93f9">90</span>)	<span style="color:#bd93f9">0.6753740758587824</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">94</span>, <span style="color:#bd93f9">82</span>)	<span style="color:#bd93f9">0.7374753268129691</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">95</span>, <span style="color:#bd93f9">13</span>)	<span style="color:#bd93f9">0.6834217464519474</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">95</span>, <span style="color:#bd93f9">79</span>)	<span style="color:#bd93f9">0.7300237780213534</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">96</span>, <span style="color:#bd93f9">17</span>)	<span style="color:#bd93f9">0.44096100663134247</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">96</span>, <span style="color:#bd93f9">3</span>)	<span style="color:#bd93f9">0.4576617068975557</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">96</span>, <span style="color:#bd93f9">65</span>)	<span style="color:#bd93f9">0.563632799720052</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">96</span>, <span style="color:#bd93f9">9</span>)	<span style="color:#bd93f9">0.5276525559021057</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">97</span>, <span style="color:#bd93f9">18</span>)	<span style="color:#bd93f9">0.6259662910231264</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">97</span>, <span style="color:#bd93f9">60</span>)	<span style="color:#bd93f9">0.779850115408564</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">98</span>, <span style="color:#bd93f9">54</span>)	<span style="color:#bd93f9">0.6938455466462303</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#bd93f9">98</span>, <span style="color:#bd93f9">88</span>)	<span style="color:#bd93f9">0.7201238486532675</span>
+</span></span></code></pre></div></li>
+</ul>
+<p><strong>X 是一个 99 × 100 的稀疏矩阵</strong>，它表示 99 条训练样本的 TF-IDF 特征向量，每条样本是一个 100 维向量（因用了 <code>max_features=100</code>）。</p>
+<p>我们还可以用下面的代码来查看词向量矩阵</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>[<span style="color:#ff79c6">+</span>] 词向量矩阵 X 的结构：
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">-</span> 类型<span style="color:#ff79c6">:</span> <span style="color:#ff79c6">&lt;</span>class &#39;scipy.sparse._csr.csr_matrix&#39;<span style="color:#ff79c6">&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">-</span> 维度（样本数, 词表大小）<span style="color:#ff79c6">:</span> (<span style="color:#bd93f9">99</span>, <span style="color:#bd93f9">100</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">-</span> 稀疏矩阵非零元素个数<span style="color:#ff79c6">:</span> <span style="color:#bd93f9">346</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>[<span style="color:#ff79c6">+</span>] 词表前<span style="color:#bd93f9">10</span>个词<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>   id word
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0</span>   <span style="color:#bd93f9">1</span>   一下
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">1</span>   <span style="color:#bd93f9">2</span>   一个
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">2</span>   <span style="color:#bd93f9">3</span>   一样
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">3</span>   <span style="color:#bd93f9">4</span>   一次
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">4</span>   <span style="color:#bd93f9">5</span>   一直
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">5</span>   <span style="color:#bd93f9">6</span>   一股
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">6</span>   <span style="color:#bd93f9">7</span>   上楼
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">7</span>   <span style="color:#bd93f9">8</span>   下单
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">8</span>   <span style="color:#bd93f9">9</span>   不了
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">9</span>  <span style="color:#bd93f9">10</span>   不会
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>[<span style="color:#ff79c6">+</span>] 第一个样本的词向量（非零项）<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">-</span> 特征维度 第  <span style="color:#bd93f9">11</span>维<span style="color:#ff79c6">:</span> 词语 `不错` → TF<span style="color:#ff79c6">-</span>IDF 值<span style="color:#ff79c6">:</span> <span style="color:#bd93f9">0.3772</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">-</span> 特征维度 第  <span style="color:#bd93f9">37</span>维<span style="color:#ff79c6">:</span> 词语 `大家` → TF<span style="color:#ff79c6">-</span>IDF 值<span style="color:#ff79c6">:</span> <span style="color:#bd93f9">0.4254</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">-</span> 特征维度 第  <span style="color:#bd93f9">51</span>维<span style="color:#ff79c6">:</span> 词语 `感觉` → TF<span style="color:#ff79c6">-</span>IDF 值<span style="color:#ff79c6">:</span> <span style="color:#bd93f9">0.3454</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">-</span> 特征维度 第  <span style="color:#bd93f9">54</span>维<span style="color:#ff79c6">:</span> 词语 `推荐` → TF<span style="color:#ff79c6">-</span>IDF 值<span style="color:#ff79c6">:</span> <span style="color:#bd93f9">0.3328</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">-</span> 特征维度 第  <span style="color:#bd93f9">88</span>维<span style="color:#ff79c6">:</span> 词语 `购买` → TF<span style="color:#ff79c6">-</span>IDF 值<span style="color:#ff79c6">:</span> <span style="color:#bd93f9">0.3454</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">-</span> 特征维度 第  <span style="color:#bd93f9">90</span>维<span style="color:#ff79c6">:</span> 词语 `起来` → TF<span style="color:#ff79c6">-</span>IDF 值<span style="color:#ff79c6">:</span> <span style="color:#bd93f9">0.3454</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">-</span> 特征维度 第  <span style="color:#bd93f9">92</span>维<span style="color:#ff79c6">:</span> 词语 `这个` → TF<span style="color:#ff79c6">-</span>IDF 值<span style="color:#ff79c6">:</span> <span style="color:#bd93f9">0.3772</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">-</span> 特征维度 第  <span style="color:#bd93f9">96</span>维<span style="color:#ff79c6">:</span> 词语 `非常` → TF<span style="color:#ff79c6">-</span>IDF 值<span style="color:#ff79c6">:</span> <span style="color:#bd93f9">0.2563</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>[<span style="color:#ff79c6">+</span>] 词表总特征维度数量<span style="color:#ff79c6">:</span> <span style="color:#bd93f9">100</span>
+</span></span></code></pre></div><p>我们以训练数据集的第一个样本 <code>这个商品质量非常不错，用起来感觉很好，推荐大家购买。,0</code> 为例</p>
+<p>和X对应一下，在上面的 <code>X的内容</code> 中，第一个 <code>(0, 92)	0.3772039423143494</code> 就表示第一个样本的词向量中的 <code>不错</code> 他的 <code>TF-IDF 值: 0.3772</code></p>
+<p>因此，这种算法有一个缺陷，当用户输入的数据中存在一些不在数据集里出现过的字，就会导致输入是一个全零向量。</p>
+<p>例如对于如下的样本</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>clf <span style="color:#ff79c6">=</span> joblib.<span style="color:#50fa7b">load</span>(<span style="color:#f1fa8c">&#34;output/model.pkl&#34;</span>)
+</span></span><span style="display:flex;"><span>vectorizer <span style="color:#ff79c6">=</span> joblib.<span style="color:#50fa7b">load</span>(<span style="color:#f1fa8c">&#34;output/TF-IDF词向量器.pkl&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>input_text <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;Zephyr&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>vocab <span style="color:#ff79c6">=</span> vectorizer.vocabulary_
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">print</span>(<span style="color:#50fa7b">len</span>(vocab))
+</span></span><span style="display:flex;"><span>input_vector <span style="color:#ff79c6">=</span> vectorizer.<span style="color:#50fa7b">transform</span>([input_text])
+</span></span><span style="display:flex;"><span>analyzer <span style="color:#ff79c6">=</span> vectorizer.<span style="color:#50fa7b">build_analyzer</span>()
+</span></span><span style="display:flex;"><span>tokens <span style="color:#ff79c6">=</span> <span style="color:#50fa7b">analyzer</span>(input_text)
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">print</span>(f<span style="color:#f1fa8c">&#34;[+] 分词结果: {tokens}&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>input_vector <span style="color:#ff79c6">=</span> vectorizer.<span style="color:#50fa7b">transform</span>([input_text])
+</span></span><span style="display:flex;"><span>feature_names <span style="color:#ff79c6">=</span> vectorizer.<span style="color:#50fa7b">get_feature_names_out</span>()
+</span></span><span style="display:flex;"><span>nonzero_idx <span style="color:#ff79c6">=</span> input_vector.<span style="color:#50fa7b">nonzero</span>()[<span style="color:#bd93f9">1</span>]
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">print</span>(<span style="color:#f1fa8c">&#34;[+] 非零特征项:&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">for</span> i in <span style="color:#8be9fd;font-style:italic">nonzero_idx</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">print</span>(f<span style="color:#f1fa8c">&#34;  - 词语: {feature_names[i]:&lt;15} -&gt; TF-IDF: {input_vector[0, i]:.4f}&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6"># 进行推理
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>input_vector <span style="color:#ff79c6">=</span> vectorizer.<span style="color:#50fa7b">transform</span>([<span style="color:#f1fa8c">&#34;Zephyr&#34;</span>])
+</span></span><span style="display:flex;"><span>dense <span style="color:#ff79c6">=</span> input_vector.<span style="color:#50fa7b">toarray</span>()[<span style="color:#bd93f9">0</span>]
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">print</span>(dense)
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#bd93f9">100</span>
+</span></span><span style="display:flex;"><span>[<span style="color:#ff79c6">+</span>] 分词结果<span style="color:#ff79c6">:</span> [&#39;zephyr&#39;]
+</span></span><span style="display:flex;"><span>[<span style="color:#ff79c6">+</span>] 非零特征项<span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>[<span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span>
+</span></span><span style="display:flex;"><span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span>
+</span></span><span style="display:flex;"><span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span>
+</span></span><span style="display:flex;"><span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span>
+</span></span><span style="display:flex;"><span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span> <span style="color:#bd93f9">0.</span>]
+</span></span></code></pre></div><p>对于这样的输入，模型的输出永远是固定的。</p>
+<h1 id="例题对抗样本生成">例题——对抗样本生成</h1>
+<p>这个东西很多，为了文章的一致性，今天只讨论最基本的逻辑回归</p>
+<p>题目通常会给你数据集，如果不提供训练好的模型，会给你一个接口让你得到模型的输出，你的任务通常是对样本做最小的修改（或者限制数量的修改）让模型分类错误</p>
+<p>对于逻辑回归、机器学习这样参数小的模型，我们往往只需要最暴力的方式即可——不断往后添加其余分类的数据，直到分类错误为止，对于后续的图像和NLP深度学习模型，则有很多现成的先进算法可以调用。</p>
+
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/satover/" data-toggle="tooltip" data-placement="top" title="SatOver阅读笔记">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/ciscn2025/" data-toggle="tooltip" data-placement="top" title="2025长城杯&amp;CISCN半决赛复盘">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+
+                
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/course" title="course">
+                            course
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/crypto" title="crypto">
+                            crypto
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ctf" title="ctf">
+                            ctf
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/notebook" title="notebook">
+                            notebook
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/pwn" title="pwn">
+                            pwn
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/writeup" title="writeup">
+                            writeup
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0" title="统计学习">
+                            统计学习
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:empire258700@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/ZephyrVictor">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="#3" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; #3 2025
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>

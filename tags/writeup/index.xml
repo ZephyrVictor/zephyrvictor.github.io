@@ -16,6 +16,13 @@
       <description>MISC 流量 | 赛后解出 sb了，原先没用wireshark解密过tls文件。 首先追踪中间的tcp流，可以看到这一条消息 然后按照这种格式写到一个文件里</description>
     </item>
     <item>
+      <title>AI安全一，逻辑回归的参数泄露</title>
+      <link>https://zephyr369.online/ai1/</link>
+      <pubDate>Sat, 01 Mar 2025 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/ai1/</guid>
+      <description>传统AI安全 算法分类 需要明确的是， 机器学习这一范围是最大的，他包括了 机器学习 和 深度学习 ，以及后续衍生而出的更多参数的大模型算法。 我们可以从三</description>
+    </item>
+    <item>
       <title>2024国城杯线上初赛</title>
       <link>https://zephyr369.online/goalcent/</link>
       <pubDate>Sat, 07 Dec 2024 12:00:00 +0000</pubDate>
