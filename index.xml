@@ -6,8 +6,15 @@
     <description>Recent content on #3</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 01 Mar 2025 12:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 05 Aug 2025 12:00:00 +0000</lastBuildDate>
     <atom:link href="https://zephyr369.online/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>AI安全一，逻辑回归的参数泄露</title>
+      <link>https://zephyr369.online/ai1/</link>
+      <pubDate>Tue, 05 Aug 2025 12:00:00 +0000</pubDate>
+      <guid>https://zephyr369.online/ai1/</guid>
+      <description>传统AI安全 算法分类 需要明确的是， 机器学习这一范围是最大的，他包括了 机器学习 和 深度学习 ，以及后续衍生而出的更多参数的大模型算法。 我们可以从三</description>
+    </item>
     <item>
       <title>2025软创安全赛东北分区赛WP</title>
       <link>https://zephyr369.online/software2025/</link>
@@ -21,13 +28,6 @@
       <pubDate>Sat, 01 Mar 2025 12:00:00 +0000</pubDate>
       <guid>https://zephyr369.online/ciscn2025/</guid>
       <description>这把Pwn出了三个菜单，还有一个php_master是web-pwn,全程没管。比赛中最幽默的是post_quantum，一直缺库，然后&amp;r</description>
-    </item>
-    <item>
-      <title>AI安全一，逻辑回归的参数泄露</title>
-      <link>https://zephyr369.online/ai1/</link>
-      <pubDate>Sat, 01 Mar 2025 12:00:00 +0000</pubDate>
-      <guid>https://zephyr369.online/ai1/</guid>
-      <description>传统AI安全 算法分类 需要明确的是， 机器学习这一范围是最大的，他包括了 机器学习 和 深度学习 ，以及后续衍生而出的更多参数的大模型算法。 我们可以从三</description>
     </item>
     <item>
       <title>SatOver阅读笔记</title>
